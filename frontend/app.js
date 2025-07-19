@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import pacienteForm from "./components/pacienteForm";
-import pacienteLista from "./components/pacienteLista";
+import CadastroPaciente from "./components/cadastroPaciente";
 
 function App() {
   const [pacientes, setPacientes] = useState([]);
@@ -33,7 +32,7 @@ function App() {
   return (
     <div style={{ padding: "2rem", fontFamily: "Arial" }}>
       <h1>Cadastro de Pacientes</h1>
-      <PacienteForm onAdicionar={adicionarPaciente} />
+      <CadastroPaciente onAdicionar={adicionarPaciente} />
       <PacienteLista
         pacientes={pacientes}
         onAtualizar={atualizarPaciente}
