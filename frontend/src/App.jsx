@@ -33,7 +33,7 @@ export default function App() {
       .catch(console.error);
   };
 
-  // Atualizar paciente (PUT)
+  // Atualizar paciente (PATCH)
   const atualizarPaciente = (id, paciente) => {
     fetch(`${API_URL}/${id}`, {
       method: "PATCH",
