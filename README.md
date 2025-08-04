@@ -1,4 +1,4 @@
-# Sistema Web de Gerenciamento para Clínica Odontológica v0.1.0
+# Sistema Web de Gerenciamento para Clínica Odontológica
 
 Projeto desenvolvido com Node.js + Express no backend e React + Vite no frontend, para gerenciar pacientes(Módulo 1: cadastro de pacientes).
 
