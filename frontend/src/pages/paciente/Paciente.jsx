@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import PacientesList from "./PacienteList.jsx";
 import PacienteForm from "./PacienteForm.jsx";
+import './Paciente.css';
 
 const API_URL = "http://localhost:3001/pacientes";
 

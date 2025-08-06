@@ -1,0 +1,40 @@
+#navContainer{
+    background-color: #00A39C;
+    width: 100vw;
+    height: 60px;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    padding-inline: 2rem;
+    box-sizing: border-box;
+
+    .navbar{
+        min-width: 400px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        box-sizing: border-box;
+
+        a{
+            text-decoration: none;
+            color: white;
+            padding: 5px 0px;
+        }
+
+        a:hover{
+            color: #00514d;
+        }
+
+        button{
+            background: none;
+            border: solid 2px #00514d;
+            padding: 5px 15px;
+            color: #00514d;
+        }
+
+        button:hover{
+            background-color: #00514d;
+            color: white;
+        }
+    }
+}

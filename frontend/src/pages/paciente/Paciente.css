@@ -1,0 +1,26 @@
+form{
+    width: 95%;
+    max-width: 500px;
+    
+    .formGroup{
+        margin-bottom: 15px;
+        display: flex;
+        flex-direction: column;
+
+        label{
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+
+        input, textarea{
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            width: 100%;
+        }
+
+        textarea{
+            resize: vertical;
+        }
+    }
+}

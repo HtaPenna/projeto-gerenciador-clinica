@@ -1,0 +1,68 @@
+.homePage{
+    height: 100vh;
+    width: 100vw;
+    display: flex;
+    align-items: center;
+    text-align: center;
+    flex-direction: column;
+
+    #menu{
+        width: 100vw;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding-inline: 50px;
+        box-sizing: border-box;
+        height: 60px;
+
+        #logo{
+            color: #00A39C;
+            font-size: large;
+            font-weight: bold;
+        }
+
+        #nav{
+            button{
+                padding: 5px 15px;
+                background-color: #00A39C;
+                border: hidden;
+            }
+
+            button:hover{
+                background: #00514d;
+            }
+        }
+    }
+
+    .homeContent{
+        display: flex;
+        flex-direction: column;
+        flex-grow: 1;
+        align-items: center;
+        justify-content: center;
+        width: 100vw;
+
+        h1{
+            color: #00A39C;
+        }
+
+        p{
+            color: #676767;
+        }
+    }
+}
+
+.homePage::before{
+    content: '';
+    background-image: url('../../assets/images/backgroundHome.jpg');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    opacity: 0.5;
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: -1;
+}
