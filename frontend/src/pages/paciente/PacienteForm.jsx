@@ -122,17 +122,17 @@ useEffect(() => {
     <form onSubmit={handleSubmit}>
       <h2>{paciente ? "Editar Paciente" : "Novo Paciente"}</h2>
 
-      <div class="formGroup">
+      <div className="formGroup">
         <label>Nome</label>
         <input name="Nome_Pac" value={formData.Nome_Pac} onChange={handleChange} required />
       </div>
 
-      <div class="formGroup">
+      <div className="formGroup">
         <label>Telefone</label>
         <input name="Tel_Pac" value={formData.Tel_Pac} onChange={handleChange} required />
       </div>
 
-      <div class="formGroup">
+      <div className="formGroup">
         <label>Data de Nascimento</label>
         <input
           type="date"
@@ -143,12 +143,12 @@ useEffect(() => {
         />
       </div>
 
-      <div class="formGroup">
+      <div className="formGroup">
         <label>Telefone Residencial</label>
         <input name="TelResid_Pac" value={formData.TelResid_Pac} onChange={handleChange} />
       </div>
 
-      <div class="formGroup">
+      <div className="formGroup">
         <label>Idade</label>
         <input
           type="number"
@@ -160,62 +160,62 @@ useEffect(() => {
         />
       </div>
 
-      <div class="formGroup">
+      <div className="formGroup">
         <label>Peso</label>
         <input name="Peso_Pac" value={formData.Peso_Pac} onChange={handleChange} />
       </div>
 
-      <div class="formGroup">
+      <div className="formGroup">
         <label>Altura</label>
         <input name="Altura_Pac" value={formData.Altura_Pac} onChange={handleChange} />
       </div>
 
-      <div class="formGroup">
+      <div className="formGroup">
         <label>Tipo Sanguíneo</label>
         <input name="TipoSang_Pac" value={formData.TipoSang_Pac} onChange={handleChange} />
       </div>
 
-      <div class="formGroup">
+      <div className="formGroup">
         <label>Profissão</label>
         <input name="Profissao_Pac" value={formData.Profissao_Pac} onChange={handleChange} />
       </div>
 
-      <div class="formGroup">
+      <div className="formGroup">
         <label>CPF</label>
         <input name="CPF_Pac" value={formData.CPF_Pac} onChange={handleChange} required />
       </div>
       
-      <div class="formGroup">
+      <div className="formGroup">
         <label>RG</label>
         <input name="RG_Pac" value={formData.RG_Pac} onChange={handleChange} required />
       </div>
 
-      <div class="formGroup">
+      <div className="formGroup">
         <label>Endereço</label>
         <input name="Endereco_Pac" value={formData.Endereco_Pac} onChange={handleChange} required />
       </div>
 
-      <div class="formGroup">
+      <div className="formGroup">
         <label>Cidade</label>
         <input name="Cidade_Pac" value={formData.Cidade_Pac} onChange={handleChange} required />
       </div>
 
-      <div class="formGroup">
+      <div className="formGroup">
         <label>Estado</label>
         <input name="Estado_Pac" value={formData.Estado_Pac} onChange={handleChange} required />
       </div>
 
-      <div class="formGroup">
+      <div className="formGroup">
         <label>CEP</label>
         <input name="CEP_Pac" value={formData.CEP_Pac} onChange={handleChange} required />
       </div>
 
-      <div class="formGroup">
+      <div className="formGroup">
         <label>Email</label>
         <input type="email" name="Email_Pac" value={formData.Email_Pac} onChange={handleChange} required />
       </div>
 
-      <div class="formGroup">
+      <div className="formGroup">
         <label>Sexo</label>
         <select name="Sexo_Pac" value={formData.Sexo_Pac} onChange={handleChange} required>
           <option value="">--Selecione--</option>
@@ -227,27 +227,27 @@ useEffect(() => {
         </select>
       </div>
 
-      <div class="formGroup">
+      <div className="formGroup">
         <label>Estado Civil</label>
         <input name="EstCivil_Pac" value={formData.EstCivil_Pac} onChange={handleChange} />
       </div>
 
-      <div class="formGroup">
+      <div className="formGroup">
         <label>Nome do Cônjuge</label>
         <input name="NomeConjuge_Pac" value={formData.NomeConjuge_Pac} onChange={handleChange} />
       </div>
 
-      <div class="formGroup">
+      <div className="formGroup">
         <label>Telefone Emergência</label>
         <input name="TelEmergencia_Pac" value={formData.TelEmergencia_Pac} onChange={handleChange} />
       </div>
 
-      <div class="formGroup">
+      <div className="formGroup">
         <label>Redes Sociais</label>
         <input name="RedesSociais_Pac" value={formData.RedesSociais_Pac} onChange={handleChange} />
       </div>
 
-      <div class="formGroup">
+      <div className="formGroup">
         <label>Assinatura</label>
         <textarea name="Assinatura_Pac" value={formData.Assinatura_Pac} onChange={handleChange} />
       </div>
