@@ -1,6 +1,7 @@
 import React from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import './Navbar.css';
+import { Home, Users, Calendar, LogOut, HeartPulse, User } from "lucide-react";
 
 const Navbar = () => {
   const navigate = useNavigate();
@@ -12,12 +13,20 @@ const Navbar = () => {
 
   return (
     <div id="navContainer">
+      <div id="logoNav">
+        <HeartPulse size={24} class="iconNav"/><span>Dent.FY</span>
+      </div>
       <nav className="navbar">
-        <Link to="/main">Início</Link>
-        <Link to="/main/pacientes">Pacientes</Link>
-        <Link to="/main/agenda">Agenda</Link>
+        <div id='links'>
+          <Link to="/main"><Home size={24} class="iconNav"/><span>Início</span></Link>
+          <Link to="/main/pacientes"><Users size={24} class="iconNav"/><span>Pacientes</span></Link>
+          <Link to="/main/agenda"><Calendar size={24} class="iconNav"/><span>Agenda</span></Link>
+        </div>
+        <div id="btnUserOptions">
+          <User size={24} class="iconNav"/><span>Minha conta</span>
+        </div>
         <button onClick={handleLogout} className="logout-btn">
-          Sair
+          <LogOut size={24}/><span>Sair</span>
         </button>
       </nav>
     </div>

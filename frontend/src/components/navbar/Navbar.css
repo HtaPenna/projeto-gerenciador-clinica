@@ -1,40 +1,126 @@
 #navContainer{
     background-color: #00A39C;
-    width: 100vw;
-    height: 60px;
+    height: 100vh;
+    width: 60px;
     display: flex;
-    align-items: center;
-    justify-content: flex-end;
-    padding-inline: 2rem;
-    box-sizing: border-box;
+    flex-direction: column;
+    position: fixed;
+    left: 0;
+    bottom: 0;
+    border-radius: 0px 18px 0px 0px;
+    transition: width 0.3s ease;
+    overflow: hidden;
 
-    .navbar{
-        min-width: 400px;
+    span{
+        opacity: 0;
+        white-space: nowrap;
+        transition: opacity 0.2s ease 0.15s;
+        width: 0px;
+    }
+
+    #logoNav{
+        padding: 10px 0px;
+        color: #fff;
+        font-weight: bold;
         display: flex;
         align-items: center;
-        justify-content: space-between;
-        box-sizing: border-box;
+        justify-content: flex-start;
+        height: 57px;
 
-        a{
-            text-decoration: none;
-            color: white;
-            padding: 5px 0px;
+        .iconNav{
+            background: none;
+            width: 60px;
+            flex-shrink: 0 /*Para o icone não mexer*/
         }
 
-        a:hover{
-            color: #00514d;
+        span{
+            background: none;
+            font-size: 22px;
+        }
+    }
+
+    .navbar{
+        display: flex;
+        flex-direction: column;
+        flex-grow: 1;
+        background: none;
+        padding: 12px 0px;
+        align-items: flex-start;
+        justify-content: space-between;
+
+        .iconNav{
+            width: 60px;
+            flex-shrink: 0 /*Para o icone não mexer*/
+        }
+
+        span{
+            background: none;
+        }
+
+        #links{
+            width: 100%;
+            box-sizing: border-box;
+            display: flex;
+            flex-direction: column;
+
+            a{
+                text-decoration: none;
+                color: white;
+                padding: 15px 0px;
+                background: none;
+                display: flex;
+                align-items: center;
+                font-weight: normal;
+            }
+
+            a:hover{
+                background: #ffffff37;
+            }
+        }
+
+        #btnUserOptions{
+            width: 100%;
+            color: white;
+            padding: 15px 0px;
+            display: flex;
+            align-items: center;
+            cursor: pointer;
+        }
+
+        #btnUserOptions:hover{
+            background: #ffffff37;
         }
 
         button{
             background: none;
-            border: solid 2px #00514d;
-            padding: 5px 15px;
-            color: #00514d;
+            cursor: pointer;
+            color: #fff;
+            padding: 10px 0px;
+            width: 100%;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            border: none;
         }
 
         button:hover{
-            background-color: #00514d;
-            color: white;
+            background-color: #ffffff37;
+        }
+    }
+}
+
+/*Expandido*/
+#navContainer:hover{
+    width: 200px;
+    
+    span{
+        opacity: 1;
+        width: auto;
+    }
+
+    .navbar{
+        button{
+            justify-content: flex-start;
         }
     }
 }
