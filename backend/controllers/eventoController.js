@@ -1,6 +1,6 @@
 const { Evento } = require('../models');
 
-exports.getTodos = async (req, res) => {
+exports.get = async (req, res) => {
   try {
     const eventos = await Evento.findAll();
     res.json(eventos);
@@ -9,7 +9,7 @@ exports.getTodos = async (req, res) => {
   }
 };
 
-exports.criar = async (req, res) => {
+exports.post = async (req, res) => {
   try {
     const novoEvento = await Evento.create(req.body);
     res.status(201).json(novoEvento);
@@ -18,7 +18,7 @@ exports.criar = async (req, res) => {
   }
 };
 
-exports.atualizar = async (req, res) => {
+exports.patch = async (req, res) => {
   try {
     const [updated] = await Evento.update(req.body, {
       where: { id: req.params.id }
@@ -34,7 +34,7 @@ exports.atualizar = async (req, res) => {
   }
 };
 
-exports.deletar = async (req, res) => {
+exports.delete = async (req, res) => {
   try {
     const deleted = await Evento.destroy({ where: { id: req.params.id } });
     if (deleted) {

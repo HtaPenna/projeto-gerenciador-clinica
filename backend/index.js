@@ -9,17 +9,23 @@ app.use(cors());               // Permite requisições de outros domínios (ex:
 app.use(express.json());       // Permite receber JSON no body da requisição
 
 const pacienteRoutes = require("./routes/pacienteRoutes");
-app.use("/pacientes", pacienteRoutes); // Rotas acessíveis em /pacientes
+app.use('/pacientes', pacienteRoutes); // Rotas acessíveis em /pacientes
 
 const eventoRoutes = require('./routes/evento.routes');
 app.use('/eventos', eventoRoutes);
+
+const procedimentoRoutes = require('./routes/procedimentoRoutes');
+app.use('/procedimentos', procedimentoRoutes);
+
+const tratamentoRoutes = require('./routes/tratamentoRoutes');
+app.use('/tratamento', tratamentoRoutes);
 
 const PORT = 3001;
 
 sequelize.authenticate()
   .then(() => {
     console.log("Conexão com o banco estabelecida com sucesso.");
-    return sequelize.sync();  // Sincroniza (cria) as tabelas
+    return sequelize.sync({ force: true });  // Sincroniza (cria) as tabelas
   })
   .then(() => {
     console.log("Tabelas sincronizadas com o banco.");
