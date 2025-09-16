@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import 'bootstrap/dist/css/bootstrap.min.css';
 
 const sexoOptions = ["Masculino", "Feminino", "Outro"];
 
@@ -119,145 +120,161 @@ useEffect(() => {
 
 
   return (
-    <form onSubmit={handleSubmit}>
-      <h2>{paciente ? "Editar Paciente" : "Novo Paciente"}</h2>
+    <div class="bootstrap-scope">
+      <form onSubmit={handleSubmit}>
+        <h2>{paciente ? "Editar Paciente" : "Novo Paciente"}</h2>
 
-      <div class="formGroup">
-        <label>Nome</label>
-        <input name="Nome_Pac" value={formData.Nome_Pac} onChange={handleChange} required />
-      </div>
+        <div class="form-group mb-3">
+          <label>Nome</label>
+          <input class="form-control" name="Nome_Pac" value={formData.Nome_Pac} onChange={handleChange} required />
+        </div>
 
-      <div class="formGroup">
-        <label>Telefone</label>
-        <input name="Tel_Pac" value={formData.Tel_Pac} onChange={handleChange} required />
-      </div>
+        <div class="row mb-3">
+          <div class="form-group col-md-6">
+            <label>Telefone</label>
+            <input class="form-control" name="Tel_Pac" value={formData.Tel_Pac} onChange={handleChange} required />
+          </div>
 
-      <div class="formGroup">
-        <label>Data de Nascimento</label>
-        <input
-          type="date"
-          name="DataNasc_Pac"
-          value={formData.DataNasc_Pac}
-          onChange={handleChange}
-          required
-        />
-      </div>
+          <div class="form-group col-md-6">
+            <label>Telefone Residencial</label>
+            <input class="form-control" name="TelResid_Pac" value={formData.TelResid_Pac} onChange={handleChange} />
+          </div>
+        </div>
 
-      <div class="formGroup">
-        <label>Telefone Residencial</label>
-        <input name="TelResid_Pac" value={formData.TelResid_Pac} onChange={handleChange} />
-      </div>
+        <div class="row mb-3">
+          <div class="form-group col-md-8">
+            <label>Data de Nascimento</label>
+            <input class="form-control"
+              type="date"
+              name="DataNasc_Pac"
+              value={formData.DataNasc_Pac}
+              onChange={handleChange}
+              required
+            />
+          </div>
 
-      <div class="formGroup">
-        <label>Idade</label>
-        <input
-          type="number"
-          name="Idade_Pac"
-          value={formData.Idade_Pac}
-          onChange={handleChange}
-          required
-          min={0}
-        />
-      </div>
+          <div class="form-group col-md-4">
+            <label>Idade</label>
+            <input class="form-control"
+              type="number"
+              name="Idade_Pac"
+              value={formData.Idade_Pac}
+              onChange={handleChange}
+              required
+              min={0}
+            />
+          </div>
+        </div>
 
-      <div class="formGroup">
-        <label>Peso</label>
-        <input name="Peso_Pac" value={formData.Peso_Pac} onChange={handleChange} />
-      </div>
+        <div class="row mb-3">
+          <div class="form-group col-md-4">
+            <label>Peso</label>
+            <input class="form-control" name="Peso_Pac" value={formData.Peso_Pac} onChange={handleChange} />
+          </div>
 
-      <div class="formGroup">
-        <label>Altura</label>
-        <input name="Altura_Pac" value={formData.Altura_Pac} onChange={handleChange} />
-      </div>
+          <div class="form-group col-md-4">
+            <label>Altura</label>
+            <input class="form-control" name="Altura_Pac" value={formData.Altura_Pac} onChange={handleChange} />
+          </div>
 
-      <div class="formGroup">
-        <label>Tipo Sanguíneo</label>
-        <input name="TipoSang_Pac" value={formData.TipoSang_Pac} onChange={handleChange} />
-      </div>
+          <div class="form-group col-md-4">
+            <label>Tipo Sanguíneo</label>
+            <input class="form-control" name="TipoSang_Pac" value={formData.TipoSang_Pac} onChange={handleChange} />
+          </div>
+        </div>
 
-      <div class="formGroup">
-        <label>Profissão</label>
-        <input name="Profissao_Pac" value={formData.Profissao_Pac} onChange={handleChange} />
-      </div>
+        <div class="form-group mb-3">
+          <label>Profissão</label>
+          <input class="form-control" name="Profissao_Pac" value={formData.Profissao_Pac} onChange={handleChange} />
+        </div>
 
-      <div class="formGroup">
-        <label>CPF</label>
-        <input name="CPF_Pac" value={formData.CPF_Pac} onChange={handleChange} required />
-      </div>
-      
-      <div class="formGroup">
-        <label>RG</label>
-        <input name="RG_Pac" value={formData.RG_Pac} onChange={handleChange} required />
-      </div>
+        <div class="row mb-3">
+          <div class="form-group col-md-6">
+            <label>CPF</label>
+            <input class="form-control" name="CPF_Pac" value={formData.CPF_Pac} onChange={handleChange} required />
+          </div>
+          
+          <div class="form-group col-md-6">
+            <label>RG</label>
+            <input class="form-control" name="RG_Pac" value={formData.RG_Pac} onChange={handleChange} required />
+          </div>
+        </div>
 
-      <div class="formGroup">
-        <label>Endereço</label>
-        <input name="Endereco_Pac" value={formData.Endereco_Pac} onChange={handleChange} required />
-      </div>
+        <div class="form-group mb-3">
+          <label>Endereço</label>
+          <input class="form-control" name="Endereco_Pac" value={formData.Endereco_Pac} onChange={handleChange} required />
+        </div>
 
-      <div class="formGroup">
-        <label>Cidade</label>
-        <input name="Cidade_Pac" value={formData.Cidade_Pac} onChange={handleChange} required />
-      </div>
+        <div class="row mb-3">
+          <div class="form-group col-md-6">
+            <label>Cidade</label>
+            <input class="form-control" name="Cidade_Pac" value={formData.Cidade_Pac} onChange={handleChange} required />
+          </div>
 
-      <div class="formGroup">
-        <label>Estado</label>
-        <input name="Estado_Pac" value={formData.Estado_Pac} onChange={handleChange} required />
-      </div>
+          <div class="form-group col-md-3">
+            <label>Estado</label>
+            <input class="form-control" name="Estado_Pac" value={formData.Estado_Pac} onChange={handleChange} required />
+          </div>
 
-      <div class="formGroup">
-        <label>CEP</label>
-        <input name="CEP_Pac" value={formData.CEP_Pac} onChange={handleChange} required />
-      </div>
+          <div class="form-group col-md-3">
+            <label>CEP</label>
+            <input class="form-control" name="CEP_Pac" value={formData.CEP_Pac} onChange={handleChange} required />
+          </div>
+        </div>
 
-      <div class="formGroup">
-        <label>Email</label>
-        <input type="email" name="Email_Pac" value={formData.Email_Pac} onChange={handleChange} required />
-      </div>
+        <div class="form-group mb-3">
+          <label>Email</label>
+          <input class="form-control" type="email" name="Email_Pac" value={formData.Email_Pac} onChange={handleChange} required />
+        </div>
 
-      <div class="formGroup">
-        <label>Sexo</label>
-        <select name="Sexo_Pac" value={formData.Sexo_Pac} onChange={handleChange} required>
-          <option value="">--Selecione--</option>
-          {sexoOptions.map((s) => (
-            <option key={s} value={s}>
-              {s}
-            </option>
-          ))}
-        </select>
-      </div>
+        <div class="row mb-3">
+          <div class="form-group col-md-6">
+            <label>Sexo</label>
+            <select class="form-control" name="Sexo_Pac" value={formData.Sexo_Pac} onChange={handleChange} required>
+              <option value="">--Selecione--</option>
+              {sexoOptions.map((s) => (
+                <option key={s} value={s}>
+                  {s}
+                </option>
+              ))}
+            </select>
+          </div>
 
-      <div class="formGroup">
-        <label>Estado Civil</label>
-        <input name="EstCivil_Pac" value={formData.EstCivil_Pac} onChange={handleChange} />
-      </div>
+          <div class="form-group col-md-6">
+            <label>Estado Civil</label>
+            <input class="form-control" name="EstCivil_Pac" value={formData.EstCivil_Pac} onChange={handleChange} />
+          </div>
+        </div>
 
-      <div class="formGroup">
-        <label>Nome do Cônjuge</label>
-        <input name="NomeConjuge_Pac" value={formData.NomeConjuge_Pac} onChange={handleChange} />
-      </div>
+        <div class="form-group mb-3">
+          <label>Nome do Cônjuge</label>
+          <input class="form-control" name="NomeConjuge_Pac" value={formData.NomeConjuge_Pac} onChange={handleChange} />
+        </div>
+        
+        <div class="row mb-3">
+          <div class="form-group col-md-6">
+            <label>Telefone Emergência</label>
+            <input class="form-control" name="TelEmergencia_Pac" value={formData.TelEmergencia_Pac} onChange={handleChange} />
+          </div>
 
-      <div class="formGroup">
-        <label>Telefone Emergência</label>
-        <input name="TelEmergencia_Pac" value={formData.TelEmergencia_Pac} onChange={handleChange} />
-      </div>
+          <div class="form-group col-md-6">
+            <label>Redes Sociais</label>
+            <input class="form-control" name="RedesSociais_Pac" value={formData.RedesSociais_Pac} onChange={handleChange} />
+          </div>
+        </div>
 
-      <div class="formGroup">
-        <label>Redes Sociais</label>
-        <input name="RedesSociais_Pac" value={formData.RedesSociais_Pac} onChange={handleChange} />
-      </div>
+        <div class="form-group mb-3">
+          <label>Assinatura</label>
+          <textarea class="form-control" name="Assinatura_Pac" value={formData.Assinatura_Pac} onChange={handleChange} />
+        </div>
 
-      <div class="formGroup">
-        <label>Assinatura</label>
-        <textarea name="Assinatura_Pac" value={formData.Assinatura_Pac} onChange={handleChange} />
-      </div>
-
-      <button type="submit">{paciente ? "Atualizar" : "Criar"}</button>
-      {paciente && (
-        <button type="button" onClick={onCancelar} style={{ marginLeft: "10px" }}>
-          Cancelar
-        </button>
-      )}
-    </form>
+        <button class="btn btn-primary mb-2" type="submit">{paciente ? "Atualizar" : "Criar"}</button>
+        {paciente && (
+          <button class="btn btn-primary mb-2" type="button" onClick={onCancelar} style={{ marginLeft: "10px" }}>
+            Cancelar
+          </button>
+        )}
+      </form>
+    </div>
   );
 }

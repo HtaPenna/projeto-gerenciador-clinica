@@ -59,7 +59,7 @@ export default function Paciente() {
 
   return (
     <div>
-      <h1>Gerenciamento de Pacientes</h1>
+      <h1 id="tituloPagina">Gerenciamento de Pacientes</h1>
 
       <PacienteForm
         paciente={pacienteEditando}
