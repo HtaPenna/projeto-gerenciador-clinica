@@ -1,0 +1,48 @@
+const { Dentista } = require('../models');
+
+exports.getTodos = async (req, res) => {
+  try {
+    const dentistas = await Dentista.findAll();
+    res.json(dentistas);
+  } catch (err) {
+    res.status(500).json({ erro: err.message });
+  }
+};
+
+exports.criar = async (req, res) => {
+  try {
+    const novoDentista = await Dentista.create(req.body);
+    res.status(201).json(novoDentista);
+  } catch (err) {
+    res.status(500).json({ erro: err.message });
+  }
+};
+
+exports.atualizar = async (req, res) => {
+  try {
+    const [updated] = await Dentista.update(req.body, {
+      where: { id: req.params.id }
+    });
+    if (updated) {
+      const dentistaAtualizado = await Dentista.findByPk(req.params.id);
+      res.json(dentistaAtualizado);
+    } else {
+      res.status(404).json({ erro: 'Dentista não encontrado' });
+    }
+  } catch (err) {
+    res.status(500).json({ erro: err.message });
+  }
+};
+
+exports.deletar = async (req, res) => {
+  try {
+    const deleted = await Dentista.destroy({ where: { id: req.params.id } });
+    if (deleted) {
+      res.status(204).end();
+    } else {
+      res.status(404).json({ erro: 'Dentista não encontrado' });
+    }
+  } catch (err) {
+    res.status(500).json({ erro: err.message });
+  }
+};
