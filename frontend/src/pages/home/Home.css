@@ -5,6 +5,9 @@
     align-items: center;
     text-align: center;
     flex-direction: column;
+    background: 
+        linear-gradient(rgba(255, 255, 255, 0.5), rgba(255, 255, 255, 0.5)),
+        url('../../assets/images/backgroundhome.jpg') center/cover no-repeat;
 
     #menu{
         width: 100vw;
@@ -26,6 +29,7 @@
                 padding: 5px 15px;
                 background-color: #00A39C;
                 border: hidden;
+                border-radius: 0.375rem;
             }
 
             button:hover{
@@ -52,17 +56,3 @@
     }
 }
 
-.homePage::before{
-    content: '';
-    background-image: url('../../assets/images/backgroundHome.jpg');
-    background-size: cover;
-    background-position: center;
-    background-repeat: no-repeat;
-    opacity: 0.5;
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    z-index: -1;
-}
