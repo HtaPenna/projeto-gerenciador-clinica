@@ -1,6 +1,9 @@
 {
   "dependencies": {
+    "bootstrap": "^5.3.7",
+    "lucide-react": "^0.542.0",
     "mysql2": "^3.14.1",
+    "react-bootstrap": "^2.10.10",
     "sequelize": "^6.37.7"
   }
 }
