@@ -1,6 +1,7 @@
 import React from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import './Navbar.css';
+import logo from "../../assets/images/logo.png";
 import { Home, Users, Calendar, LogOut, HeartPulse, User } from "lucide-react";
 
 const Navbar = () => {
@@ -14,7 +15,7 @@ const Navbar = () => {
   return (
     <div id="navContainer">
       <div id="logoNav">
-        <HeartPulse size={24} class="iconNav"/><span>Dent.FY</span>
+        <div class="iconNav"><img src={logo} alt="logo reduzida da dent.FY" /></div>
       </div>
       <nav className="navbar">
         <div id='links'>
