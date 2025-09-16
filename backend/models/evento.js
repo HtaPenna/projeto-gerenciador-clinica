@@ -5,25 +5,43 @@ module.exports = (sequelize, DataTypes) => {
       primaryKey: true,
       autoIncrement: true,
     },
-    title: {
-      type: DataTypes.STRING,
-      allowNull: false,
-    },
-    start: {
+    inicio: {
       type: DataTypes.DATE,
       allowNull: false,
     },
-    end: {
+    fim: {
       type: DataTypes.DATE,
-      allowNull: false,
+      allowNull: true,
     },
     pacienteId: {
       type: DataTypes.INTEGER,
-      allowNull: true,
+      allowNull: false,
       references: {
         model: 'pacientes',
         key: 'id',
-      }
+      },
+    },
+    dentistaId: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      references: {
+        model: 'dentistas',
+        key: 'id',
+      },
+    },
+    status: {
+      type: DataTypes.ENUM('pendente', 'confirmada', 'em_andamento', 'concluida', 'bloqueado'),
+      allowNull: false,
+      defaultValue: 'pendente',
+    },
+    valorPrevisto: {
+      type: DataTypes.DECIMAL(10, 2),
+      allowNull: true,
+      defaultValue: 0.00,
+    },
+    observacoes: {
+      type: DataTypes.TEXT,
+      allowNull: true,
     },
   });
 };
