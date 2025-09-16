@@ -22,7 +22,7 @@ module.exports = (sequelize, DataTypes) => {
       allowNull: true,
       references: {
         model: 'pacientes',
-        key: 'Codigo_Pac',
+        key: 'id',
       }
     },
   });

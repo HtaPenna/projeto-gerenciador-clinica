@@ -4,8 +4,8 @@ const { DataTypes } = require('sequelize');
 const Paciente = require('./paciente')(sequelize, DataTypes);
 const Evento = require('./evento')(sequelize, DataTypes);
 
-Paciente.hasMany(Evento, { foreignKey: 'pacienteId', sourceKey: 'Codigo_Pac' });
-Evento.belongsTo(Paciente, { foreignKey: 'pacienteId', targetKey: 'Codigo_Pac' });
+Paciente.hasMany(Evento, { foreignKey: 'pacienteId', sourceKey: 'id' });
+Evento.belongsTo(Paciente, { foreignKey: 'pacienteId', targetKey: 'id' });
 
 
 module.exports = {
