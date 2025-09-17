@@ -51,14 +51,6 @@ module.exports = (sequelize, DataTypes) => {
         key: 'id',
       },
     },
-    tratamentoId: {
-      type: DataTypes.INTEGER,
-      allowNull: true,
-      references: {
-        model: 'tratamentos',
-        key: 'id',
-      },
-    },
     status: {
       type: DataTypes.ENUM('ativo', 'inativo'),
       allowNull: false,

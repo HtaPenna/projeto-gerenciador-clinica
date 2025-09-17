@@ -6,6 +6,7 @@ const Dentista = require('./dentista')(sequelize, DataTypes);
 const Evento = require('./evento')(sequelize, DataTypes);
 const Procedimento = require('./procedimento')(sequelize, DataTypes);
 const Categoria = require('./categoria')(sequelize, DataTypes);
+const Tratamento = require('./tratamento')(sequelize, DataTypes);
 
 // Associações Paciente ↔ Evento (1:N)
 Paciente.hasMany(Evento, { foreignKey: 'pacienteId', onDelete: 'CASCADE', onUpdate: 'CASCADE' });
@@ -30,4 +31,5 @@ module.exports = {
   Evento,
   Procedimento,
   Categoria,
+  Tratamento,
 };
