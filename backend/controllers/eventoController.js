@@ -46,3 +46,19 @@ exports.deletar = async (req, res) => {
     res.status(500).json({ erro: err.message });
   }
 };
+
+exports.criarComProcedimentos = async (req, res) => {
+  try {
+    const { inicio, fim, pacienteId, dentistaId, status, valorPrevisto, observacoes, procedimentos } = req.body;
+
+    const evento = await Evento.create({ inicio, fim, pacienteId, dentistaId, status, valorPrevisto, observacoes });
+
+    if (procedimentos && procedimentos.length > 0) {
+      await evento.addProcedimentos(procedimentos); // procedimentos = array de IDs
+    }
+
+    res.status(201).json(evento);
+  } catch (err) {
+    res.status(500).json({ erro: err.errors ? err.errors.map(e => e.message) : err.message });
+  }
+};

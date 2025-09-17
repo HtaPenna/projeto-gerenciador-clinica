@@ -16,8 +16,8 @@ Dentista.hasMany(Evento, { foreignKey: 'dentistaId', onDelete: 'CASCADE', onUpda
 Evento.belongsTo(Dentista, { foreignKey: 'dentistaId', onDelete: 'CASCADE', onUpdate: 'CASCADE' });
 
 // Associações Evento ↔ Procedimento (N:N)
-Evento.belongsToMany(Procedimento, { through: 'eventosEprocedimentos', foreignKey: 'eventoId', otherKey: 'procedimentoId' });
-Procedimento.belongsToMany(Evento, { through: 'eventosEprocedimentos', foreignKey: 'procedimentoId', otherKey: 'eventoId' });
+Evento.belongsToMany(Procedimento, { through: 'eventoseprocedimentos', foreignKey: 'eventoId', otherKey: 'procedimentoId' });
+Procedimento.belongsToMany(Evento, { through: 'eventoseprocedimentos', foreignKey: 'procedimentoId', otherKey: 'eventoId' });
 
 // Associações Categoria ↔ Procedimento (1:N)
 Categoria.hasMany(Procedimento, { foreignKey: 'categoriaId', onDelete: 'SET NULL', onUpdate: 'CASCADE' });
