@@ -1,3 +1,4 @@
+// models/dentista.js
 module.exports = (sequelize, DataTypes) => {
   return sequelize.define('Dentista', {
     id: {
@@ -26,8 +27,7 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.TEXT, // pode armazenar base64 ou URL
       allowNull: true,
     },
-  },{
-    tableName: 'dentistas',  // força o nome exato da tabela
-    timestamps: false         // desativa createdAt/updatedAt se não tiver na tabela
+  }, {
+    tableName: 'dentistas',
   });
 };
