@@ -32,7 +32,7 @@ exports.atualizar = async (req, res) => {
 
 exports.deletar = async (req, res) => {
   try {
-    const deleted = await Paciente.destroy({ where: { Codigo_Pac: req.params.id } });
+    const deleted = await Paciente.destroy({ where: { id: req.params.id } });
     if (deleted) {
       res.json({ mensagem: "Paciente removido com sucesso" });
     } else {

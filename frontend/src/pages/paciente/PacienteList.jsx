@@ -7,7 +7,7 @@ export default function PacientesList({ pacientes, onEditar, onDeletar }) {
     <table border="1" cellPadding="5" cellSpacing="0">
       <thead>
         <tr>
-          <th>ID</th>
+          <th>Código</th>
           <th>Nome</th>
           <th>Telefone</th>
           <th>Ações</th>
@@ -15,13 +15,13 @@ export default function PacientesList({ pacientes, onEditar, onDeletar }) {
       </thead>
       <tbody>
         {pacientes.map(p => (
-          <tr key={p.Codigo_Pac}>
-            <td>{p.Codigo_Pac}</td>
-            <td>{p.Nome_Pac}</td>
-            <td>{p.Tel_Pac}</td>
+          <tr key={p.id}>
+            <td>{p.id}</td>
+            <td>{p.nome}</td>
+            <td>{p.telefoneCelular}</td>
             <td>
               <button onClick={() => onEditar(p)}>Editar</button>{" "}
-              <button onClick={() => onDeletar(p.Codigo_Pac)}>Excluir</button>
+              <button onClick={() => onDeletar(p.id)}>Excluir</button>
             </td>
           </tr>
         ))}

@@ -1,90 +1,89 @@
 import React, { useState, useEffect } from "react";
 
-const sexoOptions = ["Masculino", "Feminino", "Outro"];
+const generoOptions = ["Masculino", "Feminino", "Outro"];
 
 export default function PacienteForm({ paciente, onSalvar, onCancelar }) {
   const [formData, setFormData] = useState({
-    Codigo_Pac: null,  // Adicionado aqui
-    Nome_Pac: "",
-    Tel_Pac: "",
-    DataNasc_Pac: "",
-    TelResid_Pac: "",
-    Idade_Pac: "",
-    Peso_Pac: "",
-    Altura_Pac: "",
-    TipoSang_Pac: "",
-    Profissao_Pac: "",
-    CPF_Pac: "",
-    RG_Pac: "",
-    Endereco_Pac: "",
-    Cidade_Pac: "",
-    Estado_Pac: "",
-    CEP_Pac: "",
-    Email_Pac: "",
-    Sexo_Pac: "",
-    EstCivil_Pac: "",
-    NomeConjuge_Pac: "",
-    TelEmergencia_Pac: "",
-    RedesSociais_Pac: "",
-    Assinatura_Pac: "",
-    });
+    id: null,
+    nome: "",
+    telefoneCelular: "",
+    dataNascimento: "",
+    telefoneResidencial: "",
+    idade: "",
+    peso: "",
+    altura: "",
+    tipoSanguineo: "",
+    profissao: "",
+    cpf: "",
+    rg: "",
+    endereco: "",
+    cidade: "",
+    estado: "",
+    cep: "",
+    email: "",
+    genero: "",
+    estadoCivil: "",
+    nomeConjuge: "",
+    telefoneEmergencia: "",
+    redesSociais: "",
+    assinatura: "",
+  });
 
-useEffect(() => {
-  if (paciente) {
-    setFormData({
-      Codigo_Pac: paciente.Codigo_Pac || null,  // Adicionado aqui
-      Nome_Pac: paciente.Nome_Pac || "",
-      Tel_Pac: paciente.Tel_Pac || "",
-      DataNasc_Pac: paciente.DataNasc_Pac ? paciente.DataNasc_Pac.split("T")[0] : "",
-      TelResid_Pac: paciente.TelResid_Pac || "",
-      Idade_Pac: paciente.Idade_Pac || "",
-      Peso_Pac: paciente.Peso_Pac || "",
-      Altura_Pac: paciente.Altura_Pac || "",
-      TipoSang_Pac: paciente.TipoSang_Pac || "",
-      Profissao_Pac: paciente.Profissao_Pac || "",
-      CPF_Pac: paciente.CPF_Pac || "",
-      RG_Pac: paciente.RG_Pac || "",
-      Endereco_Pac: paciente.Endereco_Pac || "",
-      Cidade_Pac: paciente.Cidade_Pac || "",
-      Estado_Pac: paciente.Estado_Pac || "",
-      CEP_Pac: paciente.CEP_Pac || "",
-      Email_Pac: paciente.Email_Pac || "",
-      Sexo_Pac: paciente.Sexo_Pac || "",
-      EstCivil_Pac: paciente.EstCivil_Pac || "",
-      NomeConjuge_Pac: paciente.NomeConjuge_Pac || "",
-      TelEmergencia_Pac: paciente.TelEmergencia_Pac || "",
-      RedesSociais_Pac: paciente.RedesSociais_Pac || "",
-      Assinatura_Pac: paciente.Assinatura_Pac || "",
-    });
-  } else {
-    setFormData({
-      Codigo_Pac: null,  // Adicionado aqui
-      Nome_Pac: "",
-      Tel_Pac: "",
-      DataNasc_Pac: "",
-      TelResid_Pac: "",
-      Idade_Pac: "",
-      Peso_Pac: "",
-      Altura_Pac: "",
-      TipoSang_Pac: "",
-      Profissao_Pac: "",
-      CPF_Pac: "",
-      RG_Pac: "",
-      Endereco_Pac: "",
-      Cidade_Pac: "",
-      Estado_Pac: "",
-      CEP_Pac: "",
-      Email_Pac: "",
-      Sexo_Pac: "",
-      EstCivil_Pac: "",
-      NomeConjuge_Pac: "",
-      TelEmergencia_Pac: "",
-      RedesSociais_Pac: "",
-      Assinatura_Pac: "",
-    });
-  }
-}, [paciente]);
-
+  useEffect(() => {
+    if (paciente) {
+      setFormData({
+        id: paciente.id || null,
+        nome: paciente.nome || "",
+        telefoneCelular: paciente.telefoneCelular || "",
+        dataNascimento: paciente.dataNascimento ? paciente.dataNascimento.split("T")[0] : "",
+        telefoneResidencial: paciente.telefoneResidencial || "",
+        idade: paciente.idade || "",
+        peso: paciente.peso || "",
+        altura: paciente.altura || "",
+        tipoSanguineo: paciente.tipoSanguineo || "",
+        profissao: paciente.profissao || "",
+        cpf: paciente.cpf || "",
+        rg: paciente.rg || "",
+        endereco: paciente.endereco || "",
+        cidade: paciente.cidade || "",
+        estado: paciente.estado || "",
+        cep: paciente.cep || "",
+        email: paciente.email || "",
+        genero: paciente.genero || "",
+        estadoCivil: paciente.estadoCivil || "",
+        nomeConjuge: paciente.nomeConjuge || "",
+        telefoneEmergencia: paciente.telefoneEmergencia || "",
+        redesSociais: paciente.redesSociais || "",
+        assinatura: paciente.assinatura || "",
+      });
+    } else {
+      setFormData({
+        id: null,
+        nome: "",
+        telefoneCelular: "",
+        dataNascimento: "",
+        telefoneResidencial: "",
+        idade: "",
+        peso: "",
+        altura: "",
+        tipoSanguineo: "",
+        profissao: "",
+        cpf: "",
+        rg: "",
+        endereco: "",
+        cidade: "",
+        estado: "",
+        cep: "",
+        email: "",
+        genero: "",
+        estadoCivil: "",
+        nomeConjuge: "",
+        telefoneEmergencia: "",
+        redesSociais: "",
+        assinatura: "",
+      });
+    }
+  }, [paciente]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -93,171 +92,174 @@ useEffect(() => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    
-    // Validação (mesmo que já tenha)
+
     if (
-        !formData.Nome_Pac ||
-        !formData.Tel_Pac ||
-        !formData.DataNasc_Pac ||
-        !formData.Idade_Pac ||
-        !formData.CPF_Pac ||
-        !formData.RG_Pac ||
-        !formData.Endereco_Pac ||
-        !formData.Cidade_Pac ||
-        !formData.Estado_Pac ||
-        !formData.CEP_Pac ||
-        !formData.Email_Pac ||
-        !formData.Sexo_Pac
+      !formData.nome ||
+      !formData.telefoneCelular ||
+      !formData.dataNascimento ||
+      !formData.idade ||
+      !formData.cpf ||
+      !formData.rg ||
+      !formData.endereco ||
+      !formData.cidade ||
+      !formData.estado ||
+      !formData.cep ||
+      !formData.email ||
+      !formData.genero
     ) {
-        alert("Por favor, preencha todos os campos obrigatórios.");
-        return;
+      alert("Por favor, preencha todos os campos obrigatórios.");
+      return;
     }
 
-        console.log("Paciente enviado pelo formulário:", formData);
-        onSalvar(formData);
-};
-
+    console.log("Paciente enviado pelo formulário:", formData);
+    onSalvar(formData);
+  };
 
   return (
     <form onSubmit={handleSubmit}>
       <h2>{paciente ? "Editar Paciente" : "Novo Paciente"}</h2>
 
-      <div class="formGroup">
+      <div className="formGroup">
         <label>Nome</label>
-        <input name="Nome_Pac" value={formData.Nome_Pac} onChange={handleChange} required />
+        <input name="nome" value={formData.nome} onChange={handleChange} required />
       </div>
 
-      <div class="formGroup">
-        <label>Telefone</label>
-        <input name="Tel_Pac" value={formData.Tel_Pac} onChange={handleChange} required />
+      <div className="formGroup">
+        <label>Telefone Celular</label>
+        <input name="telefoneCelular" value={formData.telefoneCelular} onChange={handleChange} required />
       </div>
 
-      <div class="formGroup">
+      <div className="formGroup">
         <label>Data de Nascimento</label>
         <input
           type="date"
-          name="DataNasc_Pac"
-          value={formData.DataNasc_Pac}
+          name="dataNascimento"
+          value={formData.dataNascimento}
           onChange={handleChange}
           required
         />
       </div>
 
-      <div class="formGroup">
+      <div className="formGroup">
         <label>Telefone Residencial</label>
-        <input name="TelResid_Pac" value={formData.TelResid_Pac} onChange={handleChange} />
+        <input name="telefoneResidencial" value={formData.telefoneResidencial} onChange={handleChange} />
       </div>
 
-      <div class="formGroup">
+      <div className="formGroup">
         <label>Idade</label>
         <input
           type="number"
-          name="Idade_Pac"
-          value={formData.Idade_Pac}
+          name="idade"
+          value={formData.idade}
           onChange={handleChange}
           required
           min={0}
         />
       </div>
 
-      <div class="formGroup">
+      <div className="formGroup">
         <label>Peso</label>
-        <input name="Peso_Pac" value={formData.Peso_Pac} onChange={handleChange} />
+        <input name="peso" value={formData.peso} onChange={handleChange} />
       </div>
 
-      <div class="formGroup">
+      <div className="formGroup">
         <label>Altura</label>
-        <input name="Altura_Pac" value={formData.Altura_Pac} onChange={handleChange} />
+        <input name="altura" value={formData.altura} onChange={handleChange} />
       </div>
 
-      <div class="formGroup">
+      <div className="formGroup">
         <label>Tipo Sanguíneo</label>
-        <input name="TipoSang_Pac" value={formData.TipoSang_Pac} onChange={handleChange} />
+        <input name="tipoSanguineo" value={formData.tipoSanguineo} onChange={handleChange} />
       </div>
 
-      <div class="formGroup">
+      <div className="formGroup">
         <label>Profissão</label>
-        <input name="Profissao_Pac" value={formData.Profissao_Pac} onChange={handleChange} />
+        <input name="profissao" value={formData.profissao} onChange={handleChange} />
       </div>
 
-      <div class="formGroup">
+      <div className="formGroup">
         <label>CPF</label>
-        <input name="CPF_Pac" value={formData.CPF_Pac} onChange={handleChange} required />
+        <input name="cpf" value={formData.cpf} onChange={handleChange} required />
       </div>
-      
-      <div class="formGroup">
+
+      <div className="formGroup">
         <label>RG</label>
-        <input name="RG_Pac" value={formData.RG_Pac} onChange={handleChange} required />
+        <input name="rg" value={formData.rg} onChange={handleChange} required />
       </div>
 
-      <div class="formGroup">
+      <div className="formGroup">
         <label>Endereço</label>
-        <input name="Endereco_Pac" value={formData.Endereco_Pac} onChange={handleChange} required />
+        <input name="endereco" value={formData.endereco} onChange={handleChange} required />
       </div>
 
-      <div class="formGroup">
+      <div className="formGroup">
         <label>Cidade</label>
-        <input name="Cidade_Pac" value={formData.Cidade_Pac} onChange={handleChange} required />
+        <input name="cidade" value={formData.cidade} onChange={handleChange} required />
       </div>
 
-      <div class="formGroup">
+      <div className="formGroup">
         <label>Estado</label>
-        <input name="Estado_Pac" value={formData.Estado_Pac} onChange={handleChange} required />
+        <input name="estado" value={formData.estado} onChange={handleChange} required />
       </div>
 
-      <div class="formGroup">
+      <div className="formGroup">
         <label>CEP</label>
-        <input name="CEP_Pac" value={formData.CEP_Pac} onChange={handleChange} required />
+        <input name="cep" value={formData.cep} onChange={handleChange} required />
       </div>
 
-      <div class="formGroup">
+      <div className="formGroup">
         <label>Email</label>
-        <input type="email" name="Email_Pac" value={formData.Email_Pac} onChange={handleChange} required />
+        <input type="email" name="email" value={formData.email} onChange={handleChange} required />
       </div>
 
-      <div class="formGroup">
-        <label>Sexo</label>
-        <select name="Sexo_Pac" value={formData.Sexo_Pac} onChange={handleChange} required>
+      <div className="formGroup">
+        <label>Gênero</label>
+        <select name="genero" value={formData.genero} onChange={handleChange} required>
           <option value="">--Selecione--</option>
-          {sexoOptions.map((s) => (
-            <option key={s} value={s}>
-              {s}
+          {generoOptions.map((g) => (
+            <option key={g} value={g}>
+              {g}
             </option>
           ))}
         </select>
       </div>
 
-      <div class="formGroup">
+      <div className="formGroup">
         <label>Estado Civil</label>
-        <input name="EstCivil_Pac" value={formData.EstCivil_Pac} onChange={handleChange} />
+        <input name="estadoCivil" value={formData.estadoCivil} onChange={handleChange} />
       </div>
 
-      <div class="formGroup">
+      <div className="formGroup">
         <label>Nome do Cônjuge</label>
-        <input name="NomeConjuge_Pac" value={formData.NomeConjuge_Pac} onChange={handleChange} />
+        <input name="nomeConjuge" value={formData.nomeConjuge} onChange={handleChange} />
       </div>
 
-      <div class="formGroup">
+      <div className="formGroup">
         <label>Telefone Emergência</label>
-        <input name="TelEmergencia_Pac" value={formData.TelEmergencia_Pac} onChange={handleChange} />
+        <input name="telefoneEmergencia" value={formData.telefoneEmergencia} onChange={handleChange} />
       </div>
 
-      <div class="formGroup">
+      <div className="formGroup">
         <label>Redes Sociais</label>
-        <input name="RedesSociais_Pac" value={formData.RedesSociais_Pac} onChange={handleChange} />
+        <input name="redesSociais" value={formData.redesSociais} onChange={handleChange} />
       </div>
 
-      <div class="formGroup">
+      <div className="formGroup">
         <label>Assinatura</label>
-        <textarea name="Assinatura_Pac" value={formData.Assinatura_Pac} onChange={handleChange} />
+        <textarea name="assinatura" value={formData.assinatura} onChange={handleChange} />
       </div>
 
-      <button type="submit">{paciente ? "Atualizar" : "Criar"}</button>
-      {paciente && (
-        <button type="button" onClick={onCancelar} style={{ marginLeft: "10px" }}>
+      <div style={{ marginTop: "10px" }}>
+        <button type="submit">{paciente ? "Atualizar" : "Salvar"}</button>
+        <button
+          type="button"
+          onClick={onCancelar}
+          style={{ marginLeft: "10px" }}
+        >
           Cancelar
         </button>
-      )}
+      </div>
+
     </form>
   );
 }
