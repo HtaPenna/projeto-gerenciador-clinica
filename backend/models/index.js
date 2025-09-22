@@ -7,6 +7,9 @@ const Evento = require('./evento')(sequelize, DataTypes);
 const Procedimento = require('./procedimento')(sequelize, DataTypes);
 const Categoria = require('./categoria')(sequelize, DataTypes);
 const Tratamento = require('./tratamento')(sequelize, DataTypes);
+const PacientesEtratamentos = require('./pacientesetratamentos')(sequelize, DataTypes);
+const EventosEprocedimentos = require('./eventoseprocedimentos')(sequelize, DataTypes);
+const TratamentosEprocedimentos = require('./tratamentoseprocedimentos')(sequelize, DataTypes);
 
 // Associações Paciente ↔ Evento (1:N)
 Paciente.hasMany(Evento, { foreignKey: 'pacienteId', onDelete: 'CASCADE', onUpdate: 'CASCADE' });
@@ -24,6 +27,14 @@ Procedimento.belongsToMany(Evento, { through: 'eventoseprocedimentos', foreignKe
 Categoria.hasMany(Procedimento, { foreignKey: 'categoriaId', onDelete: 'SET NULL', onUpdate: 'CASCADE' });
 Procedimento.belongsTo(Categoria, { foreignKey: 'categoriaId', onDelete: 'SET NULL', onUpdate: 'CASCADE' });
 
+// Associações Tratamento ↔ Paciente (N:N)
+Paciente.belongsToMany(Tratamento, { through: 'pacientesetratamentos', foreignKey: 'pacienteId', otherKey: 'tratamentoId'});
+Tratamento.belongsToMany(Paciente, { through: 'pacientesetratamentos', foreignKey: 'tratamentoId', otherKey: 'pacienteId'});
+
+// Associações Tratamento ↔ Procedimento (N:N)
+Procedimento.belongsToMany(Tratamento, { through: 'tratamentoseprocedimentos', foreignKey: 'procedimentoId', otherKey: 'tratamentoId'});
+Tratamento.belongsToMany(Procedimento, { through: 'tratamentoseprocedimentos', foreignKey: 'tratamentoId', otherKey: 'procedimentoId'});
+
 module.exports = {
   sequelize,
   Paciente,
@@ -32,4 +43,7 @@ module.exports = {
   Procedimento,
   Categoria,
   Tratamento,
+  PacientesEtratamentos,
+  EventosEprocedimentos,
+  TratamentosEprocedimentos
 };

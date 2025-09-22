@@ -14,7 +14,7 @@ module.exports = (sequelize, DataTypes) => {
       allowNull: true,
     },
     status: {
-      type: DataTypes.ENUM('ativo', 'concluido', 'cancelado'),
+      type: DataTypes.ENUM('ativo', 'inativo'),
       allowNull: false,
       defaultValue: 'ativo',
     },
@@ -22,5 +22,12 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.TEXT,
       allowNull: true,
     },
-  },);
+    valorPrevisto: {
+      type: DataTypes.DECIMAL(10, 2),
+      allowNull: true,
+      defaultValue: 0.00,
+    },
+  }, {
+    tableName: 'tratamentos', 
+  });
 };

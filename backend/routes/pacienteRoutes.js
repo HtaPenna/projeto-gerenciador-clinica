@@ -7,4 +7,11 @@ router.post("/", pacienteController.criar);           // POST /pacientes
 router.patch("/:id", pacienteController.atualizar);   // PATCH /pacientes/:id
 router.delete("/:id", pacienteController.deletar);    // DELETE /pacientes/:id
 
+// Associações Paciente ↔ Tratamentos
+router.get('/:id/tratamentos', pacienteController.getTratamentos);        // Listar
+router.post('/:id/tratamentos', pacienteController.addTratamento);        // Associar
+router.post('/:id/tratamentos/novo', pacienteController.createTratamento); // Criar + Associar
+router.put('/:id/tratamentos', pacienteController.updateTratamento);      // Editar associação
+router.delete('/:id/tratamentos', pacienteController.removeTratamento);   // Remover
+
 module.exports = router;
