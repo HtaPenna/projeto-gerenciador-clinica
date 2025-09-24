@@ -1,3 +1,4 @@
+// models/evento.js
 module.exports = (sequelize, DataTypes) => {
   return sequelize.define('Evento', {
     id: {
@@ -15,7 +16,7 @@ module.exports = (sequelize, DataTypes) => {
     },
     pacienteId: {
       type: DataTypes.INTEGER,
-      allowNull: true,
+      allowNull: false,
       references: {
         model: 'pacientes',
         key: 'id',
