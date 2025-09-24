@@ -12,8 +12,9 @@ const EventosEprocedimentos = require('./eventoseprocedimentos')(sequelize, Data
 const TratamentosEprocedimentos = require('./tratamentoseprocedimentos')(sequelize, DataTypes);
 
 // Associações Paciente ↔ Evento (1:N)
-Paciente.hasMany(Evento, { foreignKey: 'pacienteId', onDelete: 'CASCADE', onUpdate: 'CASCADE' });
-Evento.belongsTo(Paciente, { foreignKey: 'pacienteId', onDelete: 'CASCADE', onUpdate: 'CASCADE' });
+Evento.belongsTo(Paciente, { foreignKey: 'pacienteId', as: 'paciente' });
+Paciente.hasMany(Evento, { foreignKey: 'pacienteId' });
+
 
 // Associações Dentista ↔ Evento (1:N)
 Dentista.hasMany(Evento, { foreignKey: 'dentistaId', onDelete: 'CASCADE', onUpdate: 'CASCADE' });

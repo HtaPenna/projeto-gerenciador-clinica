@@ -1,11 +1,21 @@
-const { Evento, Procedimento, EventosEprocedimentos } = require('../models');
+const { Evento, Procedimento, Paciente, EventosEprocedimentos } = require('../models');
 
 exports.getTodos = async (req, res) => {
   try {
-    const eventos = await Evento.findAll();
+    const eventos = await Evento.findAll({
+      include: [
+        {
+          model: Paciente,
+          as: 'paciente',
+          attributes: ['id', 'nome'],
+        },
+      ],
+      order: [['inicio', 'ASC']],
+    });
     res.json(eventos);
   } catch (err) {
-    res.status(500).json({ erro: err.message });
+    console.error(err);
+    res.status(500).json({ error: 'Erro ao buscar eventos' });
   }
 };
 
