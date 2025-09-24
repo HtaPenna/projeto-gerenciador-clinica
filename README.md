@@ -52,7 +52,7 @@ O frontend faz requisições ao backend no endereço http://localhost:3001
 - Atualização em Pacientes: a lista de pacientes existentes é a tela principal da aba de Pacientes;
 - Atualização: navbar no topo, para sobrepor a agenda;
 - Criação: do modal para configurações da agenda (dentista consegue selecionar horário de início e fim do expediente);
-- Atualização em Agendamento: é possivel selecionar o dentista, e a agenda mostra os eventos associados a ele;
+- Atualização em Agendamento: é possivel selecionar o dentista, e a agenda mostra os eventos associados a ele, os eventos criados na agenda também são salvos associados ao dentista selecionado;
 - Atualização em Agendamento: os eventos podem ser criados como 'bloqueados' para os horários indisponíveis naagenda do dentista ou como consultas com status 'confirmada' ou 'pendente';
 - Atualização em Agendamento: na criação de uma consulta pode selecionar o paciente a ser atendido, pois mostra a lista de pacientes cadastrados conforme é digitado o nome;
-- Atualização em Agendamento: a consulta é salva e apresentada com o nome do paciente como título dela.
+- Atualização em Agendamento: a consulta é salva e apresentada com o nome do paciente como título.
