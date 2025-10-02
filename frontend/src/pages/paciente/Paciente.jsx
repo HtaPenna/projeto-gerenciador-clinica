@@ -1,19 +1,20 @@
 import React, { useState, useEffect } from "react";
 import PacientesList from "./PacienteList.jsx";
 import PacienteForm from "./PacienteForm.jsx";
-import './Paciente.css';
+import "./Paciente.css";
 
 const API_URL = "http://localhost:3001/pacientes";
 
 export default function Paciente() {
   const [pacientes, setPacientes] = useState([]);
   const [pacienteEditando, setPacienteEditando] = useState(null);
+  const [mostrarForm, setMostrarForm] = useState(false);
 
   // Carrega pacientes (GET)
   const carregarPacientes = () => {
     fetch(API_URL)
-      .then(res => res.json())
-      .then(data => setPacientes(data))
+      .then((res) => res.json())
+      .then((data) => setPacientes(data))
       .catch(console.error);
   };
 
@@ -26,10 +27,11 @@ export default function Paciente() {
     fetch(API_URL, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(paciente)
+      body: JSON.stringify(paciente),
     })
       .then(() => {
         carregarPacientes();
+        setMostrarForm(false); // fecha o form
       })
       .catch(console.error);
   };
@@ -39,11 +41,12 @@ export default function Paciente() {
     fetch(`${API_URL}/${id}`, {
       method: "PATCH",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(paciente)
+      body: JSON.stringify(paciente),
     })
       .then(() => {
         setPacienteEditando(null);
         carregarPacientes();
+        setMostrarForm(false); // fecha o form
       })
       .catch(console.error);
   };
@@ -51,31 +54,55 @@ export default function Paciente() {
   // Deletar paciente (DELETE)
   const deletarPaciente = (id) => {
     fetch(`${API_URL}/${id}`, {
-      method: "DELETE"
+      method: "DELETE",
     })
       .then(() => carregarPacientes())
       .catch(console.error);
   };
 
+  // Se estiver mostrando o form, renderiza só ele
+  if (mostrarForm || pacienteEditando) {
+    return (
+      <div>
+        <h1>{pacienteEditando ? "Editar Paciente" : "Novo Paciente"}</h1>
+        <PacienteForm
+          paciente={pacienteEditando}
+          onSalvar={(paciente) => {
+            if (paciente.id) {
+              atualizarPaciente(paciente.id, paciente);
+            } else {
+              criarPaciente(paciente);
+            }
+          }}
+          onCancelar={() => {
+            setPacienteEditando(null);
+            setMostrarForm(false);
+          }}
+        />
+      </div>
+    );
+  }
+
+  // Caso contrário, mostra só a lista com botão "Novo"
   return (
     <div>
-      <h1 id="tituloPagina">Gerenciamento de Pacientes</h1>
-
-      <PacienteForm
-        paciente={pacienteEditando}
-        onSalvar={(paciente) => {
-          if (paciente.Codigo_Pac) {
-            atualizarPaciente(paciente.Codigo_Pac, paciente);
-          } else {
-            criarPaciente(paciente);
-          }
+      <h1>Pacientes</h1>
+      <button
+        onClick={() => {
+          setPacienteEditando(null);
+          setMostrarForm(true);
         }}
-        onCancelar={() => setPacienteEditando(null)}
-      />
+        className="mb-4 px-4 py-2 bg-blue-600 text-white rounded"
+      >
+        Novo Paciente
+      </button>
 
       <PacientesList
         pacientes={pacientes}
-        onEditar={(paciente) => setPacienteEditando(paciente)}
+        onEditar={(paciente) => {
+          setPacienteEditando(paciente);
+          setMostrarForm(true);
+        }}
         onDeletar={deletarPaciente}
       />
     </div>
