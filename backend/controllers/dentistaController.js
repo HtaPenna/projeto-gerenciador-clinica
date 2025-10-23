@@ -1,4 +1,5 @@
-const { Dentista } = require('../models');
+const { Usuario, Dentista, sequelize} = require('../models');
+const bcrypt = require('bcryptjs');
 
 exports.getTodos = async (req, res) => {
   try {
@@ -10,11 +11,26 @@ exports.getTodos = async (req, res) => {
 };
 
 exports.criar = async (req, res) => {
+  const t = await sequelize.transaction(); 
   try {
-    const novoDentista = await Dentista.create(req.body);
-    res.status(201).json(novoDentista);
+    const { email, senha, nome, cro, enderecoConsultorio, telefoneConsultorio } = req.body;
+
+    const senhaHash = await bcrypt.hash(senha, 10);
+    const usuario = await Usuario.create(
+      { email, senha: senhaHash, tipo: 'dentista' },
+      { transaction: t }
+    );
+
+    const dentista = await Dentista.create(
+      { userId: usuario.id, nome, cro, enderecoConsultorio, telefoneConsultorio },
+      { transaction: t }
+    );
+
+    await t.commit(); 
+    res.status(201).json({ usuario, dentista });
   } catch (err) {
-    res.status(500).json({ erro: err.message });
+    await t.rollback();
+    res.status(400).json({ erro: err.message });
   }
 };
 

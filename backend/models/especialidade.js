@@ -1,5 +1,5 @@
 module.exports = (sequelize, DataTypes) => {
-  return sequelize.define('Categoria', {
+  return sequelize.define('Especialidade', {
     id: {
       type: DataTypes.INTEGER,
       primaryKey: true,
@@ -10,6 +10,6 @@ module.exports = (sequelize, DataTypes) => {
       allowNull: false,
     },
   }, {
-    tableName: 'categorias',
+    tableName: 'especialidade',
   });
 };

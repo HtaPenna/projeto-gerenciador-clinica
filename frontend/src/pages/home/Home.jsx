@@ -9,7 +9,7 @@ function Home() {
       <div id="menu">
         <div id="logo">Logo</div>
         <div id="nav">
-          <button onClick={() => navigate('/main')}>Entrar</button>
+          <button onClick={() => navigate('/login')}>Entrar</button>
         </div>
       </div>
       <div className="homeContent">
