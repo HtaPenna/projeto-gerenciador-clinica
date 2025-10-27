@@ -2,7 +2,7 @@ const express = require("express");
 const cors = require("cors");
 const sequelize = require("./database"); // Importa a conexão com o banco de dados
 const { DataTypes } = require("sequelize");
-const { Paciente, Evento, Dentista, Procedimento, Especialidade, Tratamento, Anamnese } = require('./models');
+const { Paciente, Evento, Dentista, Procedimento, Especialidade, Tratamento, Anamnese, Suprimento } = require('./models');
 
 const app = express();
 app.use(cors());               // Permite requisições de outros domínios (ex: React)
@@ -31,6 +31,9 @@ app.use("/usuarios", usuarioRoutes);
 
 const anamneseRoutes = require("./routes/anamneseRoutes");
 app.use("/anamnese", anamneseRoutes);
+
+const suprimentoRoutes = require("./routes/suprimentoRoutes");
+app.use("/suprimento", suprimentoRoutes);
 
 const PORT = 3001;
 
