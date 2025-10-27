@@ -10,9 +10,5 @@ router.delete("/:id", tratamentoController.deletar);     // DELETE /tratamentos/
 
 // Rotas para gerenciar procedimentos de um tratamento
 router.get("/:id/procedimentos", tratamentoController.getProcedimentos);       // GET /tratamentos/:id/procedimentos
-router.post("/:id/procedimentos", tratamentoController.addProcedimento);       // POST /tratamentos/:id/procedimentos
-router.patch("/:id/procedimentos", tratamentoController.updateProcedimento);   // PATCH /tratamentos/:id/procedimentos
-router.delete("/:id/procedimentos", tratamentoController.removeProcedimento);  // DELETE /tratamentos/:id/procedimentos
-router.post("/com-procedimentos", tratamentoController.criarComProcedimentos);
 
 module.exports = router;

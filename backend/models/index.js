@@ -1,50 +1,54 @@
 const sequelize = require('../database');
 const { DataTypes } = require('sequelize');
 
+const Usuario = require('./usuario')(sequelize, DataTypes);
 const Paciente = require('./paciente')(sequelize, DataTypes);
+const Anamnese = require('./anamnese')(sequelize, DataTypes);
 const Dentista = require('./dentista')(sequelize, DataTypes);
+const Especialidade = require('./especialidade')(sequelize, DataTypes);
 const Evento = require('./evento')(sequelize, DataTypes);
 const Procedimento = require('./procedimento')(sequelize, DataTypes);
-const Categoria = require('./categoria')(sequelize, DataTypes);
 const Tratamento = require('./tratamento')(sequelize, DataTypes);
-const PacientesEtratamentos = require('./pacientesetratamentos')(sequelize, DataTypes);
-const EventosEprocedimentos = require('./eventoseprocedimentos')(sequelize, DataTypes);
-const TratamentosEprocedimentos = require('./tratamentoseprocedimentos')(sequelize, DataTypes);
 
-// Associações Paciente ↔ Evento (1:N)
-Evento.belongsTo(Paciente, { foreignKey: 'pacienteId', as: 'paciente' });
-Paciente.hasMany(Evento, { foreignKey: 'pacienteId' });
+// Associações Usuário ↔ Dentista/Paciente (1:1)
+Dentista.belongsTo(Usuario, { foreignKey: 'userId', as: 'usuario' });
+Paciente.belongsTo(Usuario, { foreignKey: 'userId', as: 'usuario' });
 
+// Associações Paciente ↔ Anamnese (1:1)
+Anamnese.belongsTo(Paciente, { foreignKey: 'pacienteId', as: 'paciente' });
 
 // Associações Dentista ↔ Evento (1:N)
 Dentista.hasMany(Evento, { foreignKey: 'dentistaId', onDelete: 'CASCADE', onUpdate: 'CASCADE' });
 Evento.belongsTo(Dentista, { foreignKey: 'dentistaId', onDelete: 'CASCADE', onUpdate: 'CASCADE' });
 
-// Associações Evento ↔ Procedimento (N:N)
-Evento.belongsToMany(Procedimento, { through: 'eventoseprocedimentos', foreignKey: 'eventoId', otherKey: 'procedimentoId' });
-Procedimento.belongsToMany(Evento, { through: 'eventoseprocedimentos', foreignKey: 'procedimentoId', otherKey: 'eventoId' });
+// Associações Paciente ↔ Evento (1:N)
+Paciente.hasMany(Evento, { foreignKey: 'pacienteId', as: 'consulta' });
+Evento.belongsTo(Paciente, { foreignKey: 'pacienteId', as: 'paciente' });
 
-// Associações Categoria ↔ Procedimento (1:N)
-Categoria.hasMany(Procedimento, { foreignKey: 'categoriaId', onDelete: 'SET NULL', onUpdate: 'CASCADE' });
-Procedimento.belongsTo(Categoria, { foreignKey: 'categoriaId', onDelete: 'SET NULL', onUpdate: 'CASCADE' });
+// Associações Evento ↔ Procedimentos (1:N)
+Evento.hasMany(Procedimento, { foreignKey: 'eventoId', as: 'procedimento' });
+Procedimento.belongsTo(Evento, { foreignKey: 'eventoId', as: 'consulta' });
 
-// Associações Tratamento ↔ Paciente (N:N)
-Paciente.belongsToMany(Tratamento, { through: 'pacientesetratamentos', foreignKey: 'pacienteId', otherKey: 'tratamentoId'});
-Tratamento.belongsToMany(Paciente, { through: 'pacientesetratamentos', foreignKey: 'tratamentoId', otherKey: 'pacienteId'});
+// Associações Tratamento ↔ Procedimentos (1:N)
+Tratamento.hasMany(Procedimento, { foreignKey: 'tratamentoId', as: 'procedimento' });
+Procedimento.belongsTo(Tratamento, { foreignKey: 'tratamentoId', as: 'tratamento' });
 
-// Associações Tratamento ↔ Procedimento (N:N)
-Procedimento.belongsToMany(Tratamento, { through: 'tratamentoseprocedimentos', foreignKey: 'procedimentoId', otherKey: 'tratamentoId'});
-Tratamento.belongsToMany(Procedimento, { through: 'tratamentoseprocedimentos', foreignKey: 'tratamentoId', otherKey: 'procedimentoId'});
+// Associações Paciente ↔ Tratamento (1:N)
+Paciente.hasMany(Tratamento, { foreignKey: 'pacienteId', as: 'tratamento' });
+Tratamento.belongsTo(Paciente, { foreignKey: 'pacienteId', as: 'paciente' });
+
+// Associações Dentista ↔ Especialidade (N:N)
+Dentista.belongsToMany(Especialidade, { through: 'dentista_especialidade' });
+Especialidade.belongsToMany(Dentista, { through: 'dentista_especialidade' });
 
 module.exports = {
   sequelize,
+  Usuario,
   Paciente,
+  Anamnese,
   Dentista,
+  Especialidade,
   Evento,
   Procedimento,
-  Categoria,
   Tratamento,
-  PacientesEtratamentos,
-  EventosEprocedimentos,
-  TratamentosEprocedimentos
 };

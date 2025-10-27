@@ -1,9 +1,33 @@
 module.exports = (sequelize, DataTypes) => {
-  return sequelize.define('Procedimento', {
+  const Procedimento = sequelize.define('Procedimento', {
     id: {
       type: DataTypes.INTEGER,
       primaryKey: true,
       autoIncrement: true,
+    },
+    tratamentoId: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      references: {
+        model: 'tratamento',
+        key: 'id',
+      },
+    },
+    eventoId: {
+      type: DataTypes.INTEGER,
+      allowNull: true,
+      references: {
+        model: 'evento',
+        key: 'id',
+      },
+    },
+    tratamentoId: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      references: {
+        model: 'dentista',
+        key: 'id',
+      },
     },
     nome: {
       type: DataTypes.STRING(100),
@@ -13,58 +37,42 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.TEXT,
       allowNull: true,
     },
-    codigoTuss: {
-      type: DataTypes.STRING(20),
-      allowNull: true,
-    },
-    categoriaId: {
-      type: DataTypes.INTEGER,
-      allowNull: false,
-      references: {
-        model: 'categorias',
-        key: 'id',
-      },
-    },
-    duracaoMinutos: {
-      type: DataTypes.INTEGER,
-      allowNull: true, // tempo estimado em minutos
-    },
-    valorParticular: {
-      type: DataTypes.DECIMAL(10, 2),
-      allowNull: false,
-      defaultValue: 0.00,
-    },
-    coberturaConvenio: {
-      type: DataTypes.BOOLEAN,
-      allowNull: false,
-      defaultValue: false,
-    },
-    valorConvenio: {
-      type: DataTypes.DECIMAL(10, 2),
-      allowNull: true, // pode ser diferente do valor particular
-    },
-    dentistaId: {
-      type: DataTypes.INTEGER,
-      allowNull: false,
-      references: {
-        model: 'dentistas',
-        key: 'id',
-      },
-    },
-    status: {
-      type: DataTypes.ENUM('ativo', 'inativo'),
-      allowNull: false,
-      defaultValue: 'ativo',
-    },
     observacoes: {
       type: DataTypes.TEXT,
       allowNull: true,
     },
-    risco: {
-      type: DataTypes.ENUM('baixo', 'moderado', 'alto'),
-      allowNull: true,
+    valor: {
+      type: DataTypes.DECIMAL(10, 2),
+      allowNull: false,
+      defaultValue: 0.00,
+    },
+    status: {
+      type: DataTypes.ENUM('pendente', 'concluído'),
+      allowNull: false,
+      defaultValue: 'pendente',
     },
   }, {
-    tableName: 'procedimentos',
+    tableName: 'procedimento',
   });
+
+  const atualizarValorTratamento = async (procedimento) => {
+    const Tratamento = sequelize.models.Tratamento;
+
+    const procedimentos = await Procedimento.findAll({
+      where: { tratamentoId: procedimento.tratamentoId }
+    });
+
+    const valorTotal = procedimentos.reduce((total, p) => parseFloat(total) + parseFloat(p.valor), 0);
+
+    await Tratamento.update(
+      { valorTotal: valorTotal },
+      { where: { id: procedimento.tratamentoId }, hooks: false }
+    );
+  };
+
+  Procedimento.addHook('afterCreate', atualizarValorTratamento);
+  Procedimento.addHook('afterUpdate', atualizarValorTratamento);
+  Procedimento.addHook('afterDestroy', atualizarValorTratamento);
+
+  return Procedimento;
 };

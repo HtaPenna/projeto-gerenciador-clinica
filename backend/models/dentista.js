@@ -6,6 +6,7 @@ module.exports = (sequelize, DataTypes) => {
       primaryKey: true,
       autoIncrement: true,
     },
+    userId: { type: DataTypes.INTEGER, allowNull: false, unique: true },
     nome: {
       type: DataTypes.STRING(50),
       allowNull: false,
@@ -13,21 +14,21 @@ module.exports = (sequelize, DataTypes) => {
     cro: {
       type: DataTypes.STRING(10),
       allowNull: false,
-      unique: true, // garante que não haja CRO duplicado
+      unique: true,
     },
     enderecoConsultorio: {
       type: DataTypes.STRING(100),
       allowNull: false,
     },
     telefoneConsultorio: {
-      type: DataTypes.STRING(15),
+      type: DataTypes.STRING(11),
       allowNull: false,
     },
     logoConsultorio: {
-      type: DataTypes.TEXT, // pode armazenar base64 ou URL
+      type: DataTypes.TEXT,
       allowNull: true,
     },
   }, {
-    tableName: 'dentistas',
+    tableName: 'dentista',
   });
 };

@@ -1,4 +1,4 @@
-const { Paciente, Tratamento, PacientesEtratamentos} = require('../models');
+const { Paciente, Tratamento, Usuario} = require('../models');
 
 exports.get = async (req, res) => {
   try {
@@ -43,117 +43,43 @@ exports.delete = async (req, res) => {
   }
 };
 
-// =================== RELACIONAMENTO Pacientes ↔ Tratamentos ===================
+
+exports.verificar = async (req, res) => {
+  try {
+    const { cpf } = req.query;
+
+    const paciente = await Paciente.findOne({ where: { cpf } });
+
+    if (!paciente) {
+      return res.json({ message: "Paciente não encontrado, pode cadastrar paciente e usuário", step: "novoPaciente" });
+    }
+
+    // Paciente existe, verificar se já tem usuário vinculado
+    const usuarioExistente = await Usuario.findOne({ where: { id: paciente.userId } });
+
+    if (usuarioExistente) {
+      return res.status(400).json({ erro: "Paciente já possui usuário cadastrado" });
+    }
+
+    // Paciente existe mas não tem usuário
+    return res.json({ message: "Paciente existe, mas não tem usuário vinculado. Pode criar usuário.", step: "criarUsuario" });
+  } catch (err) {
+    res.status(500).json({ erro: err.message });
+  }
+};
 
 // Buscar todos os tratamentos de um paciente
 exports.getTratamentos = async (req, res) => {
   try {
-    const paciente = await Paciente.findByPk(req.params.id, {
-      include: {
-        model: Tratamento,
-        through: { attributes: ['status', 'dataInicio', 'dataFim'] }
-      }
+    const pacienteId = req.params.pacienteId; 
+    const paciente = await Paciente.findByPk(pacienteId, {
+      include: { model: Tratamento, as: 'tratamentos' }
     });
-
+    
     if (paciente) {
-      res.json(paciente.Tratamentos);
+      res.json(paciente.tratamentos); 
     } else {
       res.status(404).json({ erro: 'Paciente não encontrado' });
-    }
-  } catch (err) {
-    res.status(500).json({ erro: err.message });
-  }
-};
-
-// Associar um tratamento existente ao paciente
-exports.addTratamento = async (req, res) => {
-  try {
-    const paciente = await Paciente.findByPk(req.params.id);
-    const tratamento = await Tratamento.findByPk(req.body.tratamentoId);
-
-    if (paciente && tratamento) {
-      await paciente.addTratamento(tratamento, {
-        through: {
-          status: req.body.status || 'ativo',
-          dataInicio: req.body.dataInicio || new Date(),
-          dataFim: req.body.dataFim || null
-        }
-      });
-      res.json({ mensagem: 'Tratamento associado ao paciente com sucesso' });
-    } else {
-      res.status(404).json({ erro: 'Paciente ou Tratamento não encontrado' });
-    }
-  } catch (err) {
-    res.status(500).json({ erro: err.message });
-  }
-};
-
-// Criar tratamento e já associar ao paciente
-exports.createTratamento = async (req, res) => {
-  try {
-    const paciente = await Paciente.findByPk(req.params.id);
-
-    if (paciente) {
-      const novoTratamento = await paciente.createTratamento(req.body, {
-        through: {
-          status: req.body.status || 'planejado',
-          dataInicio: req.body.dataInicio || new Date(),
-          dataFim: req.body.dataFim || null
-        }
-      });
-      res.status(201).json(novoTratamento);
-    } else {
-      res.status(404).json({ erro: 'Paciente não encontrado' });
-    }
-  } catch (err) {
-    res.status(500).json({ erro: err.message });
-  }
-};
-
-// Editar dados extras do relacionamento Paciente ↔ Tratamento
-exports.updateTratamento = async (req, res) => {
-  try {
-    const { id } = req.params; // id do paciente
-    const { tratamentoId, status, dataInicio, dataFim } = req.body;
-
-    // Verifica se paciente e tratamento existem
-    const paciente = await Paciente.findByPk(id);
-    const tratamento = await Tratamento.findByPk(tratamentoId);
-
-    if (!paciente || !tratamento) {
-      return res.status(404).json({ erro: 'Paciente ou Tratamento não encontrado' });
-    }
-
-    // Atualiza o relacionamento na tabela intermediária
-    const [updated] = await PacientesEtratamentos.update(
-      { status, dataInicio, dataFim },
-      { where: { pacienteId: id, tratamentoId } }
-    );
-
-    if (updated) {
-      const relacaoAtualizada = await PacientesEtratamentos.findOne({
-        where: { pacienteId: id, tratamentoId }
-      });
-      res.json(relacaoAtualizada);
-    } else {
-      res.status(404).json({ erro: 'Associação não encontrada' });
-    }
-  } catch (err) {
-    res.status(500).json({ erro: err.message });
-  }
-};
-
-// Remover associação de um tratamento do paciente
-exports.removeTratamento = async (req, res) => {
-  try {
-    const paciente = await Paciente.findByPk(req.params.id);
-    const tratamento = await Tratamento.findByPk(req.body.tratamentoId);
-
-    if (paciente && tratamento) {
-      await paciente.removeTratamento(tratamento);
-      res.json({ mensagem: 'Associação removida com sucesso' });
-    } else {
-      res.status(404).json({ erro: 'Paciente ou Tratamento não encontrado' });
     }
   } catch (err) {
     res.status(500).json({ erro: err.message });

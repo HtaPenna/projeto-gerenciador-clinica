@@ -6,6 +6,38 @@ module.exports = (sequelize, DataTypes) => {
       primaryKey: true,
       autoIncrement: true,
     },
+    dentistaId: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      references: {
+        model: 'dentista',
+        key: 'id',
+      },
+    },
+    pacienteId: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      references: {
+        model: 'paciente',
+        key: 'id',
+      },
+    },
+    tratamentoId: {
+      type: DataTypes.INTEGER,
+      allowNull: true,
+      references: {
+        model: 'tratamento',
+        key: 'id',
+      },
+    },
+    procedimentoId: {
+      type: DataTypes.INTEGER,
+      allowNull: true,
+      references: {
+        model: 'procedimento',
+        key: 'id',
+      },
+    },
     inicio: {
       type: DataTypes.DATE,
       allowNull: false,
@@ -13,36 +45,27 @@ module.exports = (sequelize, DataTypes) => {
     fim: {
       type: DataTypes.DATE,
       allowNull: true,
-    },
-    pacienteId: {
-      type: DataTypes.INTEGER,
-      allowNull: false,
-      references: {
-        model: 'pacientes',
-        key: 'id',
-      },
-    },
-    dentistaId: {
-      type: DataTypes.INTEGER,
-      allowNull: false,
-      references: {
-        model: 'dentistas',
-        key: 'id',
-      },
-    },
+    },   
     status: {
-      type: DataTypes.ENUM('pendente', 'confirmada', 'em_andamento', 'concluida', 'bloqueado'),
+      type: DataTypes.ENUM('agendada', 'confirmada', 'concluída', 'indisponível'),
       allowNull: false,
-      defaultValue: 'pendente',
+      defaultValue: 'agendada',
+    },
+    observacoes: {
+      type: DataTypes.TEXT,
+      allowNull: true,
+    },
+    descricao: {
+      type: DataTypes.TEXT,
+      allowNull: true,
     },
     valorPrevisto: {
       type: DataTypes.DECIMAL(10, 2),
       allowNull: true,
       defaultValue: 0.00,
     },
-    observacoes: {
-      type: DataTypes.TEXT,
-      allowNull: true,
-    },
+  },
+  {
+    tableName: 'evento',
   });
 };
