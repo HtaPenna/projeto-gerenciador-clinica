@@ -4,16 +4,35 @@ import { useNavigate, Link } from "react-router-dom";
 export default function CadastroPacienteStepForm() {
   const navigate = useNavigate();
 
-  const [step, setStep] = useState(1); // pode ser 1, "novoPaciente" ou "criarUsuario"
+  const [step, setStep] = useState(1); // 1, "novoPaciente" ou "criarUsuario"
+  const [mensagem, setMensagem] = useState("");
+  const [pacienteId, setPacienteId] = useState(null); // paciente existente
+
+  // Campos do paciente
+  const [nome, setNome] = useState("");
   const [cpf, setCpf] = useState("");
+  const [telefoneCelular, setTelefoneCelular] = useState("");
+  const [dataNascimento, setDataNascimento] = useState("");
+  const [telefoneResidencial, setTelefoneResidencial] = useState("");
+  const [telefoneEmergencia, setTelefoneEmergencia] = useState("");
+  const [cep, setCep] = useState("");
+  const [logradouro, setLogradouro] = useState("");
+  const [bairro, setBairro] = useState("");
+  const [cidade, setCidade] = useState("");
+  const [estado, setEstado] = useState("");
+  const [genero, setGenero] = useState("");
+  const [peso, setPeso] = useState("");
+  const [altura, setAltura] = useState("");
+  const [tipoSanguineo, setTipoSanguineo] = useState("");
+  const [estadoCivil, setEstadoCivil] = useState("");
+  const [nomeConjuge, setNomeConjuge] = useState("");
+  const [profissao, setProfissao] = useState("");
+  const [redesSociais, setRedesSociais] = useState("");
+  const [assinatura, setAssinatura] = useState("");
+
+  // Campos do usuário
   const [email, setEmail] = useState("");
   const [senha, setSenha] = useState("");
-  const [nome, setNome] = useState("");
-  const [telefone, setTelefone] = useState("");
-  const [endereco, setEndereco] = useState("");
-  const [mensagem, setMensagem] = useState("");
-
-  const [pacienteId, setPacienteId] = useState(null); // para vincular usuário ao paciente existente
 
   // 1️⃣ Verifica se o paciente já existe
   const verificarPaciente = async () => {
@@ -26,7 +45,7 @@ export default function CadastroPacienteStepForm() {
         if (data.step === "novoPaciente") {
           setStep("novoPaciente");
         } else if (data.step === "criarUsuario") {
-          setPacienteId(data.pacienteId); // guarda o paciente existente
+          setPacienteId(data.pacienteId);
           setStep("criarUsuario");
         }
       } else {
@@ -37,34 +56,75 @@ export default function CadastroPacienteStepForm() {
     }
   };
 
-  // 2️⃣ Cria paciente + usuário ou apenas usuário
+  // 2️⃣ Cria paciente ou apenas usuário
   const handleCadastro = async (e) => {
     e.preventDefault();
 
     try {
-      const payload = { email, senha, nome, cpf, telefone, endereco };
-      if (step === "criarUsuario") {
-        payload.pacienteId = pacienteId; // envia ID do paciente existente
-      }
-
-      const res = await fetch("http://localhost:3001/pacientes", {
+      // 1️⃣ Criar usuário
+      const payloadUsuario = { email, senha };
+      const resUsuario = await fetch("http://localhost:3001/usuarios", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(payload),
+        body: JSON.stringify(payloadUsuario),
       });
 
-      const data = await res.json();
+      const dataUsuario = await resUsuario.json();
 
-      if (res.ok) {
-        setMensagem("Cadastro realizado com sucesso!");
+      if (!resUsuario.ok) {
+        setMensagem(dataUsuario.erro || "Erro ao criar usuário");
+        return;
+      }
+
+      const userId = dataUsuario.id; // pega o id retornado pelo backend
+      console.log("Usuário criado com id:", userId);
+
+      // 2️⃣ Criar paciente com userId
+      const payloadPaciente = {
+        userId, // vincula o usuário ao paciente
+        nome,
+        cpf,
+        telefoneCelular,
+        dataNascimento,
+        telefoneResidencial,
+        telefoneEmergencia,
+        cep,
+        logradouro,
+        bairro,
+        cidade,
+        estado,
+        genero,
+        peso,
+        altura,
+        tipoSanguineo,
+        estadoCivil,
+        nomeConjuge,
+        profissao,
+        redesSociais,
+        assinatura
+      };
+
+      const resPaciente = await fetch("http://localhost:3001/pacientes", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payloadPaciente),
+      });
+
+      const dataPaciente = await resPaciente.json();
+
+      if (resPaciente.ok) {
+        setMensagem("Usuário e paciente cadastrados com sucesso!");
         navigate("/login");
       } else {
-        setMensagem(data.erro || "Erro no cadastro");
+        setMensagem(dataPaciente.erro || "Erro ao criar paciente");
       }
+
     } catch (err) {
+      console.error(err);
       setMensagem("Erro no servidor");
     }
   };
+
 
   return (
     <div>
@@ -86,54 +146,44 @@ export default function CadastroPacienteStepForm() {
       {(step === "novoPaciente" || step === "criarUsuario") && (
         <form onSubmit={handleCadastro}>
           {step === "novoPaciente" && (
-            <input
-              type="text"
-              placeholder="Nome"
-              value={nome}
-              onChange={(e) => setNome(e.target.value)}
-              required
-            />
-          )}
-          <input
-            type="email"
-            placeholder="Email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            required
-          />
-          <input
-            type="password"
-            placeholder="Senha"
-            value={senha}
-            onChange={(e) => setSenha(e.target.value)}
-            required
-          />
-          {step === "novoPaciente" && (
             <>
-              <input
-                type="text"
-                placeholder="Telefone"
-                value={telefone}
-                onChange={(e) => setTelefone(e.target.value)}
-                required
-              />
-              <input
-                type="text"
-                placeholder="Endereço"
-                value={endereco}
-                onChange={(e) => setEndereco(e.target.value)}
-                required
-              />
+              <input type="text" placeholder="Nome" value={nome} onChange={(e) => setNome(e.target.value)} required />
+              <input type="text" placeholder="Telefone Celular" value={telefoneCelular} onChange={(e) => setTelefoneCelular(e.target.value)} required />
+              <input type="date" placeholder="Data de Nascimento" value={dataNascimento} onChange={(e) => setDataNascimento(e.target.value)} required />
+              <input type="text" placeholder="Telefone Residencial" value={telefoneResidencial} onChange={(e) => setTelefoneResidencial(e.target.value)} />
+              <input type="text" placeholder="Telefone de Emergência" value={telefoneEmergencia} onChange={(e) => setTelefoneEmergencia(e.target.value)} />
+              <input type="text" placeholder="CEP" value={cep} onChange={(e) => setCep(e.target.value)} required />
+              <input type="text" placeholder="Logradouro" value={logradouro} onChange={(e) => setLogradouro(e.target.value)} required />
+              <input type="text" placeholder="Bairro" value={bairro} onChange={(e) => setBairro(e.target.value)} required />
+              <input type="text" placeholder="Cidade" value={cidade} onChange={(e) => setCidade(e.target.value)} required />
+              <input type="text" placeholder="Estado" value={estado} onChange={(e) => setEstado(e.target.value)} required />
+              <select value={genero} onChange={(e) => setGenero(e.target.value)} required>
+                <option value="">Gênero</option>
+                <option value="Masculino">Masculino</option>
+                <option value="Feminino">Feminino</option>
+                <option value="Outro">Outro</option>
+              </select>
+              <input type="text" placeholder="Peso" value={peso} onChange={(e) => setPeso(e.target.value)} />
+              <input type="text" placeholder="Altura" value={altura} onChange={(e) => setAltura(e.target.value)} />
+              <input type="text" placeholder="Tipo Sanguíneo" value={tipoSanguineo} onChange={(e) => setTipoSanguineo(e.target.value)} />
+              <input type="text" placeholder="Estado Civil" value={estadoCivil} onChange={(e) => setEstadoCivil(e.target.value)} />
+              <input type="text" placeholder="Nome do Cônjuge" value={nomeConjuge} onChange={(e) => setNomeConjuge(e.target.value)} />
+              <input type="text" placeholder="Profissão" value={profissao} onChange={(e) => setProfissao(e.target.value)} />
+              <input type="text" placeholder="Redes Sociais" value={redesSociais} onChange={(e) => setRedesSociais(e.target.value)} />
+              <textarea placeholder="Assinatura" value={assinatura} onChange={(e) => setAssinatura(e.target.value)} />
             </>
           )}
+
+          {/* Campos do usuário */}
+          <input type="email" placeholder="Email" value={email} onChange={(e) => setEmail(e.target.value)} required />
+          <input type="password" placeholder="Senha" value={senha} onChange={(e) => setSenha(e.target.value)} required />
+
           <button type="submit">Cadastrar</button>
         </form>
       )}
 
       {mensagem && <p>{mensagem}</p>}
-      <p>
-        Já tem conta? <Link to="/login">Login</Link>
-      </p>
+      <p>Já tem conta? <Link to="/login">Login</Link></p>
     </div>
   );
 }
