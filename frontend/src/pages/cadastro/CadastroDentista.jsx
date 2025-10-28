@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
+import './cadastroDentista.css'
 
 export default function CadastroDentista() {
   const navigate = useNavigate(); 
@@ -42,57 +43,78 @@ export default function CadastroDentista() {
   };
 
   return (
-    <div>
-      <h2>Cadastro de Dentista</h2>
-      <form onSubmit={handleCadastro}>
-        <input
-          type="email"
-          placeholder="Email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          required
-        />
-        <input
-          type="password"
-          placeholder="Senha"
-          value={senha}
-          onChange={(e) => setSenha(e.target.value)}
-          required
-        />
-        <input
-          type="text"
-          placeholder="Nome"
-          value={nome}
-          onChange={(e) => setNome(e.target.value)}
-          required
-        />
-        <input
-          type="text"
-          placeholder="CRO"
-          value={cro}
-          onChange={(e) => setCro(e.target.value)}
-          required
-        />
-        <input
-          type="text"
-          placeholder="Endereço do consultório"
-          value={enderecoConsultorio}
-          onChange={(e) => setEnderecoConsultorio(e.target.value)}
-          required
-        />
-        <input
-          type="text"
-          placeholder="Telefone do consultório"
-          value={telefoneConsultorio}
-          onChange={(e) => setTelefoneConsultorio(e.target.value)}
-          required
-        />
-        <button type="submit">Cadastrar</button>
-      </form>
-      {mensagem && <p>{mensagem}</p>}
-      <p>
-        Já tem conta? <Link to="/login">Login</Link>
-      </p>
+    <div className="cadastroPage">
+      <div className="cadastroContainer">
+        <h2>Cadastro de Dentista</h2>
+        <form onSubmit={handleCadastro} className="row g-3">
+          <div className="col-md-7">
+            <input
+              type="email"
+              placeholder="Email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              required
+              class="form-control"
+            />
+          </div>
+          <div className="col-md-5">
+            <input
+              type="password"
+              placeholder="Senha"
+              value={senha}
+              onChange={(e) => setSenha(e.target.value)}
+              required
+              class="form-control"
+            />
+          </div>
+
+          <div className="col-md-8">
+            <input
+              type="text"
+              placeholder="Nome"
+              value={nome}
+              onChange={(e) => setNome(e.target.value)}
+              required
+              class="form-control"
+            />
+          </div>
+          <div className="col-md-4">
+            <input
+              type="text"
+              placeholder="CRO"
+              value={cro}
+              onChange={(e) => setCro(e.target.value)}
+              required
+              class="form-control"
+            />
+          </div>
+          <div className="col-md-8">
+            <input
+              type="text"
+              placeholder="Endereço do consultório"
+              value={enderecoConsultorio}
+              onChange={(e) => setEnderecoConsultorio(e.target.value)}
+              required
+              class="form-control"
+            />
+          </div>
+          <div className="col-md-4">
+            <input
+              type="text"
+              placeholder="Telefone do consultório"
+              value={telefoneConsultorio}
+              onChange={(e) => setTelefoneConsultorio(e.target.value)}
+              required
+              class="form-control"
+            />
+          </div>
+          <div className="col-12">
+            <button type="submit" className="btn btn-primary">Cadastrar</button>
+            <label className="labelLogin">Já tem conta? <Link to="/login">Login</Link></label>
+          </div>  
+        </form>
+        {mensagem && <p>{mensagem}</p>}
+      </div>
     </div>
   );
 }
