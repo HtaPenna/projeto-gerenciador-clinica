@@ -1,9 +1,27 @@
-const { Tratamento, Procedimento } = require('../models');
+const { Tratamento, Procedimento, Paciente } = require('../models');
 
 exports.getTodos = async (req, res) => {
   try {
     const tratamentos = await Tratamento.findAll();
     res.json(tratamentos);
+  } catch (err) {
+    res.status(500).json({ erro: err.message });
+  }
+};
+
+// Buscar todos os tratamentos de um paciente
+exports.getTratamentos = async (req, res) => {
+  try {
+    const pacienteId = req.params.pacienteId; 
+    const paciente = await Paciente.findByPk(pacienteId, {
+      include: { model: Tratamento, as: 'tratamento' }
+    });
+    
+    if (paciente) {
+      res.json(paciente.tratamento); 
+    } else {
+      res.status(404).json({ erro: 'Paciente não encontrado' });
+    }
   } catch (err) {
     res.status(500).json({ erro: err.message });
   }

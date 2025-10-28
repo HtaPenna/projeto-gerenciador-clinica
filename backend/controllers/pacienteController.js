@@ -9,6 +9,16 @@ exports.get = async (req, res) => {
   }
 };
 
+exports.getById = async (req, res) => {
+  try {
+    const paciente = await Paciente.findByPk(req.params.id);
+    if (!paciente) return res.status(404).json({ erro: "Paciente não encontrado" });
+    res.json(paciente);
+  } catch (err) {
+    res.status(500).json({ erro: err.message });
+  }
+};
+
 exports.post = async (req, res) => {
   try {
     const novoPaciente = await Paciente.create(req.body);
@@ -68,20 +78,4 @@ exports.verificar = async (req, res) => {
   }
 };
 
-// Buscar todos os tratamentos de um paciente
-exports.getTratamentos = async (req, res) => {
-  try {
-    const pacienteId = req.params.pacienteId; 
-    const paciente = await Paciente.findByPk(pacienteId, {
-      include: { model: Tratamento, as: 'tratamentos' }
-    });
-    
-    if (paciente) {
-      res.json(paciente.tratamentos); 
-    } else {
-      res.status(404).json({ erro: 'Paciente não encontrado' });
-    }
-  } catch (err) {
-    res.status(500).json({ erro: err.message });
-  }
-};
+
