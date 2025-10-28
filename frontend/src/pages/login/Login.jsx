@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useNavigate, Link } from "react-router-dom"; // ✅ importar Link
+import './login.css'
 
 export default function Login() {
   const navigate = useNavigate(); 
@@ -32,37 +33,41 @@ export default function Login() {
   };
 
   return (
-    <div>
-      <h2>Login</h2>
-      <form onSubmit={handleLogin}>
-        <input
-          type="email"
-          placeholder="Email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          required
-        />
-        <input
-          type="password"
-          placeholder="Senha"
-          value={senha}
-          onChange={(e) => setSenha(e.target.value)}
-          required
-        />
-        <button type="submit">Entrar</button> 
-      </form>
-      {mensagem && <p>{mensagem}</p>}
+    <div class="loginPage">
+      <div class="containerLogin">
+        <h2>Login</h2>
+        <form onSubmit={handleLogin}>
+          <input
+            type="email"
+            placeholder="Email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            required
+          />
+          <input
+            type="password"
+            placeholder="Senha"
+            value={senha}
+            onChange={(e) => setSenha(e.target.value)}
+            required
+          />
+          <button type="submit">Entrar</button> 
+        </form>
+        {mensagem && <p>{mensagem}</p>}
 
-      <div style={{ marginTop: "20px" }}>
-        <p>
-          Não tem uma conta? Cadastre-se como:
-        </p>
-        <Link to="/cadastro/dentista">
-          Dentista
-        </Link>
-        <Link to="/cadastro/paciente">
-          Paciente
-        </Link>
+        <div class="textoRodape">
+          <p>
+            Não tem uma conta? Cadastre-se como:
+          </p>
+          <div class="linksCadastro">
+            <Link to="/cadastro/dentista">
+              Dentista
+            </Link>
+            <Link to="/cadastro/paciente">
+              Paciente
+            </Link>
+          </div>
+        </div>
       </div>
     </div>
   );
