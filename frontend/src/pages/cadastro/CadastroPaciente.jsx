@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
+import './cadastroPaciente.css'
 
 export default function CadastroPacienteStepForm() {
   const navigate = useNavigate();
@@ -34,7 +35,7 @@ export default function CadastroPacienteStepForm() {
   const [email, setEmail] = useState("");
   const [senha, setSenha] = useState("");
 
-  // 1️⃣ Verifica se o paciente já existe
+  // Verifica se o paciente já existe
   const verificarPaciente = async () => {
     try {
       const res = await fetch(`http://localhost:3001/pacientes/verificar?cpf=${cpf}`);
@@ -56,12 +57,12 @@ export default function CadastroPacienteStepForm() {
     }
   };
 
-  // 2️⃣ Cria paciente ou apenas usuário
+  // Cria paciente ou apenas usuário
   const handleCadastro = async (e) => {
     e.preventDefault();
 
     try {
-      // 1️⃣ Criar usuário
+      // Criar usuário
       const payloadUsuario = { email, senha };
       const resUsuario = await fetch("http://localhost:3001/usuarios", {
         method: "POST",
@@ -79,7 +80,7 @@ export default function CadastroPacienteStepForm() {
       const userId = dataUsuario.id; // pega o id retornado pelo backend
       console.log("Usuário criado com id:", userId);
 
-      // 2️⃣ Criar paciente com userId
+      // Criar paciente com userId
       const payloadPaciente = {
         userId, // vincula o usuário ao paciente
         nome,
@@ -127,63 +128,70 @@ export default function CadastroPacienteStepForm() {
 
 
   return (
-    <div>
-      <h2>Cadastro de Paciente</h2>
+    <div className="cadastroPage">
+      <div className="cadastroContainer">
+        <h2>Cadastro de Paciente</h2>
 
-      {step === 1 && (
-        <>
-          <input
-            type="text"
-            placeholder="CPF"
-            value={cpf}
-            onChange={(e) => setCpf(e.target.value)}
-            required
-          />
-          <button onClick={verificarPaciente}>Verificar paciente</button>
-        </>
-      )}
+        {step === 1 && (
+          <form className="row row-cols-lg-auto g-3 align-items-center">
+            <div className="col-12">
+              <input
+                type="text"
+                placeholder="CPF"
+                value={cpf}
+                onChange={(e) => setCpf(e.target.value)}
+                required
+                className="form-control"
+              />
+            </div>
+            <div className="col-12">
+              <button onClick={verificarPaciente} className="btn btn-primary">Verificar paciente</button>
+            </div>
+          </form>
+        )}
 
-      {(step === "novoPaciente" || step === "criarUsuario") && (
-        <form onSubmit={handleCadastro}>
-          {step === "novoPaciente" && (
-            <>
-              <input type="text" placeholder="Nome" value={nome} onChange={(e) => setNome(e.target.value)} required />
-              <input type="text" placeholder="Telefone Celular" value={telefoneCelular} onChange={(e) => setTelefoneCelular(e.target.value)} required />
-              <input type="date" placeholder="Data de Nascimento" value={dataNascimento} onChange={(e) => setDataNascimento(e.target.value)} required />
-              <input type="text" placeholder="Telefone Residencial" value={telefoneResidencial} onChange={(e) => setTelefoneResidencial(e.target.value)} />
-              <input type="text" placeholder="Telefone de Emergência" value={telefoneEmergencia} onChange={(e) => setTelefoneEmergencia(e.target.value)} />
-              <input type="text" placeholder="CEP" value={cep} onChange={(e) => setCep(e.target.value)} required />
-              <input type="text" placeholder="Logradouro" value={logradouro} onChange={(e) => setLogradouro(e.target.value)} required />
-              <input type="text" placeholder="Bairro" value={bairro} onChange={(e) => setBairro(e.target.value)} required />
-              <input type="text" placeholder="Cidade" value={cidade} onChange={(e) => setCidade(e.target.value)} required />
-              <input type="text" placeholder="Estado" value={estado} onChange={(e) => setEstado(e.target.value)} required />
-              <select value={genero} onChange={(e) => setGenero(e.target.value)} required>
-                <option value="">Gênero</option>
-                <option value="Masculino">Masculino</option>
-                <option value="Feminino">Feminino</option>
-                <option value="Outro">Outro</option>
-              </select>
-              <input type="text" placeholder="Peso" value={peso} onChange={(e) => setPeso(e.target.value)} />
-              <input type="text" placeholder="Altura" value={altura} onChange={(e) => setAltura(e.target.value)} />
-              <input type="text" placeholder="Tipo Sanguíneo" value={tipoSanguineo} onChange={(e) => setTipoSanguineo(e.target.value)} />
-              <input type="text" placeholder="Estado Civil" value={estadoCivil} onChange={(e) => setEstadoCivil(e.target.value)} />
-              <input type="text" placeholder="Nome do Cônjuge" value={nomeConjuge} onChange={(e) => setNomeConjuge(e.target.value)} />
-              <input type="text" placeholder="Profissão" value={profissao} onChange={(e) => setProfissao(e.target.value)} />
-              <input type="text" placeholder="Redes Sociais" value={redesSociais} onChange={(e) => setRedesSociais(e.target.value)} />
-              <textarea placeholder="Assinatura" value={assinatura} onChange={(e) => setAssinatura(e.target.value)} />
-            </>
-          )}
+        {(step === "novoPaciente" || step === "criarUsuario") && (
+          <form onSubmit={handleCadastro} className="row g-3">
+            {step === "novoPaciente" && (
+              <>
+                <input type="text" placeholder="Nome" value={nome} onChange={(e) => setNome(e.target.value)} required />
+                <input type="text" placeholder="Telefone Celular" value={telefoneCelular} onChange={(e) => setTelefoneCelular(e.target.value)} required />
+                <input type="date" placeholder="Data de Nascimento" value={dataNascimento} onChange={(e) => setDataNascimento(e.target.value)} required />
+                <input type="text" placeholder="Telefone Residencial" value={telefoneResidencial} onChange={(e) => setTelefoneResidencial(e.target.value)} />
+                <input type="text" placeholder="Telefone de Emergência" value={telefoneEmergencia} onChange={(e) => setTelefoneEmergencia(e.target.value)} />
+                <input type="text" placeholder="CEP" value={cep} onChange={(e) => setCep(e.target.value)} required />
+                <input type="text" placeholder="Logradouro" value={logradouro} onChange={(e) => setLogradouro(e.target.value)} required />
+                <input type="text" placeholder="Bairro" value={bairro} onChange={(e) => setBairro(e.target.value)} required />
+                <input type="text" placeholder="Cidade" value={cidade} onChange={(e) => setCidade(e.target.value)} required />
+                <input type="text" placeholder="Estado" value={estado} onChange={(e) => setEstado(e.target.value)} required />
+                <select value={genero} onChange={(e) => setGenero(e.target.value)} required>
+                  <option value="">Gênero</option>
+                  <option value="Masculino">Masculino</option>
+                  <option value="Feminino">Feminino</option>
+                  <option value="Outro">Outro</option>
+                </select>
+                <input type="text" placeholder="Peso" value={peso} onChange={(e) => setPeso(e.target.value)} />
+                <input type="text" placeholder="Altura" value={altura} onChange={(e) => setAltura(e.target.value)} />
+                <input type="text" placeholder="Tipo Sanguíneo" value={tipoSanguineo} onChange={(e) => setTipoSanguineo(e.target.value)} />
+                <input type="text" placeholder="Estado Civil" value={estadoCivil} onChange={(e) => setEstadoCivil(e.target.value)} />
+                <input type="text" placeholder="Nome do Cônjuge" value={nomeConjuge} onChange={(e) => setNomeConjuge(e.target.value)} />
+                <input type="text" placeholder="Profissão" value={profissao} onChange={(e) => setProfissao(e.target.value)} />
+                <input type="text" placeholder="Redes Sociais" value={redesSociais} onChange={(e) => setRedesSociais(e.target.value)} />
+                <textarea placeholder="Assinatura" value={assinatura} onChange={(e) => setAssinatura(e.target.value)} />
+              </>
+            )}
 
-          {/* Campos do usuário */}
-          <input type="email" placeholder="Email" value={email} onChange={(e) => setEmail(e.target.value)} required />
-          <input type="password" placeholder="Senha" value={senha} onChange={(e) => setSenha(e.target.value)} required />
+            {/* Campos do usuário */}
+            <input type="email" placeholder="Email" value={email} onChange={(e) => setEmail(e.target.value)} required />
+            <input type="password" placeholder="Senha" value={senha} onChange={(e) => setSenha(e.target.value)} required />
 
-          <button type="submit">Cadastrar</button>
-        </form>
-      )}
+            <button type="submit">Cadastrar</button>
+          </form>
+        )}
 
-      {mensagem && <p>{mensagem}</p>}
-      <p>Já tem conta? <Link to="/login">Login</Link></p>
+        {mensagem && <p>{mensagem}</p>}
+        <p>Já tem conta? <Link to="/login">Login</Link></p>
+      </div>
     </div>
   );
 }
