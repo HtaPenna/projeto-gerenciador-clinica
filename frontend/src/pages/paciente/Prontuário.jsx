@@ -46,11 +46,11 @@ export default function Prontuario() {
         Voltar
       </button>
       
-      <h1>Prontuário</h1>
+      <h3>Prontuário</h3>
 
       {/* Card superior com dados pessoais */}
       <div className="card-paciente p-4 bg-white shadow rounded mb-4">
-        <h2>{paciente.nome}</h2>
+        <h1>{paciente.nome}</h1>
         <p><strong>Telefone:</strong> {paciente.telefoneCelular}</p>
         {paciente.email && <p><strong>Email:</strong> {paciente.email}</p>}
         {paciente.dataNascimento && <p><strong>Data de Nascimento:</strong> {paciente.dataNascimento}</p>}
