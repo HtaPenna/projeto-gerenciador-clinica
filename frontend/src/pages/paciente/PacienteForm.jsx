@@ -6,26 +6,26 @@ const generoOptions = ["Masculino", "Feminino", "Outro"];
 export default function PacienteForm({ paciente, onSalvar, onCancelar }) {
   const [formData, setFormData] = useState({
     id: null,
+    userId: null,
+    dentistaId: null,
     nome: "",
+    cpf: "",
     telefoneCelular: "",
     dataNascimento: "",
     telefoneResidencial: "",
-    idade: "",
+    telefoneEmergencia: "",
+    cep: "",
+    logradouro: "",
+    bairro: "",
+    cidade: "",
+    estado: "",
+    genero: "",
     peso: "",
     altura: "",
     tipoSanguineo: "",
-    profissao: "",
-    cpf: "",
-    rg: "",
-    endereco: "",
-    cidade: "",
-    estado: "",
-    cep: "",
-    email: "",
-    genero: "",
     estadoCivil: "",
     nomeConjuge: "",
-    telefoneEmergencia: "",
+    profissao: "",
     redesSociais: "",
     assinatura: "",
   });
@@ -34,52 +34,52 @@ export default function PacienteForm({ paciente, onSalvar, onCancelar }) {
     if (paciente) {
       setFormData({
         id: paciente.id || null,
+        userId: paciente.userId || null,
+        dentistaId: paciente.dentistaId || null,
         nome: paciente.nome || "",
+        cpf: paciente.cpf || "",
         telefoneCelular: paciente.telefoneCelular || "",
         dataNascimento: paciente.dataNascimento ? paciente.dataNascimento.split("T")[0] : "",
         telefoneResidencial: paciente.telefoneResidencial || "",
-        idade: paciente.idade || "",
+        telefoneEmergencia: paciente.telefoneEmergencia || "",
+        cep: paciente.cep || "",
+        logradouro: paciente.logradouro || "",
+        bairro: paciente.bairro || "",
+        cidade: paciente.cidade || "",
+        estado: paciente.estado || "",
+        genero: paciente.genero || "",
         peso: paciente.peso || "",
         altura: paciente.altura || "",
         tipoSanguineo: paciente.tipoSanguineo || "",
-        profissao: paciente.profissao || "",
-        cpf: paciente.cpf || "",
-        rg: paciente.rg || "",
-        endereco: paciente.endereco || "",
-        cidade: paciente.cidade || "",
-        estado: paciente.estado || "",
-        cep: paciente.cep || "",
-        email: paciente.email || "",
-        genero: paciente.genero || "",
         estadoCivil: paciente.estadoCivil || "",
         nomeConjuge: paciente.nomeConjuge || "",
-        telefoneEmergencia: paciente.telefoneEmergencia || "",
+        profissao: paciente.profissao || "",
         redesSociais: paciente.redesSociais || "",
         assinatura: paciente.assinatura || "",
       });
     } else {
       setFormData({
         id: null,
+        userId: null,
+        dentistaId: null,
         nome: "",
+        cpf: "",
         telefoneCelular: "",
         dataNascimento: "",
         telefoneResidencial: "",
-        idade: "",
+        telefoneEmergencia: "",
+        cep: "",
+        logradouro: "",
+        bairro: "",
+        cidade: "",
+        estado: "",
+        genero: "",
         peso: "",
         altura: "",
         tipoSanguineo: "",
-        profissao: "",
-        cpf: "",
-        rg: "",
-        endereco: "",
-        cidade: "",
-        estado: "",
-        cep: "",
-        email: "",
-        genero: "",
         estadoCivil: "",
         nomeConjuge: "",
-        telefoneEmergencia: "",
+        profissao: "",
         redesSociais: "",
         assinatura: "",
       });
@@ -96,23 +96,20 @@ export default function PacienteForm({ paciente, onSalvar, onCancelar }) {
 
     if (
       !formData.nome ||
+      !formData.cpf ||
       !formData.telefoneCelular ||
       !formData.dataNascimento ||
-      !formData.idade ||
-      !formData.cpf ||
-      !formData.rg ||
-      !formData.endereco ||
+      !formData.cep ||
+      !formData.logradouro ||
+      !formData.bairro ||
       !formData.cidade ||
       !formData.estado ||
-      !formData.cep ||
-      !formData.email ||
       !formData.genero
     ) {
       alert("Por favor, preencha todos os campos obrigatórios.");
       return;
     }
 
-    console.log("Paciente enviado pelo formulário:", formData);
     onSalvar(formData);
   };
 
@@ -121,43 +118,70 @@ export default function PacienteForm({ paciente, onSalvar, onCancelar }) {
       <form onSubmit={handleSubmit}>
         <h2>{paciente ? "Editar Paciente" : "Novo Paciente"}</h2>
 
-        <div className="formGroup">
-          <label>Nome</label>
-          <input name="nome" value={formData.nome} onChange={handleChange} required />
-        </div>
+      <div className="formGroup">
+        <label>Nome*</label>
+        <input name="nome" value={formData.nome} onChange={handleChange} required />
+      </div>
 
-        <div className="formGroup">
-          <label>Telefone Celular</label>
-          <input name="telefoneCelular" value={formData.telefoneCelular} onChange={handleChange} required />
-        </div>
+      <div className="formGroup">
+        <label>CPF*</label>
+        <input name="cpf" value={formData.cpf} onChange={handleChange} required />
+      </div>
 
-        <div className="formGroup">
-          <label>Data de Nascimento</label>
-          <input
-            type="date"
-            name="dataNascimento"
-            value={formData.dataNascimento}
-            onChange={handleChange}
-            required
-          />
-        </div>
+      <div className="formGroup">
+        <label>Telefone Celular*</label>
+        <input name="telefoneCelular" value={formData.telefoneCelular} onChange={handleChange} required />
+      </div>
+
+      <div className="formGroup">
+        <label>Data de Nascimento*</label>
+        <input type="date" name="dataNascimento" value={formData.dataNascimento} onChange={handleChange} required />
+      </div>
 
         <div className="formGroup">
           <label>Telefone Residencial</label>
           <input name="telefoneResidencial" value={formData.telefoneResidencial} onChange={handleChange} />
         </div>
 
-        <div className="formGroup">
-          <label>Idade</label>
-          <input
-            type="number"
-            name="idade"
-            value={formData.idade}
-            onChange={handleChange}
-            required
-            min={0}
-          />
-        </div>
+      <div className="formGroup">
+        <label>Telefone Emergência</label>
+        <input name="telefoneEmergencia" value={formData.telefoneEmergencia} onChange={handleChange} />
+      </div>
+
+      <div className="formGroup">
+        <label>CEP*</label>
+        <input name="cep" value={formData.cep} onChange={handleChange} required />
+      </div>
+
+      <div className="formGroup">
+        <label>Logradouro*</label>
+        <input name="logradouro" value={formData.logradouro} onChange={handleChange} required />
+      </div>
+
+      <div className="formGroup">
+        <label>Bairro*</label>
+        <input name="bairro" value={formData.bairro} onChange={handleChange} required />
+      </div>
+
+      <div className="formGroup">
+        <label>Cidade*</label>
+        <input name="cidade" value={formData.cidade} onChange={handleChange} required />
+      </div>
+
+      <div className="formGroup">
+        <label>Estado*</label>
+        <input name="estado" value={formData.estado} onChange={handleChange} required />
+      </div>
+
+      <div className="formGroup">
+        <label>Gênero*</label>
+        <select name="genero" value={formData.genero} onChange={handleChange} required>
+          <option value="">--Selecione--</option>
+          {generoOptions.map((g) => (
+            <option key={g} value={g}>{g}</option>
+          ))}
+        </select>
+      </div>
 
         <div className="formGroup">
           <label>Peso</label>
@@ -169,62 +193,10 @@ export default function PacienteForm({ paciente, onSalvar, onCancelar }) {
           <input name="altura" value={formData.altura} onChange={handleChange} />
         </div>
 
-        <div className="formGroup">
-          <label>Tipo Sanguíneo</label>
-          <input name="tipoSanguineo" value={formData.tipoSanguineo} onChange={handleChange} />
-        </div>
-
-        <div className="formGroup">
-          <label>Profissão</label>
-          <input name="profissao" value={formData.profissao} onChange={handleChange} />
-        </div>
-
-        <div className="formGroup">
-          <label>CPF</label>
-          <input name="cpf" value={formData.cpf} onChange={handleChange} required />
-        </div>
-
-        <div className="formGroup">
-          <label>RG</label>
-          <input name="rg" value={formData.rg} onChange={handleChange} required />
-        </div>
-
-        <div className="formGroup">
-          <label>Endereço</label>
-          <input name="endereco" value={formData.endereco} onChange={handleChange} required />
-        </div>
-
-        <div className="formGroup">
-          <label>Cidade</label>
-          <input name="cidade" value={formData.cidade} onChange={handleChange} required />
-        </div>
-
-        <div className="formGroup">
-          <label>Estado</label>
-          <input name="estado" value={formData.estado} onChange={handleChange} required />
-        </div>
-
-        <div className="formGroup">
-          <label>CEP</label>
-          <input name="cep" value={formData.cep} onChange={handleChange} required />
-        </div>
-
-        <div className="formGroup">
-          <label>Email</label>
-          <input type="email" name="email" value={formData.email} onChange={handleChange} required />
-        </div>
-
-        <div className="formGroup">
-          <label>Gênero</label>
-          <select name="genero" value={formData.genero} onChange={handleChange} required>
-            <option value="">--Selecione--</option>
-            {generoOptions.map((g) => (
-              <option key={g} value={g}>
-                {g}
-              </option>
-            ))}
-          </select>
-        </div>
+      <div className="formGroup">
+        <label>Tipo Sanguíneo</label>
+        <input name="tipoSanguineo" value={formData.tipoSanguineo} onChange={handleChange} />
+      </div>
 
         <div className="formGroup">
           <label>Estado Civil</label>
@@ -236,10 +208,10 @@ export default function PacienteForm({ paciente, onSalvar, onCancelar }) {
           <input name="nomeConjuge" value={formData.nomeConjuge} onChange={handleChange} />
         </div>
 
-        <div className="formGroup">
-          <label>Telefone Emergência</label>
-          <input name="telefoneEmergencia" value={formData.telefoneEmergencia} onChange={handleChange} />
-        </div>
+      <div className="formGroup">
+        <label>Profissão</label>
+        <input name="profissao" value={formData.profissao} onChange={handleChange} />
+      </div>
 
         <div className="formGroup">
           <label>Redes Sociais</label>
@@ -251,17 +223,10 @@ export default function PacienteForm({ paciente, onSalvar, onCancelar }) {
           <textarea name="assinatura" value={formData.assinatura} onChange={handleChange} />
         </div>
 
-        <div style={{ marginTop: "10px" }}>
-          <button type="submit">{paciente ? "Atualizar" : "Salvar"}</button>
-          <button
-            type="button"
-            onClick={onCancelar}
-            style={{ marginLeft: "10px" }}
-          >
-            Cancelar
-          </button>
-        </div>
-      </form>
-    </div>
+      <div style={{ marginTop: "10px" }}>
+        <button type="submit">{paciente ? "Atualizar" : "Salvar"}</button>
+        <button type="button" onClick={onCancelar} style={{ marginLeft: "10px" }}>Cancelar</button>
+      </div>
+    </form>
   );
 }

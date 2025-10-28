@@ -9,6 +9,7 @@ const Especialidade = require('./especialidade')(sequelize, DataTypes);
 const Evento = require('./evento')(sequelize, DataTypes);
 const Procedimento = require('./procedimento')(sequelize, DataTypes);
 const Tratamento = require('./tratamento')(sequelize, DataTypes);
+const Suprimento = require('./suprimento')(sequelize, DataTypes);
 
 // Associações Usuário ↔ Dentista/Paciente (1:1)
 Dentista.belongsTo(Usuario, { foreignKey: 'userId', as: 'usuario' });
@@ -51,4 +52,5 @@ module.exports = {
   Evento,
   Procedimento,
   Tratamento,
+  Suprimento
 };

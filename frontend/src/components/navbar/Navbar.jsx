@@ -22,6 +22,7 @@ const Navbar = () => {
           <Link to="/main"><Home size={24} class="iconNav"/><span>Início</span></Link>
           <Link to="/main/pacientes"><Users size={24} class="iconNav"/><span>Pacientes</span></Link>
           <Link to="/main/agenda"><Calendar size={24} class="iconNav"/><span>Agenda</span></Link>
+          <Link to="/main/estoque"><Calendar size={24} class="iconNav"/><span>Estoque</span></Link>
         </div>
         <div id="btnUserOptions">
           <User size={24} class="iconNav"/><span>Minha conta</span>

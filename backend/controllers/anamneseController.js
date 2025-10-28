@@ -1,6 +1,6 @@
 const { Anamnese } = require('../models');
 
-exports.get = async (res) => {
+exports.get = async (req, res) => {
   try {
     const anamneses = await Anamnese.findAll();
     res.json(anamneses);
@@ -9,10 +9,21 @@ exports.get = async (res) => {
   }
 };
 
+exports.getById = async (req, res) => {
+  const { pacienteId } = req.params;
+  try {
+    const anamnese = await Anamnese.findOne({ where: { pacienteId } });
+    if (!anamnese) return res.status(404).json({ msg: "Anamnese não encontrada" });
+    res.json(anamnese);
+  } catch (err) {
+    res.status(500).json({ erro: err.message });
+  }
+};
+
 exports.post = async (req, res) => {
   try {
-    const novoAnamnese = await Anamnese.create(req.body);
-    res.status(201).json(Anamnese);
+    const novaAnamnese = await Anamnese.create(req.body);
+    res.status(201).json(novaAnamnese);
   } catch (err) {
     res.status(400).json({ erro: err.message });
   }
