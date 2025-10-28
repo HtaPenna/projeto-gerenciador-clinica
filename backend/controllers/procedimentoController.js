@@ -1,23 +1,31 @@
 const { Procedimento } = require('../models');
 
-exports.getTodos = async (req, res) => {
+// Listar procedimentos de um tratamento
+exports.getPorTratamento = async (req, res) => {
   try {
-    const procedimentos = await Procedimento.findAll();
+    const procedimentos = await Procedimento.findAll({
+      where: { tratamentoId: req.params.tratamentoId }
+    });
     res.json(procedimentos);
   } catch (err) {
     res.status(500).json({ erro: err.message });
   }
 };
 
+// Criar procedimento vinculado a um tratamento
 exports.criar = async (req, res) => {
   try {
+    if (!req.body.tratamentoId) {
+      return res.status(400).json({ erro: "tratamentoId é obrigatório" });
+    }
     const novoProcedimento = await Procedimento.create(req.body);
     res.status(201).json(novoProcedimento);
   } catch (err) {
-     res.status(400).json({ erro: err.message });
+    res.status(400).json({ erro: err.message });
   }
 };
 
+// Atualizar procedimento pelo id
 exports.atualizar = async (req, res) => {
   try {
     const [updated] = await Procedimento.update(req.body, {
@@ -34,6 +42,7 @@ exports.atualizar = async (req, res) => {
   }
 };
 
+// Deletar procedimento pelo id
 exports.deletar = async (req, res) => {
   try {
     const deleted = await Procedimento.destroy({ where: { id: req.params.id } });

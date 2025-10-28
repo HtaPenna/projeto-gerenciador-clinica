@@ -21,14 +21,6 @@ module.exports = (sequelize, DataTypes) => {
         key: 'id',
       },
     },
-    tratamentoId: {
-      type: DataTypes.INTEGER,
-      allowNull: false,
-      references: {
-        model: 'dentista',
-        key: 'id',
-      },
-    },
     nome: {
       type: DataTypes.STRING(100),
       allowNull: false,
