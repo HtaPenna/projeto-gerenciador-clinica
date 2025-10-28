@@ -91,7 +91,6 @@ export default function Paciente() {
     return (
       <div className="paciente-container">
         <h1>{pacienteEditando ? "Editar Paciente" : "Novo Paciente"}</h1>
-        <div className="forms-wrapper" style={{ display: "flex", flexDirection: "column", gap: "2rem" }}>
           {/* Formulário de Dados Pessoais */}
           <PacienteForm
             paciente={pacienteEditando}
@@ -137,7 +136,6 @@ export default function Paciente() {
               onCancelar={() => setAnamneseEditando(null)}
             />
           )}
-        </div>
       </div>
     );
   }

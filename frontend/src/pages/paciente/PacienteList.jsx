@@ -7,16 +7,13 @@ export default function PacientesList({ pacientes, onEditar, onDeletar }) {
     <table border="1" cellPadding="5" cellSpacing="0">
       <thead>
         <tr>
-          <th>Código</th>
           <th>Nome</th>
           <th>Telefone</th>
-          <th>Ações</th>
         </tr>
       </thead>
       <tbody>
         {pacientes.map(p => (
           <tr key={p.id}>
-            <td>{p.id}</td>
             <td>{p.nome}</td>
             <td>{p.telefoneCelular}</td>
             <td>

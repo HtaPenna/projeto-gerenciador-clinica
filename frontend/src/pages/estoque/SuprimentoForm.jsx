@@ -1,126 +1,108 @@
-import { useState, useEffect } from "react";
+// SuprimentoForm.jsx
+import React, { useState, useEffect } from "react";
 
-export default function CadastroSuprimentoForm({ suprimentoId = null }) {
-  const [mensagem, setMensagem] = useState("");
-  const [suprimento, setSuprimento] = useState({
+export default function SuprimentoForm({ suprimento = null, onSalvar, onCancelar }) {
+  const [form, setForm] = useState({
     Codigo_Sup: "",
     Nome_Sup: "",
     Tipo_Sup: "",
     Descricao_Sup: "",
     Quantidade_Sup: "",
     QuantidadeMin_Sup: "",
+    id: null, // id da tabela suprimento (null quando novo)
   });
 
-  // Carregar suprimento existente para edição
+  // Quando o prop 'suprimento' mudar (edição), preenche o form
   useEffect(() => {
-    if (suprimentoId) {
-      fetch(`http://localhost:3001/suprimento/${suprimentoId}`)
-        .then((res) => res.json())
-        .then((data) => setSuprimento(data))
-        .catch((err) => console.error(err));
+    if (suprimento) {
+      setForm({
+        Codigo_Sup: suprimento.Codigo_Sup ?? "",
+        Nome_Sup: suprimento.Nome_Sup ?? "",
+        Tipo_Sup: suprimento.Tipo_Sup ?? "",
+        Descricao_Sup: suprimento.Descricao_Sup ?? "",
+        Quantidade_Sup: suprimento.Quantidade_Sup ?? "",
+        QuantidadeMin_Sup: suprimento.QuantidadeMin_Sup ?? "",
+        id: suprimento.id ?? null,
+      });
+    } else {
+      // limpa para novo
+      setForm({
+        Codigo_Sup: "",
+        Nome_Sup: "",
+        Tipo_Sup: "",
+        Descricao_Sup: "",
+        Quantidade_Sup: "",
+        QuantidadeMin_Sup: "",
+        id: null,
+      });
     }
-  }, [suprimentoId]);
+  }, [suprimento]);
 
-  // Atualiza os campos do formulário
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setSuprimento((prev) => ({ ...prev, [name]: value }));
+    setForm(prev => ({ ...prev, [name]: value }));
   };
 
-  // Salvar ou atualizar suprimento
-  const handleSalvar = async (e) => {
+  const handleSubmit = (e) => {
     e.preventDefault();
-    try {
-      const method = suprimento.id ? "PATCH" : "POST";
-      const url = suprimento.id
-        ? `http://localhost:3001/suprimento/${suprimento.id}`
-        : "http://localhost:3001/suprimento";
 
-      const res = await fetch(url, {
-        method,
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(suprimento),
-      });
-
-      const data = await res.json();
-
-      if (res.ok) {
-        setMensagem("Suprimento salvo com sucesso!");
-        // Limpar formulário se for novo
-        if (!suprimento.id) {
-          setSuprimento({
-            Codigo_Sup: "",
-            Nome_Sup: "",
-            Tipo_Sup: "",
-            Descricao_Sup: "",
-            Quantidade_Sup: "",
-            QuantidadeMin_Sup: "",
-          });
-        }
-      } else {
-        setMensagem(data.erro || "Erro ao salvar suprimento");
-      }
-    } catch (err) {
-      console.error(err);
-      setMensagem("Erro no servidor");
+    if (!form.Codigo_Sup || !form.Nome_Sup || !form.Tipo_Sup || !form.Quantidade_Sup) {
+      alert("Preencha os campos obrigatórios: Código, Nome, Tipo e Quantidade.");
+      return;
     }
+
+    const payload = {
+      Codigo_Sup: Number(form.Codigo_Sup),
+      Nome_Sup: form.Nome_Sup,
+      Tipo_Sup: form.Tipo_Sup,
+      Descricao_Sup: form.Descricao_Sup,
+      Quantidade_Sup: Number(form.Quantidade_Sup),
+      QuantidadeMin_Sup: form.QuantidadeMin_Sup ? Number(form.QuantidadeMin_Sup) : null,
+    };
+
+    if (form.id) payload.id = form.id;
+
+    onSalvar(payload);
   };
 
   return (
-    <div>
-      <h2>{suprimento.id ? "Editar Suprimento" : "Cadastro de Suprimento"}</h2>
+    <form onSubmit={handleSubmit}>
+      <div>
+        <label>Código*</label>
+        <input type="number" name="Codigo_Sup" value={form.Codigo_Sup} onChange={handleChange} required />
+      </div>
 
-      <form onSubmit={handleSalvar}>
-        <input
-          type="number"
-          name="Codigo_Sup"
-          placeholder="Código do Suprimento"
-          value={suprimento.Codigo_Sup}
-          onChange={handleChange}
-          required
-        />
-        <input
-          type="text"
-          name="Nome_Sup"
-          placeholder="Nome do Suprimento"
-          value={suprimento.Nome_Sup}
-          onChange={handleChange}
-          required
-        />
-        <input
-          type="number"
-          name="Tipo_Sup"
-          placeholder="Tipo do Suprimento"
-          value={suprimento.Tipo_Sup}
-          onChange={handleChange}
-          required
-        />
-        <textarea
-          name="Descricao_Sup"
-          placeholder="Descrição"
-          value={suprimento.Descricao_Sup}
-          onChange={handleChange}
-        />
-        <input
-          type="number"
-          name="Quantidade_Sup"
-          placeholder="Quantidade"
-          value={suprimento.Quantidade_Sup}
-          onChange={handleChange}
-          required
-        />
-        <input
-          type="number"
-          name="QuantidadeMin_Sup"
-          placeholder="Quantidade Mínima"
-          value={suprimento.QuantidadeMin_Sup}
-          onChange={handleChange}
-        />
+      <div>
+        <label>Nome*</label>
+        <input type="text" name="Nome_Sup" value={form.Nome_Sup} onChange={handleChange} required />
+      </div>
 
-        <button type="submit">{suprimento.id ? "Atualizar" : "Salvar"}</button>
-      </form>
+      <div>
+        <label>Tipo*</label>
+        <input type="text" name="Tipo_Sup" value={form.Tipo_Sup} onChange={handleChange} required />
+      </div>
 
-      {mensagem && <p>{mensagem}</p>}
-    </div>
+      <div>
+        <label>Descrição</label>
+        <textarea name="Descricao_Sup" value={form.Descricao_Sup} onChange={handleChange} />
+      </div>
+
+      <div>
+        <label>Quantidade*</label>
+        <input type="number" name="Quantidade_Sup" value={form.Quantidade_Sup} onChange={handleChange} required />
+      </div>
+
+      <div>
+        <label>Quantidade Mínima</label>
+        <input type="number" name="QuantidadeMin_Sup" value={form.QuantidadeMin_Sup} onChange={handleChange} />
+      </div>
+
+      <div style={{ marginTop: 10 }}>
+        <button type="submit">{form.id ? "Atualizar" : "Salvar"}</button>
+        <button type="button" onClick={onCancelar} style={{ marginLeft: 8 }}>
+          Cancelar
+        </button>
+      </div>
+    </form>
   );
 }
