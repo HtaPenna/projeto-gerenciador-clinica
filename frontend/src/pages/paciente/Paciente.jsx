@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import PacientesList from "./PacienteList.jsx";
 import PacienteForm from "./PacienteForm.jsx";
 import AnamneseForm from "./AnamneseForm.jsx";
@@ -7,6 +8,7 @@ import "./Paciente.css";
 const API_URL = "http://localhost:3001/pacientes";
 
 export default function Paciente() {
+  const navigate = useNavigate(); 
   const [pacientes, setPacientes] = useState([]);
   const [pacienteEditando, setPacienteEditando] = useState(null);
   const [mostrarForm, setMostrarForm] = useState(false);
@@ -163,7 +165,8 @@ export default function Paciente() {
           carregarAnamnese(paciente.id); // carrega anamnese existente ou cria nova
         }}
         onDeletar={deletarPaciente}
+        onVerProntuario={(id) => navigate(`/pacientes/${id}/prontuario`)}
       />
     </div>
-  );
+  );9
 }

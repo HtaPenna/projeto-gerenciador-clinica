@@ -1,6 +1,6 @@
 import React from "react";
 
-export default function PacientesList({ pacientes, onEditar, onDeletar }) {
+export default function PacientesList({ pacientes, onEditar, onDeletar, onVerProntuario }) {
   if (!pacientes.length) return <p>Nenhum paciente cadastrado.</p>;
 
   return (
@@ -17,7 +17,7 @@ export default function PacientesList({ pacientes, onEditar, onDeletar }) {
             <td>{p.nome}</td>
             <td>{p.telefoneCelular}</td>
             <td>
-              <button onClick={() => onDeletar(p.id)}>Ver Prontuário</button>{" "}
+              <button onClick={() => onVerProntuario(p.id)}>Ver Prontuário</button>{" "}
               <button onClick={() => onEditar(p)}>Editar</button>{" "}
               <button onClick={() => onDeletar(p.id)}>Excluir</button>
             </td>

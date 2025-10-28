@@ -8,6 +8,7 @@ import Login from './pages/login/Login.jsx';
 import CadastroDentista from './pages/cadastro/CadastroDentista.jsx';
 import CadastroPaciente from './pages/cadastro/CadastroPaciente.jsx';
 import Estoque from './pages/estoque/Estoque.jsx';
+import Prontuario from './pages/paciente/Prontuário.jsx';
 
 function App() {
   return (
@@ -16,6 +17,7 @@ function App() {
     <Route path="/login" element={<Login />} />
     <Route path="/cadastro/dentista" element={<CadastroDentista />} />
     <Route path="/cadastro/paciente" element={<CadastroPaciente />} />
+    <Route path="/pacientes/:id/prontuario" element={<Prontuario />} />
 
     <Route path="/main" element={<MainLayout />}>
       <Route index element={<Main />} />
