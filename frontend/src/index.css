@@ -10,6 +10,10 @@
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+
+  /*Variaveis de cor padrao do nosso site*/
+  --verde-claro: #00A39C;
+  --azul-escuro: #023c66;
 }
 
 #root{
@@ -29,6 +33,10 @@ body {
 h1 {
   font-size: 3.2em;
   line-height: 1.1;
+}
+
+button{
+  background: #5a5a5a;
 }
 
 @media (prefers-color-scheme: light) {
