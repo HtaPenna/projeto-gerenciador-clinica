@@ -57,7 +57,6 @@ exports.delete = async (req, res) => {
 exports.verificar = async (req, res) => {
   try {
     const { cpf } = req.query;
-
     const paciente = await Paciente.findOne({ where: { cpf } });
 
     if (!paciente) {

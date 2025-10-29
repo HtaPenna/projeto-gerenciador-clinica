@@ -35,11 +35,25 @@ export default function Prontuario() {
     carregarPaciente();
   }, [pacienteId]);
 
+  // Função para excluir paciente
+  const excluirPaciente = async () => {
+    if (!window.confirm("Tem certeza que deseja excluir este paciente?")) return;
+
+    try {
+      await fetch(`${API_PACIENTES}/${pacienteId}`, { method: "DELETE" });
+      alert("Paciente excluído com sucesso!");
+      navigate("/main/pacientes");
+    } catch (err) {
+      console.error(err);
+      alert("Erro ao excluir paciente");
+    }
+  };
+
   if (!paciente) return <p>Carregando paciente...</p>;
 
   return (
     <div className="prontuario-container">
-        <button
+      <button
         onClick={() => navigate("/main/pacientes")}
         className="mt-4 px-4 py-2 bg-gray-600 text-white rounded"
       >
@@ -65,21 +79,18 @@ export default function Prontuario() {
         >
           Visão Geral
         </button>
-
         <button
           className={`px-4 py-2 rounded ${secaoAtiva === "tratamentos" ? "bg-blue-600 text-white" : "bg-gray-200"}`}
           onClick={() => setSecaoAtiva("tratamentos")}
         >
           Tratamentos
         </button>
-
         <button
           className={`px-4 py-2 rounded ${secaoAtiva === "anamnese" ? "bg-blue-600 text-white" : "bg-gray-200"}`}
           onClick={() => setSecaoAtiva("anamnese")}
         >
           Anamnese
         </button>
-
         <button
           className={`px-4 py-2 rounded ${secaoAtiva === "consultas" ? "bg-blue-600 text-white" : "bg-gray-200"}`}
           onClick={() => setSecaoAtiva("consultas")}
@@ -95,6 +106,14 @@ export default function Prontuario() {
         {secaoAtiva === "tratamentos" && <Tratamentos pacienteId={pacienteId} />}
         {secaoAtiva === "consultas" && <Consultas pacienteId={pacienteId} />}
       </div>
+
+      {/* Botão fixo de excluir paciente */}
+      <button
+        onClick={excluirPaciente}
+        className="fixed bottom-4 left-4 px-4 py-2 bg-red-600 text-white rounded shadow-lg"
+      >
+        Excluir Paciente
+      </button>
     </div>
   );
 }

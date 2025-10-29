@@ -222,7 +222,7 @@ export default function PacienteForm({ paciente, onSalvar, onCancelar }) {
       </div>
 
       <div style={{ marginTop: "10px" }}>
-        <button type="submit">{paciente ? "Atualizar" : "Salvar"}</button>
+       <button type="submit" className="px-4 py-2 bg-green-600 text-white rounded">Salvar</button>
         <button type="button" onClick={onCancelar} style={{ marginLeft: "10px" }}>Cancelar</button>
       </div>
     </form>

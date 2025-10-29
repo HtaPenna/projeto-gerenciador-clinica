@@ -26,9 +26,12 @@ Evento.belongsTo(Dentista, { foreignKey: 'dentistaId', onDelete: 'CASCADE', onUp
 Paciente.hasMany(Evento, { foreignKey: 'pacienteId', as: 'consulta' });
 Evento.belongsTo(Paciente, { foreignKey: 'pacienteId', as: 'paciente' });
 
-// Associações Evento ↔ Procedimentos (1:N)
-Evento.hasMany(Procedimento, { foreignKey: 'eventoId', as: 'procedimento' });
-Procedimento.belongsTo(Evento, { foreignKey: 'eventoId', as: 'consulta' });
+Evento.belongsTo(Tratamento, { foreignKey: 'tratamentoId', as: 'tratamento' });
+Evento.belongsTo(Procedimento, { foreignKey: 'procedimentoId', as: 'procedimento' });
+
+
+Tratamento.hasMany(Evento, { foreignKey: 'tratamentoId', as: 'eventos' });
+Procedimento.hasMany(Evento, { foreignKey: 'procedimentoId', as: 'eventos' });
 
 // Associações Tratamento ↔ Procedimentos (1:N)
 Tratamento.hasMany(Procedimento, { foreignKey: 'tratamentoId', as: 'procedimento' });

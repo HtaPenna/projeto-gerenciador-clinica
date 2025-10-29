@@ -1,4 +1,4 @@
-const { Evento, Procedimento, Paciente } = require('../models');
+const { Evento, Tratamento, Procedimento, Paciente } = require('../models');
 
 exports.get = async (req, res) => {
   try {
@@ -16,6 +16,28 @@ exports.get = async (req, res) => {
   } catch (err) {
     console.error(err);
     res.status(500).json({ error: 'Erro ao buscar eventos' });
+  }
+};
+
+exports.getByPacienteId = async (req, res) => {
+  const { pacienteId } = req.params;
+
+  if (!pacienteId) return res.status(400).json({ erro: "PacienteId é obrigatório" });
+
+  try {
+    const eventos = await Evento.findAll({
+      where: { pacienteId },
+      include: [
+        { model: Tratamento, as: 'tratamento' },  // Assumindo alias 'tratamento'
+        { model: Procedimento, as: 'procedimento' } // Assumindo alias 'procedimento'
+      ],
+      order: [['inicio', 'ASC']],
+    });
+
+    res.json(eventos);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ erro: "Erro ao buscar eventos" });
   }
 };
 
