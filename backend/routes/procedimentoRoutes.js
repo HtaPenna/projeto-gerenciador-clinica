@@ -3,9 +3,16 @@ const router = express.Router();
 const procedimentoController = require("../controllers/procedimentoController");
 
 // Rotas CRUD para Procedimentos
-router.get("/", procedimentoController.getTodos);         // GET /procedimentos
-router.post("/", procedimentoController.criar);           // POST /procedimentos
-router.patch("/:id", procedimentoController.atualizar);   // PATCH /procedimentos/:id
-router.delete("/:id", procedimentoController.deletar);    // DELETE /procedimentos/:id
+// Listar procedimentos de um tratamento
+router.get('/tratamentos/:tratamentoId/procedimentos', procedimentoController.getPorTratamento);
+
+// Criar procedimento vinculado a um tratamento
+router.post('/procedimentos', procedimentoController.criar);
+
+// Atualizar procedimento pelo id
+router.patch('/procedimentos/:id', procedimentoController.atualizar);
+
+// Deletar procedimento pelo id
+router.delete('/procedimentos/:id', procedimentoController.deletar);
 
 module.exports = router;
