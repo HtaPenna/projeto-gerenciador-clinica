@@ -29,7 +29,7 @@ export default function Anamnese({ pacienteId }) {
 
   return (
     <div className="anamnese-container space-y-4">
-      <h2 className="text-xl font-semibold mb-2">Anamnese do Paciente</h2>
+      <h2 className="text-xl font-semibold mb-2">Histórico Médico e Odontológico</h2>
 
       {/* Queixa Principal */}
       <div className="section p-2 bg-white shadow rounded">

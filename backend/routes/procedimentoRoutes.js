@@ -4,15 +4,15 @@ const procedimentoController = require("../controllers/procedimentoController");
 
 // Rotas CRUD para Procedimentos
 // Listar procedimentos de um tratamento
-router.get('/tratamentos/:tratamentoId/procedimentos', procedimentoController.getPorTratamento);
+router.get('/tratamento/:tratamentoId', procedimentoController.getPorTratamento);
 
 // Criar procedimento vinculado a um tratamento
-router.post('/procedimentos', procedimentoController.criar);
+router.post('/', procedimentoController.criar);
 
 // Atualizar procedimento pelo id
-router.patch('/procedimentos/:id', procedimentoController.atualizar);
+router.patch('/:id', procedimentoController.atualizar);
 
 // Deletar procedimento pelo id
-router.delete('/procedimentos/:id', procedimentoController.deletar);
+router.delete('/:id', procedimentoController.deletar);
 
 module.exports = router;

@@ -165,8 +165,8 @@ export default function Paciente() {
           carregarAnamnese(paciente.id); // carrega anamnese existente ou cria nova
         }}
         onDeletar={deletarPaciente}
-        onVerProntuario={(id) => navigate(`/pacientes/${id}/prontuario`)}
+        onVerProntuario={(id) => navigate(`/main/pacientes/${id}/prontuario`)}
       />
     </div>
-  );9
+  );
 }
