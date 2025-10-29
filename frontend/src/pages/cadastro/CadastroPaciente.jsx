@@ -78,16 +78,35 @@ export default function CadastroPacienteStepForm() {
         return;
       }
 
-      const userId = dataUsuario.id; // pega o id retornado pelo backend
+      const userId = dataUsuario.id;
       console.log("Usuário criado com id:", userId);
 
-      // Criar paciente com userId
+      if (step === "criarUsuario" && pacienteId) {
+        // 2️⃣ Atualiza paciente existente com o userId
+        const resAtualizaPaciente = await fetch(`http://localhost:3001/pacientes/${pacienteId}`, {
+          method: "PATCH",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ userId }),
+        });
+
+        if (!resAtualizaPaciente.ok) {
+          const dataErro = await resAtualizaPaciente.json();
+          setMensagem(dataErro.erro || "Erro ao atualizar paciente");
+          return;
+        }
+
+        setMensagem("Usuário vinculado ao paciente existente com sucesso!");
+        navigate("/login");
+        return;
+      }
+
+      // 2️⃣ Novo paciente, criar normalmente
       const payloadPaciente = {
-        userId, // vincula o usuário ao paciente
+        userId,
         nome,
         cpf,
         telefoneCelular,
-        dataNascimento,
+        dataNascimento: dataNascimento || null,
         telefoneResidencial,
         telefoneEmergencia,
         cep,

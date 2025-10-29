@@ -78,17 +78,24 @@ export default function AnamneseForm({ anamnese, onSalvar, onCancelar }) {
     onSalvar(formData);
   };
 
-  const condicoesOptions = ["Anemia", "Asma", "Cancêr", "Cefaleia", "Diabetes", "Hipertensão", "Cardiopatias", "Outros"];
+  const condicoesOptions = [
+    "Anemia", "Asma", "Cancêr", "Cefaleia", "Convulsões", "Desmaio", 
+    "Diabete", "Derrame", "DTSs", "Depressão", "Hepatite", "Hipertensão", 
+    "Insuficiência renal", "Problema cardíaco", "Problema respiratório", "Nenhum"
+  ];
 
   return (
-    <form onSubmit={handleSubmit}>
+    <form onSubmit={handleSubmit} className="space-y-4">
+
+      {/* 1 */}
       <div className="formGroup">
-        <label>Queixa Principal*</label>
+        <label>1. Motivo pelo qual procurou tratamento?*</label>
         <textarea name="queixaPrincipal" value={formData.queixaPrincipal} onChange={handleChange} required />
       </div>
 
+      {/* 2 */}
       <div className="formGroup">
-        <label>Condições de Saúde*</label>
+        <label>2. Já sofreu ou sofre de:*</label>
         {condicoesOptions.map((c) => (
           <div key={c}>
             <input
@@ -103,101 +110,75 @@ export default function AnamneseForm({ anamnese, onSalvar, onCancelar }) {
         ))}
       </div>
 
+      {/* 3 a 6 */}
       <div className="formGroup">
-        <label>Antecedentes Médicos*</label>
+        <label>3. Está em algum tratamento médico?*</label>
         <textarea name="antecedentesMedicos" value={formData.antecedentesMedicos} onChange={handleChange} />
-      </div>
-
-      <div className="formGroup">
-        <label>Uso de Medicamentos*</label>
+        
+        <label>4. Está tomando alguma medicação?*</label>
         <textarea name="usoMedicamentos" value={formData.usoMedicamentos} onChange={handleChange} />
-      </div>
-
-      <div className="formGroup">
-        <label>Alergias*</label>
+        
+        <label>5. Tem alergia a alguma medicação?*</label>
         <textarea name="alergias" value={formData.alergias} onChange={handleChange} />
-      </div>
-
-      <div className="formGroup">
-        <label>Sobre Cicatrização*</label>
+        
+        <label>6. Tem problema de cicatrização?*</label>
         <textarea name="sobreCicatrizacao" value={formData.sobreCicatrizacao} onChange={handleChange} />
       </div>
 
+      {/* 7 a 9 */}
       <div className="formGroup">
-        <label>Fumante*</label>
+        <label>7. Fuma?*</label>
         <input type="checkbox" name="fumante" checked={formData.fumante} onChange={handleChange} />
-      </div>
 
-      <div className="formGroup">
-        <label>Consumo de Bebidas Alcoólicas*</label>
+        <label>8. Ingere bebida alcoólica?*</label>
         <input type="checkbox" name="consumoBebidasAlcoolicas" checked={formData.consumoBebidasAlcoolicas} onChange={handleChange} />
-      </div>
 
-      <div className="formGroup">
-        <label>Dificuldade Respiratória*</label>
+        <label>9. Tem alguma dificuldade de respiração ou obstrução de vias aéreas?*</label>
         <input type="checkbox" name="dificuldadeRespiratoria" checked={formData.dificuldadeRespiratoria} onChange={handleChange} />
       </div>
 
+      {/* 10 a 11 */}
       <div className="formGroup">
-        <label>Problema Digestivo*</label>
+        <label>10. Tem ou teve problema digestivo?*</label>
         <textarea name="problemaDigestivo" value={formData.problemaDigestivo} onChange={handleChange} />
-      </div>
-
-      <div className="formGroup">
-        <label>Último Tratamento*</label>
+        
+        <label>11. Quando foi seu último tratamento odontológico?*</label>
         <textarea name="ultimoTratamento" value={formData.ultimoTratamento} onChange={handleChange} />
       </div>
 
+      {/* 12 a 20 */}
       <div className="formGroup">
-        <label>Satisfação com o Sorriso*</label>
+        <label>12. Está insatisfeito com o seu sorriso?*</label>
         <input type="checkbox" name="satisfacaoSorriso" checked={formData.satisfacaoSorriso} onChange={handleChange} />
-      </div>
 
-      <div className="formGroup">
-        <label>Dentes Brancos*</label>
+        <label>13. Gostaria de ter dentes mais brancos?*</label>
         <input type="checkbox" name="dentesBrancos" checked={formData.dentesBrancos} onChange={handleChange} />
-      </div>
 
-      <div className="formGroup">
-        <label>Sensibilidade nos Dentes*</label>
+        <label>14. Sente dor ou sensibilidade em algum dente?*</label>
         <textarea name="sensibilidadeDentes" value={formData.sensibilidadeDentes} onChange={handleChange} />
-      </div>
 
-      <div className="formGroup">
-        <label>Uso de Fio Dental*</label>
+        <label>15. Quando usa fio dental prende ou desfia em algum lugar?*</label>
         <textarea name="usoFioDental" value={formData.usoFioDental} onChange={handleChange} />
-      </div>
 
-      <div className="formGroup">
-        <label>Orientação Bucal*</label>
+        <label>16. Recebeu orientação de higiene bucal?*</label>
         <textarea name="orientacaoBucal" value={formData.orientacaoBucal} onChange={handleChange} />
-      </div>
 
-      <div className="formGroup">
-        <label>Desconforto Bucal*</label>
+        <label>17. Tem dificuldade, dor ou desconforto ao abrir a boca ou ao bocejar?*</label>
         <textarea name="desconfortoBucal" value={formData.desconfortoBucal} onChange={handleChange} />
-      </div>
 
-      <div className="formGroup">
-        <label>Sobre Maxilar*</label>
+        <label>18. Meus maxilares ficam rígidos, apertados ou cansados com regularidade?*</label>
         <textarea name="sobreMaxilar" value={formData.sobreMaxilar} onChange={handleChange} />
-      </div>
 
-      <div className="formGroup">
-        <label>Placa de Mordida*</label>
+        <label>19. Já usou placa de mordida?*</label>
         <textarea name="placaMordida" value={formData.placaMordida} onChange={handleChange} />
-      </div>
 
-      <div className="formGroup">
-        <label>Grau de Tensão*</label>
+        <label>20. Qual seu grau de tensão e/ou ansiedade no dentista?*</label>
         <textarea name="grauTensao" value={formData.grauTensao} onChange={handleChange} />
       </div>
 
-      <div style={{ marginTop: "10px" }}>
+      <div className="flex space-x-2 mt-2">
         <button type="submit">{anamnese ? "Atualizar" : "Salvar"}</button>
-        <button type="button" onClick={onCancelar} style={{ marginLeft: "10px" }}>
-          Cancelar
-        </button>
+        <button type="button" onClick={onCancelar}>Cancelar</button>
       </div>
     </form>
   );

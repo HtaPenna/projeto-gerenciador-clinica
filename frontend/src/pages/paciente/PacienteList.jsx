@@ -18,8 +18,6 @@ export default function PacientesList({ pacientes, onEditar, onDeletar, onVerPro
             <td>{p.telefoneCelular}</td>
             <td>
               <button onClick={() => onVerProntuario(p.id)}>Ver Prontuário</button>{" "}
-              <button onClick={() => onEditar(p)}>Editar</button>{" "}
-              <button onClick={() => onDeletar(p.id)}>Excluir</button>
             </td>
           </tr>
         ))}

@@ -17,13 +17,13 @@ function App() {
     <Route path="/login" element={<Login />} />
     <Route path="/cadastro/dentista" element={<CadastroDentista />} />
     <Route path="/cadastro/paciente" element={<CadastroPaciente />} />
-    <Route path="/pacientes/:id/prontuario" element={<Prontuario />} />
-
+    
     <Route path="/main" element={<MainLayout />}>
       <Route index element={<Main />} />
       <Route path="pacientes" element={<Paciente />} />
       <Route path="agenda" element={<Agendavisual />} />
       <Route path="estoque" element={<Estoque />} />
+      <Route path="pacientes/:id/prontuario" element={<Prontuario />} />
     </Route>
   </Routes>
 
