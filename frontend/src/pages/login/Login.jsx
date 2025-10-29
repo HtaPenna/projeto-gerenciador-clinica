@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useNavigate, Link } from "react-router-dom"; // ✅ importar Link
+import {CircleArrowLeft} from "lucide-react";
 import './login.css'
 
 export default function Login() {
@@ -34,6 +35,9 @@ export default function Login() {
 
   return (
     <div class="loginPage">
+      <div className="btnVoltar">
+        <button onClick={() => navigate('/')}><CircleArrowLeft size={26}/></button>
+      </div>
       <div class="containerLogin">
         <h2>Login</h2>
         <form onSubmit={handleLogin}>
