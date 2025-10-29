@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
+import {CircleArrowLeft} from "lucide-react";
 import './cadastroDentista.css'
 
 export default function CadastroDentista() {
@@ -44,6 +45,10 @@ export default function CadastroDentista() {
 
   return (
     <div className="cadastroPage">
+      <div className="btnVoltar">
+        <button onClick={() => navigate('/login')}><CircleArrowLeft size={26}/></button>
+      </div>
+
       <div className="cadastroContainer">
         <h2>Cadastro de Dentista</h2>
         <form onSubmit={handleCadastro} className="row g-3">

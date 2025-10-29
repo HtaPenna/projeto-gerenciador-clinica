@@ -5,6 +5,22 @@
     align-items: center;
     justify-content: center;
 
+    .btnVoltar{
+        position: fixed;
+        top: 20px;
+        left: 20px;
+
+        button{
+            border: none;
+            background: none;
+            color: #023c66;
+        }
+
+        button:hover{
+            color: #00A39C;
+        }
+    }
+
     .cadastroContainer{
         padding: 20px;
         border-radius: 8px;
