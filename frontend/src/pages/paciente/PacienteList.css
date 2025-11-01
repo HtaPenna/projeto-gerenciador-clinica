@@ -1,0 +1,113 @@
+.tableContainer {
+    overflow-x: auto;
+    width: 90%;
+    margin: 0 auto;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    background: white;
+
+    table {
+        width: 100%;
+        border-collapse: collapse;
+
+        thead{
+
+            tr {
+                height: 60px;
+                color: #718096;
+
+                th {
+                    text-align: left;
+                    font-weight: 600;
+                    font-size: 14px;
+                }
+
+                th:first-child {
+                    padding: 0 0 0 30px;
+                }
+
+                th:nth-child(2) {
+                    width: 25%;
+                    padding-inline: 20px;
+                }
+            }
+        }
+
+        tbody{
+            tr {
+                height: 50px;
+                border-bottom: 1px solid #cdcdcd;
+                transition: background-color 0.2s ease;
+
+                td {
+                    vertical-align: middle;
+                    color: #4a5568;
+                    font-size: 14px;
+                }
+            }
+
+            tr:hover {
+                background: #f8f9fa;
+            }
+
+            td:first-child {
+                padding-left: 30px;
+                font-weight: 500;
+                color: #2d3748;
+            }
+
+            td:nth-child(2) {
+                color: #718096;
+                padding-inline: 20px;
+            }
+
+            td:nth-child(3) {
+                width: 1%; /* Ações */
+                text-align: center;
+
+                button {
+                    color: #4a5568;
+                    background: none;
+                    padding: 0;
+                    margin-right: 30px;
+                    border: none;
+                    font-size: 13px;
+                    font-weight: 500;
+                    cursor: pointer;
+                    transition: all 0.2s ease;
+                    white-space: nowrap;
+                    text-decoration: underline;
+                }
+
+                button:hover{
+                    color: #2d3748;
+                }
+            }
+
+            tr:last-child{
+                border: none;
+            }
+        }
+    }
+}
+
+/* RESPONSIVO */
+@media (max-width: 768px) {
+    .tableContainer {
+        width: 95%;
+    }
+    
+    thead th,
+    tbody td {
+        padding: 12px 15px;
+        font-size: 13px;
+    }
+    
+    tbody td:first-child {
+        padding-left: 20px;
+    }
+    
+    tbody td:nth-child(3) button {
+        font-size: 12px;
+    }
+}

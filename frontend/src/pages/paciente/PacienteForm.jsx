@@ -114,7 +114,7 @@ export default function PacienteForm({ paciente, onSalvar, onCancelar }) {
   };
 
   return (
-    <div class="bootstrap-scope">
+    <div className="bootstrap-scope">
       <form onSubmit={handleSubmit}>
         <h2>{paciente ? "Editar Paciente" : "Novo Paciente"}</h2>
 

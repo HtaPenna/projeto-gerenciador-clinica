@@ -1,9 +1,10 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import PacientesList from "./PacienteList.jsx";
 import PacienteForm from "./PacienteForm.jsx";
 import AnamneseForm from "./AnamneseForm.jsx";
 import { usePageTitle } from '../../hooks/usePageTitle';
+import { Plus, User, Calendar, Package } from "lucide-react";
 import "./Paciente.css";
 
 const API_URL = "http://localhost:3001/pacientes";
@@ -15,6 +16,19 @@ export default function Paciente() {
   const [mostrarForm, setMostrarForm] = useState(false);
   const [pacienteCriando, setPacienteCriando] = useState(null);
   const [anamneseCriando, setAnamneseCriando] = useState(null);
+  const [dropdownOpen, setDropdownOpen] = useState(false);
+  const dropdownRef = useRef(null);
+
+  // Fecha o dropdown ao clicar fora
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+        setDropdownOpen(false);
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
 
   useEffect(() => {
     updateTitle('Pacientes');
@@ -51,6 +65,14 @@ export default function Paciente() {
     } catch (err) {
       console.error(err);
     }
+  };
+
+  // Função para novo paciente
+  const handleNovoPaciente = () => {
+    setPacienteCriando({});
+    setMostrarForm(true);
+    setAnamneseCriando({});
+    setDropdownOpen(false);
   };
 
   // Formulários de criação
@@ -107,18 +129,32 @@ export default function Paciente() {
 
   // Página principal com lista de pacientes e botão de criar
   return (
-    <div>
-      <h1>Pacientes</h1>
-      <button
-        onClick={() => {
-          setPacienteCriando({});
-          setMostrarForm(true);
-          setAnamneseCriando({}); // criar nova anamnese
-        }}
-        className="mb-4 px-4 py-2 bg-blue-600 text-white rounded"
-      >
-        Novo Paciente
-      </button>
+    <div className="pacienteContainer">
+      <div className="fab-container" ref={dropdownRef}>
+        <button 
+          className="btnNew" 
+          onClick={() => setDropdownOpen(!dropdownOpen)}
+        >
+          <Plus size={30}/>
+        </button>
+
+        {dropdownOpen && (
+          <div className="newDropContainer">
+            <button onClick={handleNovoPaciente} className="dropdown-option">
+              <User size={16} />
+              <span>Novo paciente</span>
+            </button>
+            <button className="dropdown-option">
+              <Calendar size={16} />
+              <span>Nova consulta</span>
+            </button>
+            <button className="dropdown-option">
+              <Package size={16} />
+              <span>Novo relatorio</span>
+            </button>
+          </div>
+        )}
+      </div>
 
       <PacientesList
         pacientes={pacientes}
