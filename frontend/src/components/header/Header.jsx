@@ -7,9 +7,16 @@ import './Header.css';
 
 const Header = () => {
   const [open, setOpen] = useState(false);
+   const [userName, setUserName] = useState('UserName'); 
   const menuRef = useRef(null);
   const navigate = useNavigate();
   const { pageTitle } = usePageTitle();
+
+  //busca nome de usuario
+  useEffect(() => {
+    const name = localStorage.getItem('userName') || 'UserName';
+    setUserName(name);
+  }, []);
 
   // Fecha o dropdown se clicar fora
   useEffect(() => {
@@ -26,6 +33,7 @@ const Header = () => {
   const handleLogout = async () => {
     try {
       localStorage.removeItem("token");
+      localStorage.removeItem("userName");
       navigate("/");
     } catch (err) {
       console.error("Erro ao sair:", err);
@@ -40,7 +48,7 @@ const Header = () => {
 
       <div className='divUser' ref={menuRef}>
         <div className='userName'>
-          <span>UserName</span>
+          <span>{userName}</span>
         </div>
 
         <div className="btnUser" onClick={() => setOpen(!open)}>
@@ -49,7 +57,7 @@ const Header = () => {
 
         {open && (
           <div className="userDropdown">
-            <p className="dropdownUsername">Username</p>
+            <p className="dropdownUsername">{userName}</p>
 
             <div className='dropdownOptions'>
               <a href="#" className="dropdownLink">

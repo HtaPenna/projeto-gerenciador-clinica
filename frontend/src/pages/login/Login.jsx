@@ -23,6 +23,7 @@ export default function Login() {
 
       if (res.ok) {
         localStorage.setItem("token", data.token);
+        localStorage.setItem("userName", data.user.name); 
         setMensagem("Login realizado com sucesso!");
         navigate("/main"); 
       } else {
@@ -34,11 +35,11 @@ export default function Login() {
   };
 
   return (
-    <div class="loginPage">
+    <div className="loginPage">
       <div className="btnVoltar">
         <button onClick={() => navigate('/')}><CircleArrowLeft size={26}/></button>
       </div>
-      <div class="containerLogin">
+      <div className="containerLogin">
         <h2>Login</h2>
         <form onSubmit={handleLogin}>
           <input
@@ -59,11 +60,11 @@ export default function Login() {
         </form>
         {mensagem && <p>{mensagem}</p>}
 
-        <div class="textoRodape">
+        <div className="textoRodape">
           <p>
             Não tem uma conta? Cadastre-se como:
           </p>
-          <div class="linksCadastro">
+          <div className="linksCadastro">
             <Link to="/cadastro/dentista">
               Dentista
             </Link>
