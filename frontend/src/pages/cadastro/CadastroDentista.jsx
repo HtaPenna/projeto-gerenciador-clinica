@@ -59,7 +59,7 @@ export default function CadastroDentista() {
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               required
-              class="form-control"
+              className="form-control"
             />
           </div>
           <div className="col-md-5">
@@ -69,7 +69,7 @@ export default function CadastroDentista() {
               value={senha}
               onChange={(e) => setSenha(e.target.value)}
               required
-              class="form-control"
+              className="form-control"
             />
           </div>
 
@@ -80,7 +80,7 @@ export default function CadastroDentista() {
               value={nome}
               onChange={(e) => setNome(e.target.value)}
               required
-              class="form-control"
+              className="form-control"
             />
           </div>
           <div className="col-md-4">
@@ -90,7 +90,7 @@ export default function CadastroDentista() {
               value={cro}
               onChange={(e) => setCro(e.target.value)}
               required
-              class="form-control"
+              className="form-control"
             />
           </div>
           <div className="col-md-8">
@@ -100,7 +100,7 @@ export default function CadastroDentista() {
               value={enderecoConsultorio}
               onChange={(e) => setEnderecoConsultorio(e.target.value)}
               required
-              class="form-control"
+              className="form-control"
             />
           </div>
           <div className="col-md-4">
@@ -110,7 +110,7 @@ export default function CadastroDentista() {
               value={telefoneConsultorio}
               onChange={(e) => setTelefoneConsultorio(e.target.value)}
               required
-              class="form-control"
+              className="form-control"
             />
           </div>
           <div className="col-12">
