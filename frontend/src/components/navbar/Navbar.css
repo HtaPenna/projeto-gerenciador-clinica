@@ -67,7 +67,7 @@
             display: flex;
             flex-direction: column;
 
-            a{
+            .nav-link {
                 text-decoration: none;
                 color: white;
                 padding: 15px 0px;
@@ -75,40 +75,17 @@
                 display: flex;
                 align-items: center;
                 font-weight: normal;
+                transition: all 0.3s ease;
             }
 
-            a:hover{
+            .nav-link:hover {
                 background: #ffffff37;
             }
-        }
 
-        #btnUserOptions{
-            width: 100%;
-            color: white;
-            padding: 15px 0px;
-            display: flex;
-            align-items: center;
-            cursor: pointer;
-        }
-
-        #btnUserOptions:hover{
-            background: #ffffff37;
-        }
-
-        button{
-            background: none;
-            cursor: pointer;
-            color: #fff;
-            padding: 10px 0px;
-            width: 100%;
-            display: none;
-            align-items: center;
-            justify-content: center;
-            border: none;
-        }
-
-        button:hover{
-            background-color: #ffffff37;
+            .nav-link.active {
+                background: #ffffff52;
+                border-left: 3px solid white;
+            }
         }
     }
 }
@@ -128,6 +105,11 @@
     span{
         opacity: 1;
         width: auto;
+    }
+
+    .nav-link.active {
+        background: #ffffff52;
+        border-left: 3px solid white;
     }
 
     .navbar{
