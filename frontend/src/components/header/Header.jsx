@@ -26,7 +26,7 @@ const Header = () => {
   const handleLogout = async () => {
     try {
       localStorage.removeItem("token");
-      navigate("/login");
+      navigate("/");
     } catch (err) {
       console.error("Erro ao sair:", err);
     }
