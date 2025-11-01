@@ -6,6 +6,8 @@ import timeGridPlugin from "@fullcalendar/timegrid";
 import interactionPlugin from "@fullcalendar/interaction";
 import NovoEventoModal from "./AgendamentoForm.jsx";
 import ConfigCalendarModal from "./ConfigAgenda.jsx";
+import { usePageTitle } from '../../hooks/usePageTitle';
+
 
 const API_URL = "http://localhost:3001/eventos";
 const plugins = [dayGridPlugin, timeGridPlugin, interactionPlugin];
@@ -16,6 +18,7 @@ export default function AgendaVisual() {
   const [dataSelecionada, setDataSelecionada] = useState(new Date());
   const [mostrarModalConfig, setMostrarModalConfig] = useState(false);
   const [dentistaSelecionado, setDentistaSelecionado] = useState(1); // Dentista ativo
+  const { updateTitle } = usePageTitle();
 
   // Configurações ajustáveis pelo usuário
   const [config, setConfig] = useState({
@@ -58,6 +61,10 @@ export default function AgendaVisual() {
       console.error("Erro ao carregar eventos:", error);
     }
   };
+
+  useEffect(() => {
+    updateTitle('Agenda');
+  }, [updateTitle]);
 
   useEffect(() => {
     carregarEventos();

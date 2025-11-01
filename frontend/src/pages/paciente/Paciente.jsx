@@ -3,16 +3,22 @@ import { useNavigate } from "react-router-dom";
 import PacientesList from "./PacienteList.jsx";
 import PacienteForm from "./PacienteForm.jsx";
 import AnamneseForm from "./AnamneseForm.jsx";
+import { usePageTitle } from '../../hooks/usePageTitle';
 import "./Paciente.css";
 
 const API_URL = "http://localhost:3001/pacientes";
 
 export default function Paciente() {
-  const navigate = useNavigate(); 
+  const navigate = useNavigate();
+  const { updateTitle } = usePageTitle();
   const [pacientes, setPacientes] = useState([]);
   const [mostrarForm, setMostrarForm] = useState(false);
   const [pacienteCriando, setPacienteCriando] = useState(null);
   const [anamneseCriando, setAnamneseCriando] = useState(null);
+
+  useEffect(() => {
+    updateTitle('Pacientes');
+  }, [updateTitle]);
 
   // Carrega pacientes
   const carregarPacientes = async () => {

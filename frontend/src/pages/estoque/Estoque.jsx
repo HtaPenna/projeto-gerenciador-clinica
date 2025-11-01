@@ -1,5 +1,6 @@
 // Estoque.jsx
 import React, { useState, useEffect } from "react";
+import { usePageTitle } from '../../hooks/usePageTitle';
 import SuprimentoForm from "./SuprimentoForm.jsx";
 
 const API_URL = "http://localhost:3001/suprimento";
@@ -9,6 +10,7 @@ export default function Estoque() {
   const [suprimentoEditando, setSuprimentoEditando] = useState(null);
   const [mostrarForm, setMostrarForm] = useState(false);
   const [loading, setLoading] = useState(false);
+  const { updateTitle } = usePageTitle();
 
   // Carrega suprimentos do banco
   const carregarSuprimentos = async () => {
@@ -24,6 +26,10 @@ export default function Estoque() {
       setLoading(false);
     }
   };
+
+  useEffect(() => {
+    updateTitle('Estoque');
+  }, [updateTitle]);
 
   useEffect(() => {
     carregarSuprimentos();
