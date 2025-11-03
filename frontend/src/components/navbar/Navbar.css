@@ -1,40 +1,120 @@
 #navContainer{
-    background-color: #00A39C;
-    width: 100vw;
-    height: 60px;
+    background: linear-gradient(to bottom, #00A39D, #00D6E5);
+    height: 100vh;
+    width: 60px;
     display: flex;
-    align-items: center;
-    justify-content: flex-end;
-    padding-inline: 2rem;
-    box-sizing: border-box;
+    flex-direction: column;
+    position: fixed;
+    left: 0;
+    bottom: 0;
+    border-radius: 0px 18px 0px 0px;
+    transition: width 0.3s ease;
+    overflow: hidden;
+    z-index: 1000;
 
-    .navbar{
-        min-width: 400px;
+    span{
+        opacity: 0;
+        white-space: nowrap;
+        transition: opacity 0.2s ease 0.15s;
+        width: 0px;
+    }
+
+    #logoNav{
+        padding: 10px 0px;
         display: flex;
         align-items: center;
+        justify-content: center;
+        height: 60px;
+        width: 60px;
+        transition: width 0.3s ease;
+        
+        .iconNav{
+            display: flex;
+            width: 30px;
+            overflow: hidden;
+            transition: width 0.3s ease;
+
+            img{
+                height: 30px;
+                object-fit: cover;
+                width: auto;
+                object-position: left;
+            }
+        }
+    }
+
+    .navbar{
+        display: flex;
+        flex-direction: column;
+        flex-grow: 1;
+        background: none;
+        padding: 12px 0px;
+        align-items: flex-start;
         justify-content: space-between;
-        box-sizing: border-box;
 
-        a{
-            text-decoration: none;
-            color: white;
-            padding: 5px 0px;
+        .iconNav{
+            width: 60px;
+            flex-shrink: 0 /*Para o icone não mexer*/
         }
 
-        a:hover{
-            color: #00514d;
-        }
-
-        button{
+        span{
             background: none;
-            border: solid 2px #00514d;
-            padding: 5px 15px;
-            color: #00514d;
         }
 
-        button:hover{
-            background-color: #00514d;
-            color: white;
+        #links{
+            width: 100%;
+            box-sizing: border-box;
+            display: flex;
+            flex-direction: column;
+
+            .nav-link {
+                text-decoration: none;
+                color: white;
+                padding: 15px 0px;
+                background: none;
+                display: flex;
+                align-items: center;
+                font-weight: normal;
+                transition: all 0.3s ease;
+            }
+
+            .nav-link:hover {
+                background: #ffffff37;
+            }
+
+            .nav-link.active {
+                background: #ffffff52;
+                border-left: 3px solid white;
+            }
+        }
+    }
+}
+
+/*Expandido*/
+#navContainer:hover{
+    width: 200px;
+
+    #logoNav{
+        width: 200px;
+
+        .iconNav{
+            width: 150px;
+        }
+    }
+    
+    span{
+        opacity: 1;
+        width: auto;
+    }
+
+    .nav-link.active {
+        background: #ffffff52;
+        border-left: 3px solid white;
+    }
+
+    .navbar{
+        button{
+            justify-content: flex-start;
         }
     }
 }

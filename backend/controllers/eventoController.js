@@ -1,15 +1,47 @@
-const { Evento } = require('../models');
+const { Evento, Tratamento, Procedimento, Paciente } = require('../models');
 
-exports.getTodos = async (req, res) => {
+exports.get = async (req, res) => {
   try {
-    const eventos = await Evento.findAll();
+    const eventos = await Evento.findAll({
+      include: [
+        {
+          model: Paciente,
+          as: 'paciente',
+          attributes: ['id', 'nome'],
+        },
+      ],
+      order: [['inicio', 'ASC']],
+    });
     res.json(eventos);
   } catch (err) {
-    res.status(500).json({ erro: err.message });
+    console.error(err);
+    res.status(500).json({ error: 'Erro ao buscar eventos' });
   }
 };
 
-exports.criar = async (req, res) => {
+exports.getByPacienteId = async (req, res) => {
+  const { pacienteId } = req.params;
+
+  if (!pacienteId) return res.status(400).json({ erro: "PacienteId é obrigatório" });
+
+  try {
+    const eventos = await Evento.findAll({
+      where: { pacienteId },
+      include: [
+        { model: Tratamento, as: 'tratamento' },  // Assumindo alias 'tratamento'
+        { model: Procedimento, as: 'procedimento' } // Assumindo alias 'procedimento'
+      ],
+      order: [['inicio', 'ASC']],
+    });
+
+    res.json(eventos);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ erro: "Erro ao buscar eventos" });
+  }
+};
+
+exports.post = async (req, res) => {
   try {
     const novoEvento = await Evento.create(req.body);
     res.status(201).json(novoEvento);
@@ -18,7 +50,7 @@ exports.criar = async (req, res) => {
   }
 };
 
-exports.atualizar = async (req, res) => {
+exports.patch = async (req, res) => {
   try {
     const [updated] = await Evento.update(req.body, {
       where: { id: req.params.id }
@@ -34,7 +66,7 @@ exports.atualizar = async (req, res) => {
   }
 };
 
-exports.deletar = async (req, res) => {
+exports.delete = async (req, res) => {
   try {
     const deleted = await Evento.destroy({ where: { id: req.params.id } });
     if (deleted) {
@@ -43,6 +75,24 @@ exports.deletar = async (req, res) => {
       res.status(404).json({ erro: 'Evento não encontrado' });
     }
   } catch (err) {
+    res.status(500).json({ erro: err.message });
+  }
+};
+
+// Buscar todos os procedimentos de um evento
+exports.getProcedimentos = async (req, res) => {
+  try {
+    const eventoId = req.params.eventoId;
+    const evento = await Evento.findByPk(eventoId, {
+      include: { model: Procedimento, as: 'procedimentos' }
+    }); 
+    if (evento) {
+      res.json(evento.procedimentos); 
+    } else {
+      res.status(404).json({ erro: 'Evento não encontrado' });
+    }   
+  } 
+  catch (err) {
     res.status(500).json({ erro: err.message });
   }
 };

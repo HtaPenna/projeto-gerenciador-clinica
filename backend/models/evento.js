@@ -1,3 +1,4 @@
+// models/evento.js
 module.exports = (sequelize, DataTypes) => {
   return sequelize.define('Evento', {
     id: {
@@ -5,25 +6,66 @@ module.exports = (sequelize, DataTypes) => {
       primaryKey: true,
       autoIncrement: true,
     },
-    title: {
-      type: DataTypes.STRING,
+    dentistaId: {
+      type: DataTypes.INTEGER,
       allowNull: false,
-    },
-    start: {
-      type: DataTypes.DATE,
-      allowNull: false,
-    },
-    end: {
-      type: DataTypes.DATE,
-      allowNull: false,
+      references: {
+        model: 'dentista',
+        key: 'id',
+      },
     },
     pacienteId: {
       type: DataTypes.INTEGER,
+      allowNull: false,
+      references: {
+        model: 'paciente',
+        key: 'id',
+      },
+    },
+    tratamentoId: {
+      type: DataTypes.INTEGER,
       allowNull: true,
       references: {
-        model: 'pacientes',
-        key: 'Codigo_Pac',
-      }
+        model: 'tratamento',
+        key: 'id',
+      },
     },
+    procedimentoId: {
+      type: DataTypes.INTEGER,
+      allowNull: true,
+      references: {
+        model: 'procedimento',
+        key: 'id',
+      },
+    },
+    inicio: {
+      type: DataTypes.DATE,
+      allowNull: false,
+    },
+    fim: {
+      type: DataTypes.DATE,
+      allowNull: true,
+    },   
+    status: {
+      type: DataTypes.ENUM('agendada', 'confirmada', 'concluída', 'indisponível'),
+      allowNull: false,
+      defaultValue: 'agendada',
+    },
+    observacoes: {
+      type: DataTypes.TEXT,
+      allowNull: true,
+    },
+    descricao: {
+      type: DataTypes.TEXT,
+      allowNull: true,
+    },
+    valorPrevisto: {
+      type: DataTypes.DECIMAL(10, 2),
+      allowNull: true,
+      defaultValue: 0.00,
+    },
+  },
+  {
+    tableName: 'evento',
   });
 };

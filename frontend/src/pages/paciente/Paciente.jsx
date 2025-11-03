@@ -1,82 +1,164 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
+import { useNavigate } from "react-router-dom";
 import PacientesList from "./PacienteList.jsx";
 import PacienteForm from "./PacienteForm.jsx";
-import './Paciente.css';
+import AnamneseForm from "./AnamneseForm.jsx";
+import { usePageTitle } from '../../hooks/usePageTitle';
+import { Plus, User, Calendar, Package } from "lucide-react";
+import "./Paciente.css";
 
 const API_URL = "http://localhost:3001/pacientes";
 
 export default function Paciente() {
+  const navigate = useNavigate();
+  const { updateTitle } = usePageTitle();
   const [pacientes, setPacientes] = useState([]);
-  const [pacienteEditando, setPacienteEditando] = useState(null);
+  const [mostrarForm, setMostrarForm] = useState(false);
+  const [pacienteCriando, setPacienteCriando] = useState(null);
+  const [anamneseCriando, setAnamneseCriando] = useState(null);
+  const [dropdownOpen, setDropdownOpen] = useState(false);
+  const dropdownRef = useRef(null);
 
-  // Carrega pacientes (GET)
-  const carregarPacientes = () => {
-    fetch(API_URL)
-      .then(res => res.json())
-      .then(data => setPacientes(data))
-      .catch(console.error);
+  // Fecha o dropdown ao clicar fora
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+        setDropdownOpen(false);
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
+
+  useEffect(() => {
+    updateTitle('Pacientes');
+  }, [updateTitle]);
+
+  // Carrega pacientes
+  const carregarPacientes = async () => {
+    try {
+      const res = await fetch(API_URL);
+      const data = await res.json();
+      setPacientes(data);
+    } catch (err) {
+      console.error(err);
+    }
   };
 
   useEffect(() => {
     carregarPacientes();
   }, []);
 
-  // Criar paciente (POST)
-  const criarPaciente = (paciente) => {
-    fetch(API_URL, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(paciente)
-    })
-      .then(() => {
-        carregarPacientes();
-      })
-      .catch(console.error);
+  // Criar paciente
+  const criarPaciente = async (paciente) => {
+    try {
+      const res = await fetch(API_URL, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(paciente),
+      });
+      const novoPaciente = await res.json();
+      carregarPacientes();
+      setPacienteCriando(novoPaciente);
+      // Sempre criar anamnese associada
+      setAnamneseCriando({ pacienteId: novoPaciente.id });
+    } catch (err) {
+      console.error(err);
+    }
   };
 
-  // Atualizar paciente (PATCH)
-  const atualizarPaciente = (id, paciente) => {
-    fetch(`${API_URL}/${id}`, {
-      method: "PATCH",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(paciente)
-    })
-      .then(() => {
-        setPacienteEditando(null);
-        carregarPacientes();
-      })
-      .catch(console.error);
+  // Função para novo paciente
+  const handleNovoPaciente = () => {
+    setPacienteCriando({});
+    setMostrarForm(true);
+    setAnamneseCriando({});
+    setDropdownOpen(false);
   };
 
-  // Deletar paciente (DELETE)
-  const deletarPaciente = (id) => {
-    fetch(`${API_URL}/${id}`, {
-      method: "DELETE"
-    })
-      .then(() => carregarPacientes())
-      .catch(console.error);
-  };
+  // Formulários de criação
+  if (mostrarForm || pacienteCriando) {
+    return (
+      <div className="paciente-container">
+        <h1>Novo Paciente</h1>
 
+        {/* Formulário de Dados Pessoais */}
+        <PacienteForm
+          paciente={pacienteCriando}
+          onSalvar={(paciente) => {
+            if (!paciente.id) {
+              criarPaciente(paciente);
+              alert("Paciente criado com sucesso! Agora você pode preencher a anamnese.");
+            }
+          }}
+          onCancelar={() => {
+            setPacienteCriando(null);
+            setAnamneseCriando(null);
+            setMostrarForm(false);
+          }}
+        />
+
+        {/* Formulário de Anamnese */}
+        {anamneseCriando && anamneseCriando.pacienteId && (
+          <AnamneseForm
+            anamnese={anamneseCriando}
+            onSalvar={async (anamnese) => {
+              try {
+                const method = anamnese.id ? "PATCH" : "POST";
+                const url = anamnese.id
+                    ? `http://localhost:3001/anamnese/${anamnese.id}`
+                    : "http://localhost:3001/anamnese";
+                await fetch(url, {
+                  method,
+                  headers: { "Content-Type": "application/json" },
+                  body: JSON.stringify(anamnese),
+                });
+                alert("Anamnese salva com sucesso!");
+                setAnamneseCriando(null);
+                setPacienteCriando(null);
+                setMostrarForm(false);
+              } catch (err) {
+                console.error(err);
+              }
+            }}
+            onCancelar={() => setAnamneseCriando(null)}
+          />
+        )}
+      </div>
+    );
+  }
+
+  // Página principal com lista de pacientes e botão de criar
   return (
-    <div>
-      <h1>Gerenciamento de Pacientes</h1>
+    <div className="pacienteContainer">
+      <div className="fab-container" ref={dropdownRef}>
+        <button 
+          className="btnNew" 
+          onClick={() => setDropdownOpen(!dropdownOpen)}
+        >
+          <Plus size={30}/>
+        </button>
 
-      <PacienteForm
-        paciente={pacienteEditando}
-        onSalvar={(paciente) => {
-          if (paciente.Codigo_Pac) {
-            atualizarPaciente(paciente.Codigo_Pac, paciente);
-          } else {
-            criarPaciente(paciente);
-          }
-        }}
-        onCancelar={() => setPacienteEditando(null)}
-      />
+        {dropdownOpen && (
+          <div className="newDropContainer">
+            <button onClick={handleNovoPaciente} className="dropdown-option">
+              <User size={16} />
+              <span>Novo paciente</span>
+            </button>
+            <button className="dropdown-option">
+              <Calendar size={16} />
+              <span>Nova consulta</span>
+            </button>
+            <button className="dropdown-option">
+              <Package size={16} />
+              <span>Novo relatorio</span>
+            </button>
+          </div>
+        )}
+      </div>
 
       <PacientesList
         pacientes={pacientes}
-        onEditar={(paciente) => setPacienteEditando(paciente)}
-        onDeletar={deletarPaciente}
+        onVerProntuario={(id) => navigate(`/main/pacientes/${id}/prontuario`)}
       />
     </div>
   );

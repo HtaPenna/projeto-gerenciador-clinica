@@ -5,31 +5,62 @@
     align-items: center;
     text-align: center;
     flex-direction: column;
+    background: #fff;
 
     #menu{
         width: 100vw;
         display: flex;
         align-items: center;
         justify-content: space-between;
-        padding-inline: 50px;
+        padding-inline: 6vw;
         box-sizing: border-box;
-        height: 60px;
+        height: 65px;
+        background: #023c66;
+        box-shadow: 0 4px 6px -2px rgba(0, 0, 0, 0.1);
+        z-index: 3;
+        
+        #logoNav{
+            display: flex;
+            height: 100%;
+            align-items: center;
 
-        #logo{
-            color: #00A39C;
-            font-size: large;
-            font-weight: bold;
+            #logo{
+                height: 50%;
+
+                img{
+                    height: 100%;
+                }
+            }
+
+            #nav{
+                margin-left: 6vw;
+
+                a{
+                    text-decoration: none;
+                    color: #fff;
+                    font-weight: bolder;
+                    padding-inline: 15px;
+                }
+
+                a:hover{
+                    text-decoration: underline;
+                }
+            }
         }
 
-        #nav{
+        #logar{
             button{
-                padding: 5px 15px;
-                background-color: #00A39C;
-                border: hidden;
+                padding: 3px 20px;
+                background-color: #fff;
+                border: solid #fff;
+                border-radius: 8px;
+                color: #023c66;
+                font-weight: bolder;
             }
 
             button:hover{
-                background: #00514d;
+                color: #fff;
+                background: none;
             }
         }
     }
@@ -39,30 +70,59 @@
         flex-direction: column;
         flex-grow: 1;
         align-items: center;
-        justify-content: center;
         width: 100vw;
 
-        h1{
-            color: #00A39C;
-        }
+        #banner{
+            background: #023c66;
+            width: 100%;
+            height: 70vh;
+            display: flex;
 
-        p{
-            color: #676767;
+            #textoBanner{
+                width: 50%;
+                display: flex;
+                flex-direction: column;
+                padding: 1rem 1rem 4rem 4rem;
+                align-items: start;
+                justify-content: center;
+                text-align: justify;
+
+                h1{
+                    color: #fff;
+                    font-weight: bolder;
+                    font-size: 45px;
+                }
+
+                p{
+                    color: rgba(255, 255, 255, 60);
+                    font-size: 18px;
+                }
+
+                button{
+                    padding: 4px 20px;
+                    background: none;
+                    border-radius: 8px;
+                    border: solid #fff;
+                    color: #fff;
+                    font-weight: bolder;
+                }
+
+                button:hover{
+                    background: #fff;
+                    color: #023c66;
+                }
+            }
+
+            #imgBanner{
+                width: 50%;
+                padding-top: 2rem;
+                overflow: hidden;
+
+                img{
+                    height: 100%;
+                }
+            }
         }
     }
 }
 
-.homePage::before{
-    content: '';
-    background-image: url('../../assets/images/backgroundHome.jpg');
-    background-size: cover;
-    background-position: center;
-    background-repeat: no-repeat;
-    opacity: 0.5;
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    z-index: -1;
-}

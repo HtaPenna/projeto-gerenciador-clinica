@@ -1,4 +1,6 @@
 import { useNavigate } from 'react-router-dom';
+import logo from "../../assets/images/logo.png";
+import imgBanner from "../../assets/images/imgBanner.png";
 import './Home.css';
 
 function Home() {
@@ -7,16 +9,28 @@ function Home() {
   return (
     <div className="homePage">
       <div id="menu">
-        <div id="logo">Logo</div>
-        <div id="nav">
-          <button onClick={() => navigate('/main')}>Entrar</button>
+        <div id='logoNav'>
+          <div id="logo"><img src={logo}/></div>
+          <div id='nav'>
+            <a href="#">Inicio</a>
+            <a href="#">Sobre</a>
+          </div>
+        </div>
+        <div id="logar">
+          <button onClick={() => navigate('/login')}>Entrar</button>
         </div>
       </div>
       <div className="homeContent">
-        <h1>COM VOCÊ, PARA VOCÊ</h1>
-        <p>
-          CONTROLE SUA AGENDA COM UM TOQUE, TENHA UM GERENCIAMENTO DE SUPRIMENTOS AUTOMATIZADO COM OS TRATAMENTOS
-        </p>
+        <div id='banner'>
+          <div id='textoBanner'>
+            <h1>O sistema web que gerencia sua clínica e simplifica sua rotina.</h1>
+            <p>Agenda, pacientes, relatórios e estoque em um só lugar — simplifique sua rotina com o Dent.fy e foque no que realmente importa: o atendimento ao paciente.</p>
+            <button>Acessar</button>
+          </div>
+          <div id='imgBanner'>
+            <img src={imgBanner}/>
+          </div>
+        </div>
       </div>
     </div>
   );

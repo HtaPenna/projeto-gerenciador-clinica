@@ -1,0 +1,85 @@
+const { Tratamento, Procedimento, Paciente } = require('../models');
+
+exports.getTodos = async (req, res) => {
+  try {
+    const tratamentos = await Tratamento.findAll();
+    res.json(tratamentos);
+  } catch (err) {
+    res.status(500).json({ erro: err.message });
+  }
+};
+
+// Buscar todos os tratamentos de um paciente
+exports.getTratamentos = async (req, res) => {
+  try {
+    const pacienteId = req.params.pacienteId; 
+    const paciente = await Paciente.findByPk(pacienteId, {
+      include: { model: Tratamento, as: 'tratamento' }
+    });
+    
+    if (paciente) {
+      res.json(paciente.tratamento); 
+    } else {
+      res.status(404).json({ erro: 'Paciente não encontrado' });
+    }
+  } catch (err) {
+    res.status(500).json({ erro: err.message });
+  }
+};
+
+exports.criar = async (req, res) => {
+  try {
+    const novoTratamento = await Tratamento.create(req.body);
+    res.status(201).json(novoTratamento);
+  } catch (err) {
+    res.status(400).json({ erro: err.message });
+  }
+};
+
+exports.atualizar = async (req, res) => {
+  try {
+    const [updated] = await Tratamento.update(req.body, {
+      where: { id: req.params.id }
+    });
+    if (updated) {
+      const tratamentoAtualizado = await Tratamento.findByPk(req.params.id);
+      res.json(tratamentoAtualizado);
+    } else {
+      res.status(404).json({ erro: 'Tratamento não encontrado' });
+    }
+  } catch (err) {
+    res.status(500).json({ erro: err.errors ? err.errors.map(e => e.message) : err.message });
+  }
+};
+
+exports.deletar = async (req, res) => {
+  try {
+    const deleted = await Tratamento.destroy({ where: { id: req.params.id } });
+    if (deleted) {
+      res.status(204).end();
+    } else {
+      res.status(404).json({ erro: 'Tratamento não encontrado' });
+    }
+  } catch (err) {
+    res.status(500).json({ erro: err.errors ? err.errors.map(e => e.message) : err.message });
+  }
+};
+
+// Buscar todos os procedimentos de um tratamento
+exports.getProcedimentos = async (req, res) => {
+  try {
+    const tratamentoId = req.params.tratamentoId;
+    const tratamento = await Tratamento.findByPk(tratamentoId, {
+      include: { model: Procedimento, as: 'procedimentos' }
+    }); 
+    if (tratamento) {
+      res.json(tratamento.procedimentos); 
+    } else {
+      res.status(404).json({ erro: 'Tratamento não encontrado' });
+    }   
+  } 
+  catch (err) {
+    res.status(500).json({ erro: err.message });
+  }
+};
+

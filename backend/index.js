@@ -2,24 +2,45 @@ const express = require("express");
 const cors = require("cors");
 const sequelize = require("./database"); // Importa a conexão com o banco de dados
 const { DataTypes } = require("sequelize");
-const { Paciente, Evento } = require('./models');
+const { Paciente, Evento, Dentista, Procedimento, Especialidade, Tratamento, Anamnese, Suprimento } = require('./models');
 
 const app = express();
 app.use(cors());               // Permite requisições de outros domínios (ex: React)
 app.use(express.json());       // Permite receber JSON no body da requisição
 
 const pacienteRoutes = require("./routes/pacienteRoutes");
-app.use("/pacientes", pacienteRoutes); // Rotas acessíveis em /pacientes
+app.use('/pacientes', pacienteRoutes); // Rotas acessíveis em /pacientes
 
 const eventoRoutes = require('./routes/evento.routes');
 app.use('/eventos', eventoRoutes);
+
+const dentistaRoutes = require('./routes/dentistaRoutes');
+app.use('/dentistas', dentistaRoutes);
+
+const procedimentoRoutes = require('./routes/procedimentoRoutes');
+app.use('/procedimentos', procedimentoRoutes);
+
+const especialidadeRoutes = require('./routes/especialidadeRoutes');
+app.use('/especialidade', especialidadeRoutes);
+
+const tratamentoRoutes = require("./routes/tratamentoRoutes");
+app.use("/tratamentos", tratamentoRoutes);
+
+const usuarioRoutes = require("./routes/usuarioRoutes");
+app.use("/usuarios", usuarioRoutes);
+
+const anamneseRoutes = require("./routes/anamneseRoutes");
+app.use("/anamnese", anamneseRoutes);
+
+const suprimentoRoutes = require("./routes/suprimentoRoutes");
+app.use("/suprimento", suprimentoRoutes);
 
 const PORT = 3001;
 
 sequelize.authenticate()
   .then(() => {
     console.log("Conexão com o banco estabelecida com sucesso.");
-    return sequelize.sync();  // Sincroniza (cria) as tabelas
+    return sequelize.sync({alter: true});  // Sincroniza (cria) as tabelas
   })
   .then(() => {
     console.log("Tabelas sincronizadas com o banco.");
