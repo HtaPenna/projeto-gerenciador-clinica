@@ -1,11 +1,30 @@
-const { Paciente, Tratamento, Usuario} = require('../models');
+const { Sequelize } = require('sequelize');
+const { Paciente, Usuario } = require('../models');
 
 exports.get = async (req, res) => {
   try {
-    const pacientes = await Paciente.findAll();
+    const pacientes = await Paciente.findAll({
+      attributes: {
+        include: [
+          // Subquery para buscar a data da última consulta
+          [
+            Sequelize.literal(`(
+              SELECT MAX(e.inicio)
+              FROM evento AS e
+              WHERE e.pacienteId = paciente.id
+              AND e.status = 'concluída'
+            )`),
+            'ultimaConsulta'
+          ]
+        ]
+      },
+      order: [['nome', 'ASC']],
+    });
+
     res.json(pacientes);
   } catch (err) {
-    res.status(500).json({ erro: err.message });
+    console.error(err);
+    res.status(500).json({ error: 'Erro ao buscar pacientes' });
   }
 };
 

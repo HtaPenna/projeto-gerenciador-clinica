@@ -1,7 +1,7 @@
 import React from "react";
 import './PacienteList.css';
 
-export default function PacientesList({ pacientes, onEditar, onDeletar, onVerProntuario }) {
+export default function PacientesList({ pacientes, onVerProntuario }) {
   if (!pacientes.length) return <p>Nenhum paciente cadastrado.</p>;
 
   return (
@@ -10,6 +10,7 @@ export default function PacientesList({ pacientes, onEditar, onDeletar, onVerPro
         <thead>
           <tr>
             <th>Nome</th>
+            <th>Última Consulta</th>
             <th>Telefone</th>
           </tr>
         </thead>
@@ -17,7 +18,12 @@ export default function PacientesList({ pacientes, onEditar, onDeletar, onVerPro
           {pacientes.map(p => (
             <tr key={p.id}>
               <td>{p.nome}</td>
-              <td>{p.telefoneCelular}</td>
+              <td>
+                {p.ultimaConsulta
+                  ? new Date(p.ultimaConsulta).toLocaleDateString('pt-BR')
+                  : '-'}
+              </td>
+              <td>{p.telefoneCelular || '-'}</td>
               <td>
                 <button onClick={() => onVerProntuario(p.id)}>Ver Prontuário</button>{" "}
               </td>
