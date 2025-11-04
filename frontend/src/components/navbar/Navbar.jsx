@@ -35,6 +35,10 @@ const Navbar = () => {
             <Calendar size={24} className="iconNav"/>
             <span>Agenda</span>
           </Link>
+          <Link to="/main/consultas" className={isActive('/main/consultas') ? 'nav-link active' : 'nav-link'}>
+            <Calendar size={24} className="iconNav"/>
+            <span>Consultas</span>
+          </Link>
           <Link to="/main/estoque" className={isActive('/main/estoque') ? 'nav-link active' : 'nav-link'}>
             <ClipboardCheck size={24} className="iconNav"/>
             <span>Estoque</span>

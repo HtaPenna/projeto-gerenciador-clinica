@@ -4,6 +4,7 @@ const eventoController = require("../controllers/eventoController");
 
 router.get("/", eventoController.get);         // GET /eventos
 router.get("/paciente/:pacienteId", eventoController.getByPacienteId);
+router.get("/procedimento/:procedimentoId", eventoController.getByProcedimentoId);
 router.post("/", eventoController.post);           // POST /eventos
 router.patch("/:id", eventoController.patch);   // PATCH /eventos/:id
 router.delete("/:id", eventoController.delete);    // DELETE /eventos/:id

@@ -253,7 +253,7 @@ export default function Tratamentos({ pacienteId, eventosExistentes }) {
                         </>
                     ) : (
                         <>
-                        <p><strong>Nome:</strong> {proc.nome}</p>
+                        <p><strong>Procedimento:</strong> {proc.nome}</p>
                         <p><strong>Descrição:</strong> {proc.descricao || "-"}</p>
                         <p><strong>Observações:</strong> {proc.observacoes || "-"}</p>
                         <p><strong>Valor:</strong> R$ {parseFloat(proc.valor || 0).toFixed(2)}</p>

@@ -41,6 +41,25 @@ exports.getByPacienteId = async (req, res) => {
   }
 };
 
+exports.getByProcedimentoId = async (req, res) => {
+  try {
+    const { procedimentoId } = req.params;
+
+    const evento = await Evento.findOne({
+      where: { procedimentoId },
+      attributes: ['id', 'inicio', 'fim', 'status', 'observacoes']
+    });
+
+    if (!evento) {
+      return res.status(404).json({ mensagem: 'Nenhum evento encontrado para este procedimento' });
+    }
+
+    res.json(evento);
+  } catch (err) {
+    res.status(500).json({ erro: err.message });
+  }
+};
+
 exports.post = async (req, res) => {
   try {
     const novoEvento = await Evento.create(req.body);

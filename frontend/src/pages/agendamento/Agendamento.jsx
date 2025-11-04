@@ -6,8 +6,7 @@ import timeGridPlugin from "@fullcalendar/timegrid";
 import interactionPlugin from "@fullcalendar/interaction";
 import NovoEventoModal from "./AgendamentoForm.jsx";
 import ConfigCalendarModal from "./ConfigAgenda.jsx";
-import { usePageTitle } from '../../hooks/usePageTitle';
-
+import { usePageTitle } from "../../hooks/usePageTitle";
 
 const API_URL = "http://localhost:3001/eventos";
 const plugins = [dayGridPlugin, timeGridPlugin, interactionPlugin];
@@ -15,28 +14,26 @@ const plugins = [dayGridPlugin, timeGridPlugin, interactionPlugin];
 export default function AgendaVisual() {
   const [eventos, setEventos] = useState([]);
   const [mostrarModal, setMostrarModal] = useState(false);
-  const [dataSelecionada, setDataSelecionada] = useState(new Date());
+  const [dataSelecionada, setDataSelecionada] = useState(null);
   const [mostrarModalConfig, setMostrarModalConfig] = useState(false);
-  const [dentistaSelecionado, setDentistaSelecionado] = useState(1); // Dentista ativo
+  const [dentistaSelecionado, setDentistaSelecionado] = useState(1);
   const { updateTitle } = usePageTitle();
 
-  // Configurações ajustáveis pelo usuário
   const [config, setConfig] = useState({
     initialView: "dayGridMonth",
     slotMinTime: "08:00:00",
     slotMaxTime: "18:00:00",
   });
 
-  // Carrega eventos do backend
+  // 🔹 Carrega eventos do backend
   const carregarEventos = async () => {
     try {
       const res = await fetch(API_URL);
       const dados = await res.json();
 
       const eventosFormatados = dados.map((ev) => {
-        // Define cor do evento baseado no status
         let cor = "#00A39C"; // padrão
-        if (ev.status === "pendente") cor = "#FACC15"; // amarelo
+        if (ev.status === "z") cor = "#FACC15"; // amarelo
         else if (ev.status === "confirmada") cor = "#10B981"; // verde
         else if (ev.status === "bloqueado") cor = "#9CA3AF"; // cinza
 
@@ -62,24 +59,63 @@ export default function AgendaVisual() {
     }
   };
 
+  // 🔹 Abre modal com dados de evento existente
+  const abrirModal = (evento) => {
+    setDataSelecionada({
+      id: evento.id,
+      start: evento.start,
+      end: evento.end,
+      pacienteId: evento.extendedProps?.pacienteId,
+      dentistaId: evento.extendedProps?.dentistaId,
+      status: evento.extendedProps?.status,
+      valorPrevisto: evento.extendedProps?.valorPrevisto,
+      observacoes: evento.extendedProps?.observacoes,
+    });
+    setMostrarModal(true);
+  };
+
+  // 🔹 Inicializa título
   useEffect(() => {
-    updateTitle('Agenda');
+    updateTitle("Agenda");
   }, [updateTitle]);
 
+  // 🔹 Carrega eventos ao montar
   useEffect(() => {
     carregarEventos();
   }, []);
 
+  // 🔹 Se veio de outra tela com ID salvo
+  useEffect(() => {
+    const eventoId = localStorage.getItem("eventoSelecionadoId");
+    if (!eventoId || eventos.length === 0) return;
+
+    const evento = eventos.find((e) => e.id === parseInt(eventoId));
+    if (evento) abrirModal(evento);
+
+    localStorage.removeItem("eventoSelecionadoId");
+  }, [eventos]);
+
+  // 🔹 Clicar num dia vazio
   const handleDateClick = (info) => {
     const agora = new Date();
     const dataClicada = info.date;
     if (dataClicada < new Date(agora.setHours(0, 0, 0, 0))) return;
 
-    setDataSelecionada(dataClicada);
+    // 🔸 padroniza formato que o modal espera
+    setDataSelecionada({
+      id: null,
+      start: dataClicada,
+      end: new Date(dataClicada.getTime() + 60 * 60 * 1000),
+      pacienteId: null,
+      dentistaId: dentistaSelecionado,
+      status: "agendada",
+      valorPrevisto: "",
+      observacoes: "",
+    });
+
     setMostrarModal(true);
   };
 
-  // Filtra eventos do dentista selecionado
   const eventosFiltrados = eventos.filter(
     (ev) => ev.extendedProps.dentistaId === dentistaSelecionado
   );
@@ -90,10 +126,9 @@ export default function AgendaVisual() {
 
       <div className="flex gap-2 mb-4">
         <button
-          onClick={() => {
-            setDataSelecionada(new Date());
-            setMostrarModal(true);
-          }}
+          onClick={() =>
+            handleDateClick({ date: new Date() })
+          }
           className="px-4 py-2 bg-green-600 text-white rounded"
         >
           Novo Evento
@@ -132,6 +167,7 @@ export default function AgendaVisual() {
           }}
           events={eventosFiltrados}
           dateClick={handleDateClick}
+          eventClick={(info) => abrirModal(info.event)} // 🔸 abre modal ao clicar num evento
           height="auto"
         />
       </div>

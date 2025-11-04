@@ -9,6 +9,7 @@ import CadastroDentista from './pages/cadastro/CadastroDentista.jsx';
 import CadastroPaciente from './pages/cadastro/CadastroPaciente.jsx';
 import Estoque from './pages/estoque/Estoque.jsx';
 import Prontuario from './pages/paciente/Prontuário.jsx';
+import HistoricoConsultas from './pages/consulta/ConsultasGerais.jsx';
 
 function App() {
   return (
@@ -22,6 +23,7 @@ function App() {
       <Route index element={<Main />} />
       <Route path="pacientes" element={<Paciente />} />
       <Route path="agenda" element={<Agendavisual />} />
+      <Route path="consultas" element={<HistoricoConsultas />} />
       <Route path="estoque" element={<Estoque />} />
       <Route path="pacientes/:id/prontuario" element={<Prontuario />} />
     </Route>
