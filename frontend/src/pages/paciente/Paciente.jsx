@@ -13,6 +13,8 @@ export default function Paciente() {
   const navigate = useNavigate();
   const { updateTitle } = usePageTitle();
   const [pacientes, setPacientes] = useState([]);
+  const [pacientesFiltrados, setPacientesFiltrados] = useState([]);
+  const [busca, setBusca] = useState('');
   const [mostrarForm, setMostrarForm] = useState(false);
   const [pacienteCriando, setPacienteCriando] = useState(null);
   const [anamneseCriando, setAnamneseCriando] = useState(null);
@@ -34,12 +36,33 @@ export default function Paciente() {
     updateTitle('Pacientes');
   }, [updateTitle]);
 
+    // Função de busca automática
+  const filtrarPacientes = (termo) => {
+    if (!termo.trim()) {
+      setPacientesFiltrados(pacientes);
+      return;
+    }
+    
+    const filtrados = pacientes.filter(paciente =>
+      paciente.nome?.toLowerCase().includes(termo.toLowerCase()) ||
+      paciente.telefoneCelular?.includes(termo)
+    );
+    
+    setPacientesFiltrados(filtrados);
+  };
+
+  // Busca automática quando digitar
+  useEffect(() => {
+    filtrarPacientes(busca);
+  }, [busca, pacientes]);
+
   // Carrega pacientes
   const carregarPacientes = async () => {
     try {
       const res = await fetch(API_URL);
       const data = await res.json();
       setPacientes(data);
+      setPacientesFiltrados(data); // Inicializa com todos os pacientes
     } catch (err) {
       console.error(err);
     }
@@ -52,18 +75,34 @@ export default function Paciente() {
   // Criar paciente
   const criarPaciente = async (paciente) => {
     try {
+      console.log("Dados enviados para criar paciente:", paciente);
+      
       const res = await fetch(API_URL, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(paciente),
       });
+      
+      console.log("Status da resposta:", res.status);
+      
       const novoPaciente = await res.json();
-      carregarPacientes();
-      setPacienteCriando(novoPaciente);
-      // Sempre criar anamnese associada
-      setAnamneseCriando({ pacienteId: novoPaciente.id });
+      console.log("Paciente criado:", novoPaciente);
+      
+      if (res.ok) {
+        await carregarPacientes();
+        setPacienteCriando(novoPaciente);
+        setAnamneseCriando({ pacienteId: novoPaciente.id });
+        
+        console.log("🔍 Estados APÓS atualização:");
+        console.log(" - pacienteCriando:", novoPaciente);
+        console.log(" - anamneseCriando:", { pacienteId: novoPaciente.id });
+      } else {
+        console.error("Erro na criação:", novoPaciente);
+        alert("Erro ao criar paciente: " + (novoPaciente.erro || novoPaciente.message));
+      }
     } catch (err) {
-      console.error(err);
+      console.error("Erro no fetch:", err);
+      alert("Erro de conexão ao criar paciente");
     }
   };
 
@@ -156,8 +195,17 @@ export default function Paciente() {
         )}
       </div>
 
+      <div className="searchBar">
+        <input 
+          type="text" 
+          placeholder="Procurar paciente por nome ou telefone..."
+          value={busca}
+          onChange={(e) => setBusca(e.target.value)}
+        />
+      </div>
+
       <PacientesList
-        pacientes={pacientes}
+        pacientes={pacientesFiltrados}
         onVerProntuario={(id) => navigate(`/main/pacientes/${id}/prontuario`)}
       />
     </div>
