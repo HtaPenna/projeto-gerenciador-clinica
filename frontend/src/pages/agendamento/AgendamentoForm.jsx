@@ -1,37 +1,33 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import Modal from "react-modal";
 
 Modal.setAppElement("#root");
 
-export default function AgendamentoForm({
+export default function AgendamentoModal({
   isOpen,
   onRequestClose,
   dataSelecionada,
   onSuccess,
   dentistaId,
-  modoVisualizacao = false,
-  setModoVisualizacao,
 }) {
-  const [pacienteNome, setPacienteNome] = useState("");
+  const [modoVisualizacao, setModoVisualizacao] = useState(true);
+
+  const [pacienteInput, setPacienteInput] = useState("");
+  const [pacienteSelecionado, setPacienteSelecionado] = useState(null);
+  const [pacientes, setPacientes] = useState([]);
+  const [showDropdown, setShowDropdown] = useState(false);
+
+  const [tratamentos, setTratamentos] = useState([]);
+  const [tratamentoSelecionado, setTratamentoSelecionado] = useState(null);
+  const [procedimentoSelecionado, setProcedimentoSelecionado] = useState(null);
+
   const [inicio, setInicio] = useState("");
   const [fim, setFim] = useState("");
   const [status, setStatus] = useState("agendada");
   const [valorPrevisto, setValorPrevisto] = useState("");
   const [observacoes, setObservacoes] = useState("");
 
-  // 🔹 Preenche os campos quando o modal abre
-  useEffect(() => {
-    if (dataSelecionada) {
-      setPacienteNome(dataSelecionada.title || "");
-      setInicio(dataSelecionada.start ? formatDateTimeLocal(dataSelecionada.start) : "");
-      setFim(dataSelecionada.end ? formatDateTimeLocal(dataSelecionada.end) : "");
-      setStatus(dataSelecionada.status || "agendada");
-      setValorPrevisto(dataSelecionada.valorPrevisto || "");
-      setObservacoes(dataSelecionada.observacoes || "");
-    }
-  }, [dataSelecionada]);
-
-  // 🔹 Função auxiliar para formato ISO local (input datetime-local)
+  // 🔹 Formata data para o input datetime-local
   function formatDateTimeLocal(date) {
     if (!date) return "";
     const d = new Date(date);
@@ -44,19 +40,102 @@ export default function AgendamentoForm({
     return `${y}-${m}-${da}T${h}:${mi}`;
   }
 
+  // 🔹 Preenche os campos ao abrir modal
+  // 🔹 Preenche os campos ao abrir modal
+  useEffect(() => {
+    if (dataSelecionada && dataSelecionada.id) {
+      // 🔸 Modo visualização — evento existente
+      setPacienteInput(dataSelecionada.pacienteNome || dataSelecionada.title || "");
+      setInicio(formatDateTimeLocal(dataSelecionada.start));
+      setFim(formatDateTimeLocal(dataSelecionada.end));
+      setStatus(dataSelecionada.status || "agendada");
+      setValorPrevisto(dataSelecionada.valorPrevisto || "");
+      setObservacoes(dataSelecionada.observacoes || "");
+      setModoVisualizacao(true);
+    } else {
+      // 🔸 Modo criação — novo evento
+      setPacienteInput("");
+      setPacienteSelecionado(null);
+      setTratamentoSelecionado(null);
+      setProcedimentoSelecionado(null);
+      setInicio(formatDateTimeLocal(dataSelecionada?.start || new Date()));
+      setFim(formatDateTimeLocal(dataSelecionada?.end || new Date()));
+      setStatus("agendada");
+      setValorPrevisto("");
+      setObservacoes("");
+      setModoVisualizacao(false);
+    }
+  }, [dataSelecionada]);
+
+
+  // 🔹 Buscar pacientes conforme digitação
+  useEffect(() => {
+    if (pacienteInput.length > 0 && !modoVisualizacao) {
+      fetch(`http://localhost:3001/pacientes?search=${pacienteInput}`)
+        .then((res) => res.json())
+        .then((data) => {
+          const filtrados = data
+            .filter((p) => p.nome.toLowerCase().includes(pacienteInput.toLowerCase()))
+            .sort((a, b) => a.nome.localeCompare(b.nome));
+          setPacientes(filtrados);
+          setShowDropdown(true);
+        })
+        .catch((err) => console.error(err));
+    } else {
+      setShowDropdown(false);
+    }
+  }, [pacienteInput, modoVisualizacao]);
+
+  // 🔹 Buscar tratamentos do paciente selecionado
+  useEffect(() => {
+    if (pacienteSelecionado) {
+      fetch(`http://localhost:3001/tratamentos/${pacienteSelecionado.id}`)
+        .then((res) => res.json())
+        .then(async (dataTrat) => {
+          const tratamentosComProcedimentos = await Promise.all(
+            dataTrat.map(async (trat) => {
+              const resProc = await fetch(`http://localhost:3001/procedimentos/tratamento/${trat.id}`);
+              const procedimentos = resProc.ok ? await resProc.json() : [];
+              return { ...trat, procedimentos };
+            })
+          );
+          setTratamentos(tratamentosComProcedimentos);
+        })
+        .catch((err) => console.error(err));
+    } else {
+      setTratamentos([]);
+      setTratamentoSelecionado(null);
+      setProcedimentoSelecionado(null);
+    }
+  }, [pacienteSelecionado]);
+
+  const handleSelectPaciente = (p) => {
+    setPacienteSelecionado(p);
+    setPacienteInput(p.nome);
+    setShowDropdown(false);
+  };
+
   // 🔹 Salvar ou atualizar evento
   const handleSubmit = async (e) => {
     e.preventDefault();
+    
+const eventoData = {
+  inicio: new Date(inicio).toISOString(),
+  fim: new Date(fim).toISOString(),
+  dentistaId,
+  status,
+  valorPrevisto: parseFloat(valorPrevisto) || 0,
+  observacoes,
+  pacienteId: pacienteSelecionado?.id || null,
+  tratamentoId: tratamentoSelecionado?.id || null,
+  procedimentoId: procedimentoSelecionado?.id || null,
+};
 
-    const eventoData = {
-      title: pacienteNome,
-      inicio: new Date(inicio).toISOString(),
-      fim: new Date(fim).toISOString(),
-      dentistaId,
-      status,
-      valorPrevisto: parseFloat(valorPrevisto) || 0,
-      observacoes,
-    };
+// 🔹 define o título APENAS para exibição no calendário (não vai para o banco)
+eventoData.title =
+  status === "indisponível"
+    ? "Indisponível"
+    : pacienteSelecionado?.nome || pacienteInput || "Sem paciente";
 
     try {
       const url = dataSelecionada?.id
@@ -73,6 +152,7 @@ export default function AgendamentoForm({
       if (!res.ok) throw new Error("Erro ao salvar evento");
 
       onSuccess();
+      setModoVisualizacao(true);
       onRequestClose();
     } catch (error) {
       console.error("Erro ao salvar:", error);
@@ -99,9 +179,6 @@ export default function AgendamentoForm({
     }
   };
 
-  // 🔹 Habilita edição
-  const habilitarEdicao = () => setModoVisualizacao(false);
-
   return (
     <Modal
       isOpen={isOpen}
@@ -119,7 +196,6 @@ export default function AgendamentoForm({
           width: "100%",
           maxWidth: "28rem",
           boxShadow: "0 10px 15px rgba(0,0,0,0.1)",
-          color: "#1a202c",
         },
         overlay: { backgroundColor: "rgba(0,0,0,0.5)", zIndex: 50 },
       }}
@@ -134,21 +210,93 @@ export default function AgendamentoForm({
 
       <form onSubmit={handleSubmit} className="space-y-3">
         {/* Paciente */}
-        <div>
+        <div className="relative">
           <label className="block mb-1 font-medium">Paciente</label>
           <input
             type="text"
-            value={pacienteNome}
-            onChange={(e) => setPacienteNome(e.target.value)}
+            placeholder="Digite o nome do paciente"
+            value={pacienteInput}
+            onChange={(e) => {
+              setPacienteInput(e.target.value);
+              if (!modoVisualizacao) setShowDropdown(true);
+            }}
+            onFocus={() => pacienteInput && setShowDropdown(true)}
             disabled={modoVisualizacao}
-            placeholder="Nome do paciente"
             className={`w-full p-2 border rounded ${
               modoVisualizacao ? "bg-gray-100 cursor-not-allowed" : ""
             }`}
           />
+          {showDropdown && pacientes.length > 0 && !modoVisualizacao && (
+            <ul className="absolute z-50 w-full bg-white border mt-1 max-h-40 overflow-auto rounded shadow">
+              {pacientes.map((p) => (
+                <li
+                  key={p.id}
+                  className="p-2 hover:bg-gray-100 cursor-pointer"
+                  onMouseDown={(e) => {
+                    e.preventDefault();
+                    handleSelectPaciente(p);
+                  }}
+                >
+                  {p.nome}
+                </li>
+              ))}
+            </ul>
+          )}
         </div>
 
-        {/* Início */}
+        {/* Tratamento */}
+        {pacienteSelecionado && tratamentos.length > 0 && (
+          <div>
+            <label className="block mb-1 font-medium">Tratamento</label>
+            <select
+              value={tratamentoSelecionado?.id || ""}
+              onChange={(e) => {
+                const sel = tratamentos.find((t) => t.id === parseInt(e.target.value));
+                setTratamentoSelecionado(sel || null);
+              }}
+              disabled={modoVisualizacao}
+              className={`w-full p-2 border rounded ${
+                modoVisualizacao ? "bg-gray-100 cursor-not-allowed" : ""
+              }`}
+            >
+              <option value="">Selecione um tratamento</option>
+              {tratamentos.map((t) => (
+                <option key={t.id} value={t.id}>
+                  {t.nome}
+                </option>
+              ))}
+            </select>
+          </div>
+        )}
+
+        {/* Procedimento */}
+        {tratamentoSelecionado && tratamentoSelecionado.procedimentos?.length > 0 && (
+          <div>
+            <label className="block mb-1 font-medium">Procedimento</label>
+            <select
+              value={procedimentoSelecionado?.id || ""}
+              onChange={(e) => {
+                const sel = tratamentoSelecionado.procedimentos.find(
+                  (p) => p.id === parseInt(e.target.value)
+                );
+                setProcedimentoSelecionado(sel || null);
+              }}
+              disabled={modoVisualizacao}
+              className={`w-full p-2 border rounded ${
+                modoVisualizacao ? "bg-gray-100 cursor-not-allowed" : ""
+              }`}
+            >
+              <option value="">Selecione um procedimento</option>
+              {tratamentoSelecionado.procedimentos.map((p) => (
+                <option key={p.id} value={p.id}>
+                  {p.nome}
+                </option>
+              ))}
+            </select>
+          </div>
+        )}
+
+        {/* Início e Fim */}
         <div>
           <label className="block mb-1 font-medium">Início</label>
           <input
@@ -162,7 +310,6 @@ export default function AgendamentoForm({
           />
         </div>
 
-        {/* Fim */}
         <div>
           <label className="block mb-1 font-medium">Fim</label>
           <input
@@ -190,7 +337,7 @@ export default function AgendamentoForm({
             <option value="agendada">Agendada</option>
             <option value="confirmada">Confirmada</option>
             <option value="concluída">Concluída</option>
-            <option value="bloqueado">Bloqueado</option>
+            <option value="indisponível">Indisponível</option>
           </select>
         </div>
 
@@ -236,7 +383,7 @@ export default function AgendamentoForm({
             <div className="flex gap-2">
               <button
                 type="button"
-                onClick={habilitarEdicao}
+                onClick={() => setModoVisualizacao(false)}
                 className="px-4 py-2 bg-yellow-500 text-white rounded hover:bg-yellow-600 transition"
               >
                 Editar
