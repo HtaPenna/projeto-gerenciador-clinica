@@ -1,189 +1,112 @@
-import { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import Modal from "react-modal";
 
 Modal.setAppElement("#root");
 
-export default function NovoEventoModal({ isOpen, onRequestClose, dataSelecionada, onSuccess, dentistaId }) {
-  const dataBase = (() => {
-    if (!dataSelecionada) return new Date();
-    if (dataSelecionada instanceof Date) return dataSelecionada;
-    if (dataSelecionada.start) return new Date(dataSelecionada.start);
-    if (dataSelecionada.inicio) return new Date(dataSelecionada.inicio);
-    return new Date();
-  })();
-
-  // --- Estados principais ---
-  const [titulo, setTitulo] = useState("");
-  const [inicio, setInicio] = useState(formatDateTimeLocal(dataBase));
-  const [fim, setFim] = useState(formatDateTimeLocal(new Date(dataBase.getTime() + 60 * 60 * 1000)));
+export default function AgendamentoForm({
+  isOpen,
+  onRequestClose,
+  dataSelecionada,
+  onSuccess,
+  dentistaId,
+  modoVisualizacao = false,
+  setModoVisualizacao,
+}) {
+  const [pacienteNome, setPacienteNome] = useState("");
+  const [inicio, setInicio] = useState("");
+  const [fim, setFim] = useState("");
   const [status, setStatus] = useState("agendada");
-  const [valorPrevisto, setValorPrevisto] = useState("0.00");
+  const [valorPrevisto, setValorPrevisto] = useState("");
   const [observacoes, setObservacoes] = useState("");
 
-  const [pacienteInput, setPacienteInput] = useState("");
-  const [pacienteSelecionado, setPacienteSelecionado] = useState(null);
-  const [pacientes, setPacientes] = useState([]);
-  const [showDropdown, setShowDropdown] = useState(false);
-
-  const [tratamentos, setTratamentos] = useState([]);
-  const [tratamentoSelecionado, setTratamentoSelecionado] = useState(null);
-  const [procedimentoSelecionado, setProcedimentoSelecionado] = useState(null);
-
-  // --- 1️⃣ Carregar dados do evento do BD quando abrir (modo visualização/edição) ---
+  // 🔹 Preenche os campos quando o modal abre
   useEffect(() => {
-    if (isOpen && dataSelecionada?.id) {
-      fetch(`http://localhost:3001/eventos/${dataSelecionada.id}`)
-        .then((res) => {
-          if (!res.ok) throw new Error("Erro ao buscar evento");
-          return res.json();
-        })
-        .then(async (evento) => {
-          // Atualiza campos principais
-          setTitulo(evento.title || "");
-          setInicio(formatDateTimeLocal(evento.inicio));
-          setFim(formatDateTimeLocal(evento.fim));
-          setStatus(evento.status || "agendada");
-          setValorPrevisto(evento.valorPrevisto || "0.00");
-          setObservacoes(evento.observacoes || "");
-
-          // Busca paciente
-          if (evento.pacienteId) {
-            const resPac = await fetch(`http://localhost:3001/pacientes/${evento.pacienteId}`);
-            if (resPac.ok) {
-              const paciente = await resPac.json();
-              setPacienteSelecionado(paciente);
-              setPacienteInput(paciente.nome);
-            }
-          }
-
-          // Busca tratamentos do paciente e seleciona o correto
-          if (evento.tratamentoId && evento.pacienteId) {
-            const resTrat = await fetch(`http://localhost:3001/tratamentos/${evento.pacienteId}`);
-            if (resTrat.ok) {
-              const listaTrat = await resTrat.json();
-
-              // Adiciona os procedimentos de cada tratamento
-              const tratamentosComProcedimentos = await Promise.all(
-                listaTrat.map(async (trat) => {
-                  const resProc = await fetch(`http://localhost:3001/procedimentos/tratamento/${trat.id}`);
-                  const procedimentos = resProc.ok ? await resProc.json() : [];
-                  return { ...trat, procedimentos };
-                })
-              );
-
-              setTratamentos(tratamentosComProcedimentos);
-
-              // Seleciona o tratamento e o procedimento correspondentes
-              const tSel = tratamentosComProcedimentos.find((t) => t.id === evento.tratamentoId);
-              setTratamentoSelecionado(tSel || null);
-
-              if (tSel && evento.procedimentoId) {
-                const pSel = tSel.procedimentos.find((p) => p.id === evento.procedimentoId);
-                setProcedimentoSelecionado(pSel || null);
-              }
-            }
-          }
-        })
-        .catch((err) => console.error("Erro ao carregar evento:", err));
-    } else if (isOpen && !dataSelecionada?.id) {
-      // 🔹 Caso seja novo evento, reseta o formulário
-      resetarFormulario();
+    if (dataSelecionada) {
+      setPacienteNome(dataSelecionada.title || "");
+      setInicio(dataSelecionada.start ? formatDateTimeLocal(dataSelecionada.start) : "");
+      setFim(dataSelecionada.end ? formatDateTimeLocal(dataSelecionada.end) : "");
+      setStatus(dataSelecionada.status || "agendada");
+      setValorPrevisto(dataSelecionada.valorPrevisto || "");
+      setObservacoes(dataSelecionada.observacoes || "");
     }
-  }, [isOpen, dataSelecionada]);
+  }, [dataSelecionada]);
 
-  // --- 2️⃣ Buscar pacientes conforme digitação ---
-  useEffect(() => {
-    if (pacienteInput.length > 0 && status !== "indisponível") {
-      fetch(`http://localhost:3001/pacientes?search=${pacienteInput}`)
-        .then((res) => res.json())
-        .then((data) => {
-          const filtrados = data
-            .filter((p) => p.nome.toLowerCase().includes(pacienteInput.toLowerCase()))
-            .sort((a, b) => a.nome.localeCompare(b.nome));
-          setPacientes(filtrados);
-          setShowDropdown(true);
-        })
-        .catch((err) => console.error(err));
-    } else {
-      setPacientes([]);
-      setShowDropdown(false);
-    }
-  }, [pacienteInput, status]);
+  // 🔹 Função auxiliar para formato ISO local (input datetime-local)
+  function formatDateTimeLocal(date) {
+    if (!date) return "";
+    const d = new Date(date);
+    if (isNaN(d)) return "";
+    const y = d.getFullYear();
+    const m = String(d.getMonth() + 1).padStart(2, "0");
+    const da = String(d.getDate()).padStart(2, "0");
+    const h = String(d.getHours()).padStart(2, "0");
+    const mi = String(d.getMinutes()).padStart(2, "0");
+    return `${y}-${m}-${da}T${h}:${mi}`;
+  }
 
-  // --- 3️⃣ Atualiza o título automaticamente ---
-  useEffect(() => {
-    if (status === "indisponível") setTitulo("Indisponível");
-    else if (pacienteSelecionado) setTitulo(pacienteSelecionado.nome);
-    else setTitulo("");
-  }, [status, pacienteSelecionado]);
-
-  const handleSelectPaciente = (p) => {
-    setPacienteSelecionado(p);
-    setPacienteInput(p.nome);
-    setShowDropdown(false);
-  };
-
-  // --- 4️⃣ Submeter formulário ---
+  // 🔹 Salvar ou atualizar evento
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    if (status !== "indisponível" && !pacienteSelecionado) {
-      alert("Selecione um paciente válido!");
-      return;
-    }
-
     const eventoData = {
-      title: titulo,
+      title: pacienteNome,
       inicio: new Date(inicio).toISOString(),
       fim: new Date(fim).toISOString(),
-      pacienteId: pacienteSelecionado?.id || null,
-      dentistaId: dentistaId || null,
+      dentistaId,
       status,
-      valorPrevisto: parseFloat(valorPrevisto),
+      valorPrevisto: parseFloat(valorPrevisto) || 0,
       observacoes,
-      tratamentoId: tratamentoSelecionado?.id || null,
-      procedimentoId: procedimentoSelecionado?.id || null,
     };
 
     try {
       const url = dataSelecionada?.id
         ? `http://localhost:3001/eventos/${dataSelecionada.id}`
         : "http://localhost:3001/eventos";
-      const method = dataSelecionada?.id ? "PUT" : "POST";
+      const method = dataSelecionada?.id ? "PATCH" : "POST";
 
-      await fetch(url, {
+      const res = await fetch(url, {
         method,
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(eventoData),
       });
 
+      if (!res.ok) throw new Error("Erro ao salvar evento");
+
       onSuccess();
       onRequestClose();
     } catch (error) {
-      console.error("Erro ao salvar evento:", error);
-      alert("Erro ao salvar evento.");
+      console.error("Erro ao salvar:", error);
+      alert("Não foi possível salvar o evento.");
     }
   };
 
-  function resetarFormulario() {
-    setTitulo("");
-    setInicio(formatDateTimeLocal(dataBase));
-    setFim(formatDateTimeLocal(new Date(dataBase.getTime() + 60 * 60 * 1000)));
-    setStatus("agendada");
-    setValorPrevisto("0.00");
-    setObservacoes("");
-    setPacienteInput("");
-    setPacienteSelecionado(null);
-    setTratamentos([]);
-    setTratamentoSelecionado(null);
-    setProcedimentoSelecionado(null);
-  }
+  // 🔹 Excluir evento
+  const handleDelete = async () => {
+    if (!dataSelecionada?.id) return;
+    const confirmar = window.confirm("Deseja realmente excluir este agendamento?");
+    if (!confirmar) return;
+
+    try {
+      const res = await fetch(`http://localhost:3001/eventos/${dataSelecionada.id}`, {
+        method: "DELETE",
+      });
+      if (!res.ok) throw new Error("Erro ao excluir evento");
+      onSuccess();
+      onRequestClose();
+    } catch (error) {
+      console.error("Erro ao excluir:", error);
+      alert("Não foi possível excluir o evento.");
+    }
+  };
+
+  // 🔹 Habilita edição
+  const habilitarEdicao = () => setModoVisualizacao(false);
 
   return (
     <Modal
       isOpen={isOpen}
       onRequestClose={onRequestClose}
-      contentLabel="Novo Evento"
+      contentLabel="Agendamento"
       style={{
         content: {
           top: "50%",
@@ -192,7 +115,7 @@ export default function NovoEventoModal({ isOpen, onRequestClose, dataSelecionad
           bottom: "auto",
           transform: "translate(-50%, -50%)",
           padding: "1.5rem",
-          borderRadius: "0.5rem",
+          borderRadius: "0.75rem",
           width: "100%",
           maxWidth: "28rem",
           boxShadow: "0 10px 15px rgba(0,0,0,0.1)",
@@ -201,147 +124,141 @@ export default function NovoEventoModal({ isOpen, onRequestClose, dataSelecionad
         overlay: { backgroundColor: "rgba(0,0,0,0.5)", zIndex: 50 },
       }}
     >
-      <h2 className="text-xl font-bold mb-4">
-        {dataSelecionada?.id ? "Visualizar/Editar Evento" : "Novo Evento"}
+      <h2 className="text-xl font-bold mb-4 text-gray-800 text-center">
+        {modoVisualizacao
+          ? "Detalhes do Agendamento"
+          : dataSelecionada?.id
+          ? "Editar Agendamento"
+          : "Novo Agendamento"}
       </h2>
 
-      <form onSubmit={handleSubmit} className="space-y-4">
+      <form onSubmit={handleSubmit} className="space-y-3">
         {/* Paciente */}
-        {status !== "indisponível" && (
-          <div className="relative">
-            <label className="block mb-1 font-medium">Paciente</label>
-            <input
-              type="text"
-              placeholder="Digite o nome do paciente"
-              value={pacienteInput}
-              onChange={(e) => {
-                setPacienteInput(e.target.value);
-                setPacienteSelecionado(null);
-                setShowDropdown(true);
-              }}
-              onFocus={() => pacienteInput && setShowDropdown(true)}
-              className="w-full p-2 border rounded"
-            />
-            {showDropdown && pacientes.length > 0 && (
-              <ul className="absolute z-50 w-full bg-white border mt-1 max-h-40 overflow-auto rounded shadow">
-                {pacientes.map((p) => (
-                  <li
-                    key={p.id}
-                    className="p-2 hover:bg-gray-100 cursor-pointer"
-                    onMouseDown={(e) => {
-                      e.preventDefault();
-                      handleSelectPaciente(p);
-                    }}
-                  >
-                    {p.nome}
-                  </li>
-                ))}
-              </ul>
-            )}
-          </div>
-        )}
+        <div>
+          <label className="block mb-1 font-medium">Paciente</label>
+          <input
+            type="text"
+            value={pacienteNome}
+            onChange={(e) => setPacienteNome(e.target.value)}
+            disabled={modoVisualizacao}
+            placeholder="Nome do paciente"
+            className={`w-full p-2 border rounded ${
+              modoVisualizacao ? "bg-gray-100 cursor-not-allowed" : ""
+            }`}
+          />
+        </div>
 
-        {/* Tratamento e Procedimento */}
-        {pacienteSelecionado && tratamentos.length > 0 && (
-          <div>
-            <label className="block mb-1 font-medium">Tratamento</label>
-            <select
-              value={tratamentoSelecionado?.id || ""}
-              onChange={(e) => {
-                const sel = tratamentos.find((t) => t.id === parseInt(e.target.value));
-                setTratamentoSelecionado(sel || null);
-                setProcedimentoSelecionado(null);
-              }}
-              className="w-full p-2 border rounded"
-            >
-              <option value="">Selecione um tratamento</option>
-              {tratamentos.map((t) => (
-                <option key={t.id} value={t.id}>
-                  {t.nome}
-                </option>
-              ))}
-            </select>
-          </div>
-        )}
-
-        {tratamentoSelecionado && tratamentoSelecionado.procedimentos?.length > 0 && (
-          <div>
-            <label className="block mb-1 font-medium">Procedimento</label>
-            <select
-              value={procedimentoSelecionado?.id || ""}
-              onChange={(e) => {
-                const sel = tratamentoSelecionado.procedimentos.find(
-                  (p) => p.id === parseInt(e.target.value)
-                );
-                setProcedimentoSelecionado(sel || null);
-              }}
-              className="w-full p-2 border rounded"
-            >
-              <option value="">Selecione um procedimento</option>
-              {tratamentoSelecionado.procedimentos.map((p) => (
-                <option key={p.id} value={p.id}>
-                  {p.nome}
-                </option>
-              ))}
-            </select>
-          </div>
-        )}
-
-        {/* Início e Fim */}
+        {/* Início */}
         <div>
           <label className="block mb-1 font-medium">Início</label>
-          <input type="datetime-local" value={inicio} onChange={(e) => setInicio(e.target.value)} className="w-full p-2 border rounded" />
+          <input
+            type="datetime-local"
+            value={inicio}
+            onChange={(e) => setInicio(e.target.value)}
+            disabled={modoVisualizacao}
+            className={`w-full p-2 border rounded ${
+              modoVisualizacao ? "bg-gray-100 cursor-not-allowed" : ""
+            }`}
+          />
         </div>
+
+        {/* Fim */}
         <div>
           <label className="block mb-1 font-medium">Fim</label>
-          <input type="datetime-local" value={fim} onChange={(e) => setFim(e.target.value)} className="w-full p-2 border rounded" />
+          <input
+            type="datetime-local"
+            value={fim}
+            onChange={(e) => setFim(e.target.value)}
+            disabled={modoVisualizacao}
+            className={`w-full p-2 border rounded ${
+              modoVisualizacao ? "bg-gray-100 cursor-not-allowed" : ""
+            }`}
+          />
         </div>
 
         {/* Status */}
         <div>
           <label className="block mb-1 font-medium">Status</label>
-          <select value={status} onChange={(e) => setStatus(e.target.value)} className="w-full p-2 border rounded">
+          <select
+            value={status}
+            onChange={(e) => setStatus(e.target.value)}
+            disabled={modoVisualizacao}
+            className={`w-full p-2 border rounded ${
+              modoVisualizacao ? "bg-gray-100 cursor-not-allowed" : ""
+            }`}
+          >
             <option value="agendada">Agendada</option>
             <option value="confirmada">Confirmada</option>
             <option value="concluída">Concluída</option>
-            <option value="indisponível">Indisponível</option>
+            <option value="bloqueado">Bloqueado</option>
           </select>
         </div>
 
         {/* Valor Previsto */}
         <div>
           <label className="block mb-1 font-medium">Valor Previsto</label>
-          <input type="number" step="0.01" value={valorPrevisto} onChange={(e) => setValorPrevisto(e.target.value)} className="w-full p-2 border rounded" />
+          <input
+            type="number"
+            step="0.01"
+            value={valorPrevisto}
+            onChange={(e) => setValorPrevisto(e.target.value)}
+            disabled={modoVisualizacao}
+            className={`w-full p-2 border rounded ${
+              modoVisualizacao ? "bg-gray-100 cursor-not-allowed" : ""
+            }`}
+          />
         </div>
 
         {/* Observações */}
         <div>
           <label className="block mb-1 font-medium">Observações</label>
-          <textarea value={observacoes} onChange={(e) => setObservacoes(e.target.value)} className="w-full p-2 border rounded" />
+          <textarea
+            value={observacoes}
+            onChange={(e) => setObservacoes(e.target.value)}
+            disabled={modoVisualizacao}
+            className={`w-full p-2 border rounded ${
+              modoVisualizacao ? "bg-gray-100 cursor-not-allowed" : ""
+            }`}
+          />
         </div>
 
         {/* Botões */}
-        <div className="flex justify-end gap-2">
-          <button type="button" onClick={onRequestClose} className="px-4 py-2 bg-gray-300 rounded">
+        <div className="flex justify-between mt-6">
+          <button
+            type="button"
+            onClick={onRequestClose}
+            className="px-4 py-2 bg-gray-400 text-white rounded hover:bg-gray-500 transition"
+          >
             Fechar
           </button>
-          <button type="submit" className="px-4 py-2 bg-blue-600 text-white rounded">
-            Salvar
-          </button>
+
+          {modoVisualizacao ? (
+            <div className="flex gap-2">
+              <button
+                type="button"
+                onClick={habilitarEdicao}
+                className="px-4 py-2 bg-yellow-500 text-white rounded hover:bg-yellow-600 transition"
+              >
+                Editar
+              </button>
+              <button
+                type="button"
+                onClick={handleDelete}
+                className="px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700 transition"
+              >
+                Excluir
+              </button>
+            </div>
+          ) : (
+            <button
+              type="submit"
+              className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition"
+            >
+              Salvar
+            </button>
+          )}
         </div>
       </form>
     </Modal>
   );
-}
-
-function formatDateTimeLocal(date) {
-  if (!date) return "";
-  const d = date instanceof Date ? date : new Date(date);
-  if (isNaN(d)) return "";
-  const y = d.getFullYear();
-  const m = String(d.getMonth() + 1).padStart(2, "0");
-  const da = String(d.getDate()).padStart(2, "0");
-  const h = String(d.getHours()).padStart(2, "0");
-  const mi = String(d.getMinutes()).padStart(2, "0");
-  return `${y}-${m}-${da}T${h}:${mi}`;
 }

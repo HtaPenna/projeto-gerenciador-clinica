@@ -14,6 +14,7 @@ const plugins = [dayGridPlugin, timeGridPlugin, interactionPlugin];
 export default function AgendaVisual() {
   const [eventos, setEventos] = useState([]);
   const [mostrarModal, setMostrarModal] = useState(false);
+  const [modoVisualizacao, setModoVisualizacao] = useState(false); // 🔸 Novo estado
   const [dataSelecionada, setDataSelecionada] = useState(null);
   const [mostrarModalConfig, setMostrarModalConfig] = useState(false);
   const [dentistaSelecionado, setDentistaSelecionado] = useState(1);
@@ -32,10 +33,10 @@ export default function AgendaVisual() {
       const dados = await res.json();
 
       const eventosFormatados = dados.map((ev) => {
-        let cor = "#00A39C"; // padrão
-        if (ev.status === "z") cor = "#FACC15"; // amarelo
-        else if (ev.status === "confirmada") cor = "#10B981"; // verde
-        else if (ev.status === "bloqueado") cor = "#9CA3AF"; // cinza
+        let cor = "#00A39C";
+        if (ev.status === "z") cor = "#FACC15";
+        else if (ev.status === "confirmada") cor = "#10B981";
+        else if (ev.status === "bloqueado") cor = "#9CA3AF";
 
         return {
           id: ev.id,
@@ -59,8 +60,7 @@ export default function AgendaVisual() {
     }
   };
 
-  // 🔹 Abre modal com dados de evento existente
-  const abrirModal = (evento) => {
+  const abrirModal = (evento, somenteVisualizar = false) => {
     setDataSelecionada({
       id: evento.id,
       start: evento.start,
@@ -70,38 +70,25 @@ export default function AgendaVisual() {
       status: evento.extendedProps?.status,
       valorPrevisto: evento.extendedProps?.valorPrevisto,
       observacoes: evento.extendedProps?.observacoes,
+      title: evento.title,
     });
+    setModoVisualizacao(somenteVisualizar);
     setMostrarModal(true);
   };
 
-  // 🔹 Inicializa título
   useEffect(() => {
     updateTitle("Agenda");
   }, [updateTitle]);
 
-  // 🔹 Carrega eventos ao montar
   useEffect(() => {
     carregarEventos();
   }, []);
 
-  // 🔹 Se veio de outra tela com ID salvo
-  useEffect(() => {
-    const eventoId = localStorage.getItem("eventoSelecionadoId");
-    if (!eventoId || eventos.length === 0) return;
-
-    const evento = eventos.find((e) => e.id === parseInt(eventoId));
-    if (evento) abrirModal(evento);
-
-    localStorage.removeItem("eventoSelecionadoId");
-  }, [eventos]);
-
-  // 🔹 Clicar num dia vazio
   const handleDateClick = (info) => {
     const agora = new Date();
     const dataClicada = info.date;
     if (dataClicada < new Date(agora.setHours(0, 0, 0, 0))) return;
 
-    // 🔸 padroniza formato que o modal espera
     setDataSelecionada({
       id: null,
       start: dataClicada,
@@ -112,8 +99,12 @@ export default function AgendaVisual() {
       valorPrevisto: "",
       observacoes: "",
     });
-
+    setModoVisualizacao(false);
     setMostrarModal(true);
+  };
+
+  const handleEventClick = (info) => {
+    abrirModal(info.event, true); // 🔸 abre em modo de visualização
   };
 
   const eventosFiltrados = eventos.filter(
@@ -126,9 +117,7 @@ export default function AgendaVisual() {
 
       <div className="flex gap-2 mb-4">
         <button
-          onClick={() =>
-            handleDateClick({ date: new Date() })
-          }
+          onClick={() => handleDateClick({ date: new Date() })}
           className="px-4 py-2 bg-green-600 text-white rounded"
         >
           Novo Evento
@@ -140,18 +129,6 @@ export default function AgendaVisual() {
         >
           Configurações
         </button>
-
-        {/*
-        <select
-          value={dentistaSelecionado}
-          onChange={(e) => setDentistaSelecionado(Number(e.target.value))}
-          className="p-2 border rounded"
-        >
-          <option value={1}>Dentista 1</option>
-          <option value={2}>Dentista 2</option>
-          <option value={3}>Dentista 3</option>
-        </select>
-        */}
       </div>
 
       <div style={{ width: "calc(100% - 90px)" }}>
@@ -169,7 +146,7 @@ export default function AgendaVisual() {
           }}
           events={eventosFiltrados}
           dateClick={handleDateClick}
-          eventClick={(info) => abrirModal(info.event)} // 🔸 abre modal ao clicar num evento
+          eventClick={handleEventClick}
           height="auto"
         />
       </div>
@@ -180,6 +157,8 @@ export default function AgendaVisual() {
         dataSelecionada={dataSelecionada}
         onSuccess={carregarEventos}
         dentistaId={dentistaSelecionado}
+        modoVisualizacao={modoVisualizacao} // 🔸 prop nova
+        setModoVisualizacao={setModoVisualizacao} // 🔸 prop nova
       />
 
       <ConfigCalendarModal
