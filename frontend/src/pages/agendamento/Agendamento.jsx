@@ -141,6 +141,7 @@ export default function AgendaVisual() {
           Configurações
         </button>
 
+        {/*
         <select
           value={dentistaSelecionado}
           onChange={(e) => setDentistaSelecionado(Number(e.target.value))}
@@ -150,6 +151,7 @@ export default function AgendaVisual() {
           <option value={2}>Dentista 2</option>
           <option value={3}>Dentista 3</option>
         </select>
+        */}
       </div>
 
       <div style={{ width: "calc(100% - 90px)" }}>
