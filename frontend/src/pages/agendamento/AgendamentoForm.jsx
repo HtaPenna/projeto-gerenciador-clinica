@@ -42,30 +42,30 @@ export default function AgendamentoModal({
 
   // 🔹 Preenche os campos ao abrir modal
   // 🔹 Preenche os campos ao abrir modal
-  useEffect(() => {
-    if (dataSelecionada && dataSelecionada.id) {
-      // 🔸 Modo visualização — evento existente
-      setPacienteInput(dataSelecionada.pacienteNome || dataSelecionada.title || "");
-      setInicio(formatDateTimeLocal(dataSelecionada.start));
-      setFim(formatDateTimeLocal(dataSelecionada.end));
-      setStatus(dataSelecionada.status || "agendada");
-      setValorPrevisto(dataSelecionada.valorPrevisto || "");
-      setObservacoes(dataSelecionada.observacoes || "");
-      setModoVisualizacao(true);
-    } else {
-      // 🔸 Modo criação — novo evento
-      setPacienteInput("");
-      setPacienteSelecionado(null);
-      setTratamentoSelecionado(null);
-      setProcedimentoSelecionado(null);
-      setInicio(formatDateTimeLocal(dataSelecionada?.start || new Date()));
-      setFim(formatDateTimeLocal(dataSelecionada?.end || new Date()));
-      setStatus("agendada");
-      setValorPrevisto("");
-      setObservacoes("");
-      setModoVisualizacao(false);
-    }
-  }, [dataSelecionada]);
+useEffect(() => {
+  if (dataSelecionada && dataSelecionada.id) {
+    // 🔸 Modo visualização — evento existente
+    setPacienteInput(dataSelecionada.pacienteNome || dataSelecionada.title || "");
+    setInicio(formatDateTimeLocal(dataSelecionada.start));
+    setFim(formatDateTimeLocal(dataSelecionada.end));
+    setStatus(dataSelecionada.status || "agendada");
+    setValorPrevisto(dataSelecionada.valorPrevisto || "");
+    setObservacoes(dataSelecionada.observacoes || "");
+    setModoVisualizacao(true);
+  } else {
+    // 🔸 Modo criação — novo evento
+    setPacienteInput("");
+    setPacienteSelecionado(null);
+    setTratamentoSelecionado(null);
+    setProcedimentoSelecionado(null);
+    setInicio(formatDateTimeLocal(dataSelecionada?.start || new Date()));
+    setFim(formatDateTimeLocal(dataSelecionada?.end || new Date()));
+    setStatus("agendada");
+    setValorPrevisto("");
+    setObservacoes("");
+    setModoVisualizacao(false);
+  }
+}, [dataSelecionada]);
 
 
   // 🔹 Buscar pacientes conforme digitação
@@ -118,24 +118,19 @@ export default function AgendamentoModal({
   // 🔹 Salvar ou atualizar evento
   const handleSubmit = async (e) => {
     e.preventDefault();
-    
-const eventoData = {
-  inicio: new Date(inicio).toISOString(),
-  fim: new Date(fim).toISOString(),
-  dentistaId,
-  status,
-  valorPrevisto: parseFloat(valorPrevisto) || 0,
-  observacoes,
-  pacienteId: pacienteSelecionado?.id || null,
-  tratamentoId: tratamentoSelecionado?.id || null,
-  procedimentoId: procedimentoSelecionado?.id || null,
-};
 
-// 🔹 define o título APENAS para exibição no calendário (não vai para o banco)
-eventoData.title =
-  status === "indisponível"
-    ? "Indisponível"
-    : pacienteSelecionado?.nome || pacienteInput || "Sem paciente";
+    const eventoData = {
+      title: pacienteInput,
+      inicio: new Date(inicio).toISOString(),
+      fim: new Date(fim).toISOString(),
+      dentistaId,
+      status,
+      valorPrevisto: parseFloat(valorPrevisto) || 0,
+      observacoes,
+      pacienteId: pacienteSelecionado?.id || null,
+      tratamentoId: tratamentoSelecionado?.id || null,
+      procedimentoId: procedimentoSelecionado?.id || null,
+    };
 
     try {
       const url = dataSelecionada?.id
