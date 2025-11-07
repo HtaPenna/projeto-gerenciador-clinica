@@ -4,11 +4,10 @@ exports.get = async (req, res) => {
   try {
     const eventos = await Evento.findAll({
       include: [
-        {
-          model: Paciente,
-          as: 'paciente',
-          attributes: ['id', 'nome'],
-        },
+          { model: Paciente, as: "paciente" },
+          { model: Tratamento, as: "tratamento" },
+          { model: Procedimento, as: "procedimento" }
+        
       ],
       order: [['inicio', 'ASC']],
     });
