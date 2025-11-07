@@ -45,6 +45,8 @@ Tratamento.belongsTo(Paciente, { foreignKey: 'pacienteId', as: 'paciente' });
 Dentista.belongsToMany(Especialidade, { through: 'dentista_especialidade' });
 Especialidade.belongsToMany(Dentista, { through: 'dentista_especialidade' });
 
+sequelize.sync({ alter: true });
+
 module.exports = {
   sequelize,
   Usuario,
