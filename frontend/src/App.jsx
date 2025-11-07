@@ -11,15 +11,10 @@ import CadastroPaciente from './pages/cadastro/CadastroPaciente.jsx';
 import Estoque from './pages/estoque/Estoque.jsx';
 import Prontuario from './pages/paciente/Prontuário.jsx';
 import HistoricoConsultas from './pages/consulta/ConsultasGerais.jsx';
-import FloatingActions from "./components/atalhos/FloatingActions";
 
 function App() {
   return (
     <>
-      {/* Botão fixo global - sempre visível */}
-      <FloatingActions />
-
-      {/* Rotas da aplicação */}
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/login" element={<Login />} />
