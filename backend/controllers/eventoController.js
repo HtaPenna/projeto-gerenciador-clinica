@@ -69,15 +69,25 @@ exports.post = async (req, res) => {
 };
 
 exports.patch = async (req, res) => {
-  try {
+ try {
     const [updated] = await Evento.update(req.body, {
-      where: { id: req.params.id }
+      where: { id: req.params.id },
     });
+
     if (updated) {
       const eventoAtualizado = await Evento.findByPk(req.params.id);
+
+      // 🔁 Atualiza status do procedimento se a consulta foi concluída
+      if (req.body.status?.toLowerCase() === "concluída" && eventoAtualizado.procedimentoId) {
+        await Procedimento.update(
+          { status: "concluído" },
+          { where: { id: eventoAtualizado.procedimentoId } }
+        );
+      }
+
       res.json(eventoAtualizado);
     } else {
-      res.status(404).json({ erro: 'Evento não encontrado' });
+      res.status(404).json({ erro: "Evento não encontrado" });
     }
   } catch (err) {
     res.status(500).json({ erro: err.message });

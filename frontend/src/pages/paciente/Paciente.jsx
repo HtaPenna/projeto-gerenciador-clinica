@@ -1,10 +1,10 @@
+// src/pages/paciente/Paciente.jsx
 import React, { useState, useEffect, useRef } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import PacientesList from "./PacienteList.jsx";
 import PacienteForm from "./PacienteForm.jsx";
 import AnamneseForm from "./AnamneseForm.jsx";
 import { usePageTitle } from '../../hooks/usePageTitle';
-import { Plus, User, Calendar, Package } from "lucide-react";
 import "./Paciente.css";
 
 const API_URL = "http://localhost:3001/pacientes";
@@ -12,16 +12,17 @@ const API_URL = "http://localhost:3001/pacientes";
 export default function Paciente() {
   const navigate = useNavigate();
   const { updateTitle } = usePageTitle();
+  const { id } = useParams(); // pega o id da rota
   const [pacientes, setPacientes] = useState([]);
   const [pacientesFiltrados, setPacientesFiltrados] = useState([]);
   const [busca, setBusca] = useState('');
   const [mostrarForm, setMostrarForm] = useState(false);
   const [pacienteCriando, setPacienteCriando] = useState(null);
   const [anamneseCriando, setAnamneseCriando] = useState(null);
-  const [dropdownOpen, setDropdownOpen] = useState(false);
   const dropdownRef = useRef(null);
 
   // Fecha o dropdown ao clicar fora
+  const [dropdownOpen, setDropdownOpen] = useState(false);
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
@@ -36,25 +37,24 @@ export default function Paciente() {
     updateTitle('Pacientes');
   }, [updateTitle]);
 
-    // Função de busca automática
-  const filtrarPacientes = (termo) => {
-    if (!termo.trim()) {
-      setPacientesFiltrados(pacientes);
-      return;
-    }
-    
-    const filtrados = pacientes.filter(paciente =>
-      paciente.nome?.toLowerCase().includes(termo.toLowerCase()) ||
-      paciente.telefoneCelular?.includes(termo)
-    );
-    
-    setPacientesFiltrados(filtrados);
-  };
-
-  // Busca automática quando digitar
+  // Detecta se é criação de novo paciente
   useEffect(() => {
-    filtrarPacientes(busca);
-  }, [busca, pacientes]);
+    if (id === "novo") {
+      setPacienteCriando({});
+      setAnamneseCriando({});
+      setMostrarForm(true);
+    } else if (id) {
+      // Caso queira edição, carregar dados do paciente aqui
+      fetch(`${API_URL}/${id}`)
+        .then(res => res.json())
+        .then(data => {
+          setPacienteCriando(data);
+          setAnamneseCriando({ pacienteId: data.id });
+          setMostrarForm(true);
+        })
+        .catch(err => console.error(err));
+    }
+  }, [id]);
 
   // Carrega pacientes
   const carregarPacientes = async () => {
@@ -62,7 +62,7 @@ export default function Paciente() {
       const res = await fetch(API_URL);
       const data = await res.json();
       setPacientes(data);
-      setPacientesFiltrados(data); // Inicializa com todos os pacientes
+      setPacientesFiltrados(data);
     } catch (err) {
       console.error(err);
     }
@@ -72,55 +72,47 @@ export default function Paciente() {
     carregarPacientes();
   }, []);
 
+  // Função de busca automática
+  useEffect(() => {
+    if (!busca.trim()) {
+      setPacientesFiltrados(pacientes);
+      return;
+    }
+    const filtrados = pacientes.filter(p =>
+      p.nome?.toLowerCase().includes(busca.toLowerCase()) ||
+      p.telefoneCelular?.includes(busca)
+    );
+    setPacientesFiltrados(filtrados);
+  }, [busca, pacientes]);
+
   // Criar paciente
   const criarPaciente = async (paciente) => {
     try {
-      console.log("Dados enviados para criar paciente:", paciente);
-      
       const res = await fetch(API_URL, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(paciente),
       });
-      
-      console.log("Status da resposta:", res.status);
-      
       const novoPaciente = await res.json();
-      console.log("Paciente criado:", novoPaciente);
-      
       if (res.ok) {
         await carregarPacientes();
         setPacienteCriando(novoPaciente);
         setAnamneseCriando({ pacienteId: novoPaciente.id });
-        
-        console.log("🔍 Estados APÓS atualização:");
-        console.log(" - pacienteCriando:", novoPaciente);
-        console.log(" - anamneseCriando:", { pacienteId: novoPaciente.id });
       } else {
-        console.error("Erro na criação:", novoPaciente);
         alert("Erro ao criar paciente: " + (novoPaciente.erro || novoPaciente.message));
       }
     } catch (err) {
-      console.error("Erro no fetch:", err);
+      console.error(err);
       alert("Erro de conexão ao criar paciente");
     }
   };
 
-  // Função para novo paciente
-  const handleNovoPaciente = () => {
-    setPacienteCriando({});
-    setMostrarForm(true);
-    setAnamneseCriando({});
-    setDropdownOpen(false);
-  };
-
-  // Formulários de criação
-  if (mostrarForm || pacienteCriando) {
+  // Formulários de criação/edição
+  if (mostrarForm && pacienteCriando) {
     return (
       <div className="paciente-container">
-        <h1>Novo Paciente</h1>
+        <h1>{id === "novo" ? "Novo Paciente" : "Editar Paciente"}</h1>
 
-        {/* Formulário de Dados Pessoais */}
         <PacienteForm
           paciente={pacienteCriando}
           onSalvar={(paciente) => {
@@ -133,10 +125,10 @@ export default function Paciente() {
             setPacienteCriando(null);
             setAnamneseCriando(null);
             setMostrarForm(false);
+            navigate("/main/pacientes");
           }}
         />
 
-        {/* Formulário de Anamnese */}
         {anamneseCriando && anamneseCriando.pacienteId && (
           <AnamneseForm
             anamnese={anamneseCriando}
@@ -155,6 +147,7 @@ export default function Paciente() {
                 setAnamneseCriando(null);
                 setPacienteCriando(null);
                 setMostrarForm(false);
+                navigate("/main/pacientes");
               } catch (err) {
                 console.error(err);
               }
@@ -166,35 +159,9 @@ export default function Paciente() {
     );
   }
 
-  // Página principal com lista de pacientes e botão de criar
+  // Página principal com lista de pacientes
   return (
     <div className="pacienteContainer">
-      <div className="fab-container" ref={dropdownRef}>
-        <button 
-          className="btnNew" 
-          onClick={() => setDropdownOpen(!dropdownOpen)}
-        >
-          <Plus size={30}/>
-        </button>
-
-        {dropdownOpen && (
-          <div className="newDropContainer">
-            <button onClick={handleNovoPaciente} className="dropdown-option">
-              <User size={16} />
-              <span>Novo paciente</span>
-            </button>
-            <button className="dropdown-option">
-              <Calendar size={16} />
-              <span>Nova consulta</span>
-            </button>
-            <button className="dropdown-option">
-              <Package size={16} />
-              <span>Novo relatorio</span>
-            </button>
-          </div>
-        )}
-      </div>
-
       <div className="searchBar">
         <input 
           type="text" 
