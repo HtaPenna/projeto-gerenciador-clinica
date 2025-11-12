@@ -36,7 +36,7 @@ app.use("/anamnese", anamneseRoutes);
 const suprimentoRoutes = require("./routes/suprimentoRoutes");
 app.use("/suprimento", suprimentoRoutes);
 
-const PORT = 3001;
+const PORT = process.env.PORT || 3001;
 
 sequelize.authenticate()
   .then(() => {
