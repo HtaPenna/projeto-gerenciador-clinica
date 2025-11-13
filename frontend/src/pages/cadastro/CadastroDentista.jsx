@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import {CircleArrowLeft} from "lucide-react";
 import './cadastroDentista.css'
+import API_BASE_URL from "../../apiConfig";
 
 export default function CadastroDentista() {
   const navigate = useNavigate(); 
@@ -13,11 +14,13 @@ export default function CadastroDentista() {
   const [telefoneConsultorio, setTelefoneConsultorio] = useState("");
   const [mensagem, setMensagem] = useState("");
 
+  const API_BASE = `${API_BASE_URL}`;
+
   const handleCadastro = async (e) => {
     e.preventDefault();
 
     try {
-      const res = await fetch("http://localhost:3001/dentistas", {
+      const res = await fetch(`${API_BASE}/dentistas`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
