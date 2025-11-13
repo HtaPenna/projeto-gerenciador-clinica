@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useNavigate, Link } from "react-router-dom"; // ✅ importar Link
 import {CircleArrowLeft} from "lucide-react";
+import API_BASE_URL from "../../apiConfig";
 import './login.css'
 
 export default function Login() {
@@ -9,11 +10,13 @@ export default function Login() {
   const [senha, setSenha] = useState("");
   const [mensagem, setMensagem] = useState("");
 
+  const API_BASE = `${API_BASE_URL}`;
+
   const handleLogin = async (e) => {
     e.preventDefault();
 
     try {
-      const res = await fetch("http://localhost:3001/usuarios/login", {
+      const res = await fetch(`${API_BASE}/usuarios/login`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email, senha }),
