@@ -33,7 +33,7 @@ export default function Login() {
         setMensagem(data.message || "Erro no login");
       }
     } catch (err) {
-      setMensagem("Erro no servidor");
+      setMensagem("Erro: ", err.message);
     }
   };
 
