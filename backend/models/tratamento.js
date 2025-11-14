@@ -23,6 +23,6 @@ module.exports = (sequelize, DataTypes) => {
       defaultValue: 0.00,
     },
   }, {
-    tableName: 'tratamento', 
+    tableName: 'tratamento',
   });
 };

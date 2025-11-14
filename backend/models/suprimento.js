@@ -1,10 +1,17 @@
-// models/suprimento.js
 module.exports = (sequelize, DataTypes) => {
   return sequelize.define('Suprimento', {
     id: {
       type: DataTypes.INTEGER,
       primaryKey: true,
       autoIncrement: true,
+    },
+    dentistaId: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      references: {
+        model: 'dentista',
+        key: 'id',
+      },
     },
     Codigo_Sup: {
       type: DataTypes.INTEGER,
@@ -32,6 +39,6 @@ module.exports = (sequelize, DataTypes) => {
       allowNull: true,
     },
   }, {
-    tableName: 'suprimento', // nome da tabela no banco
+    tableName: 'suprimento',
   });
 };
