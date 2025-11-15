@@ -1,25 +1,27 @@
 import { Routes, Route } from 'react-router-dom';
+import { ToastProvider } from './hooks/useToast';
+import 'bootstrap/dist/css/bootstrap.min.css';
+import 'bootstrap/dist/js/bootstrap.bundle.min.js';
 import Home from './pages/home/Home.jsx';
 import Paciente from './pages/paciente/Paciente.jsx';
-import PacienteForm from './pages/paciente/PacienteForm.jsx';
+import PacienteForm from './components/forms/PacienteForm/PacienteForm.jsx';
 import Agendavisual from './pages/agendamento/Agendamento.jsx';
-import MainLayout from './layouts/MainLayout.jsx';
+import MainLayout from './layouts/MainLayout/MainLayout.jsx';
 import Main from './pages/main/Main.jsx';
-import Login from './pages/login/Login.jsx';
 import CadastroDentista from './pages/cadastro/CadastroDentista.jsx';
-import CadastroPaciente from './pages/cadastro/CadastroPaciente.jsx';
 import Estoque from './pages/estoque/Estoque.jsx';
-import Prontuario from './pages/paciente/Prontuário.jsx';
+import Prontuario from './pages/paciente/Prontuario/Prontuario.jsx';
 import HistoricoConsultas from './pages/consulta/ConsultasGerais.jsx';
+import AcessoBloqueado from './pages/acesso-bloqueado/AcessoBloqueado.jsx';
 
 function App() {
   return (
-    <>
+    <ToastProvider>
       <Routes>
         <Route path="/" element={<Home />} />
-        <Route path="/login" element={<Login />} />
         <Route path="/cadastro/dentista" element={<CadastroDentista />} />
-        <Route path="/cadastro/paciente" element={<CadastroPaciente />} />
+        
+        <Route path="/acesso-bloqueado" element={<AcessoBloqueado />} />
 
         <Route path="/main" element={<MainLayout />}>
           <Route index element={<Main />} />
@@ -31,7 +33,7 @@ function App() {
           <Route path="pacientes/:id/prontuario" element={<Prontuario />} />
         </Route>
       </Routes>
-    </>
+    </ToastProvider>
   );
 }
 

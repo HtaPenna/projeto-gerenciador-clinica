@@ -4,9 +4,10 @@ import ptBrLocale from "@fullcalendar/core/locales/pt-br";
 import dayGridPlugin from "@fullcalendar/daygrid";
 import timeGridPlugin from "@fullcalendar/timegrid";
 import interactionPlugin from "@fullcalendar/interaction";
-import NovoEventoModal from "./AgendamentoForm.jsx";
-import ConfigCalendarModal from "./ConfigAgenda.jsx";
+import NovoEventoModal from "../../components/modals/AgendamentoModal/AgendamentoModal.jsx";
+import ConfigCalendarModal from "../../components/modals/ConfigAgendaModal/ConfigAgendaModal.jsx";
 import { usePageTitle } from "../../hooks/usePageTitle";
+import { useAuth } from '../../hooks/useAuth';
 
 const API_URL = "http://localhost:3001/eventos";
 const plugins = [dayGridPlugin, timeGridPlugin, interactionPlugin];
@@ -14,11 +15,12 @@ const plugins = [dayGridPlugin, timeGridPlugin, interactionPlugin];
 export default function AgendaVisual() {
   const [eventos, setEventos] = useState([]);
   const [mostrarModal, setMostrarModal] = useState(false);
-  const [modoVisualizacao, setModoVisualizacao] = useState(false); // 🔸 Novo estado
+  const [modoVisualizacao, setModoVisualizacao] = useState(false);
   const [dataSelecionada, setDataSelecionada] = useState(null);
   const [mostrarModalConfig, setMostrarModalConfig] = useState(false);
-  const [dentistaSelecionado, setDentistaSelecionado] = useState(1);
+  const [dentistaSelecionado, setDentistaSelecionado] = useState(null);
   const { updateTitle } = usePageTitle();
+  const { getAuthHeaders } = useAuth();
 
   const [config, setConfig] = useState({
     initialView: "dayGridMonth",
@@ -26,10 +28,36 @@ export default function AgendaVisual() {
     slotMaxTime: "18:00:00",
   });
 
-  // 🔹 Carrega eventos do backend
+  useEffect(() => {
+    const buscarDentistaId = async () => {
+      try {
+        const res = await fetch(`http://localhost:3001/dentistas`, { headers: getAuthHeaders() });
+
+        const dentistas = await res.json();
+
+        if (dentistas.length > 0) {
+          setDentistaSelecionado(dentistas[0].id);
+        }
+      } catch (error) {
+        console.error("Erro ao buscar dentista:", error);
+      }
+    };
+
+    buscarDentistaId();
+  }, []);
+
+  useEffect(() => {
+    updateTitle("Agenda");
+  }, [updateTitle]);
+
   const carregarEventos = async () => {
     try {
-      const res = await fetch(API_URL);
+      const res = await fetch(API_URL, { headers: getAuthHeaders() });
+
+      if (!res.ok) {
+        throw new Error(`Erro ${res.status}: ${res.statusText}`);
+      }
+
       const dados = await res.json();
 
       const eventosFormatados = dados.map((ev) => {
@@ -60,6 +88,12 @@ export default function AgendaVisual() {
     }
   };
 
+  useEffect(() => {
+    if (dentistaSelecionado) {
+      carregarEventos();
+    }
+  }, [dentistaSelecionado]);
+
   const abrirModal = (evento, somenteVisualizar = false) => {
     setDataSelecionada({
       id: evento.id,
@@ -75,14 +109,6 @@ export default function AgendaVisual() {
     setModoVisualizacao(somenteVisualizar);
     setMostrarModal(true);
   };
-
-  useEffect(() => {
-    updateTitle("Agenda");
-  }, [updateTitle]);
-
-  useEffect(() => {
-    carregarEventos();
-  }, []);
 
   const handleDateClick = (info) => {
     const agora = new Date();
@@ -104,12 +130,16 @@ export default function AgendaVisual() {
   };
 
   const handleEventClick = (info) => {
-    abrirModal(info.event, true); // 🔸 abre em modo de visualização
+    abrirModal(info.event, true);
   };
 
   const eventosFiltrados = eventos.filter(
-    (ev) => ev.extendedProps.dentistaId === dentistaSelecionado
+    (ev) => ev.extendedProps?.dentistaId === dentistaSelecionado
   );
+
+  if (!dentistaSelecionado) {
+    return <div>Carregando...</div>;
+  }
 
   return (
     <div className="p-6 z-0" style={{ marginLeft: "100px" }}>
@@ -157,8 +187,8 @@ export default function AgendaVisual() {
         dataSelecionada={dataSelecionada}
         onSuccess={carregarEventos}
         dentistaId={dentistaSelecionado}
-        modoVisualizacao={modoVisualizacao} // 🔸 prop nova
-        setModoVisualizacao={setModoVisualizacao} // 🔸 prop nova
+        modoVisualizacao={modoVisualizacao}
+        setModoVisualizacao={setModoVisualizacao}
       />
 
       <ConfigCalendarModal

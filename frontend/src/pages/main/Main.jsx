@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { usePageTitle } from '../../hooks/usePageTitle';
 import { useNavigate } from 'react-router-dom';
 import { User } from 'lucide-react';
-import AgendamentoRapidoModal from '../../components/atalhos/ModalAgendamento';
+import AgendamentoRapidoModal from '../../components/modals/AgendamentoModal/AgendamentoModal.jsx';
 import './Main.css';
 
 function Main() {
@@ -16,7 +16,6 @@ function Main() {
 
   return (
     <div id="mainContent" className="text-center mt-8">
-      <h1 className="text-2xl font-bold mb-4">Página Principal</h1>
       <p className="mb-6 text-gray-700">
         Bem-vindo ao sistema de gerenciamento odontológico.
       </p>
@@ -24,7 +23,7 @@ function Main() {
       <div className="flex justify-center gap-4">
         <button
           className="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded flex items-center gap-2"
-          onClick={() => navigate('/main/pacientes/novo')} // ✅ só isso
+          onClick={() => navigate('/main/pacientes/novo')}
         >
           <span>Novo Paciente</span>
         </button>

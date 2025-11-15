@@ -1,0 +1,52 @@
+import { Outlet, useNavigate } from 'react-router-dom';
+import { useEffect, useState } from 'react';
+import Header from '../Header/Header';
+import Navbar from '../Navbar/Navbar';
+import './MainLayout.css';
+import FloatingActions from "../FloatingActions/FloatingActions.jsx";
+import { useAuth } from '../../hooks/useAuth';
+
+function MainLayout() {
+  const [user, setUser] = useState(null);
+  const navigate = useNavigate();
+  const { getUser, isAuthenticated } = useAuth();
+
+  useEffect(() => {
+    const authCheck = isAuthenticated(); // ← Chamar ANTES das condições
+    if (!authCheck) {
+      navigate('/login');
+      return;
+    }
+
+    const userData = getUser();
+    setUser(userData);
+
+    if (userData?.tipo === 'paciente') {
+      navigate('/acesso-bloqueado');
+      return;
+    }
+  }, [navigate, isAuthenticated, getUser]);
+
+  // loading se ainda não carregou o usuario
+  if (!user) {
+    return (
+      <div className="loading">
+        <p>Carregando...</p>
+      </div>
+    );
+  }
+
+  // dentista- layout normal
+  return (
+    <div className="appLayout">
+      <FloatingActions />
+      <Navbar />
+      <Header />
+      <div className="content">
+        <Outlet />
+      </div>
+    </div>
+  );
+}
+
+export default MainLayout;

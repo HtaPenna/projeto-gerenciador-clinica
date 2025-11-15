@@ -1,0 +1,43 @@
+.acesso-bloqueado-container {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  padding: 20px;
+}
+
+.acesso-bloqueado-card {
+  background: white;
+  padding: 3rem 2rem;
+  border-radius: 15px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+  text-align: center;
+  max-width: 500px;
+  width: 100%;
+}
+
+.acesso-bloqueado-card .icon {
+  font-size: 4rem;
+  margin-bottom: 1.5rem;
+}
+
+.acesso-bloqueado-card h2 {
+  color: #495057;
+  margin-bottom: 1rem;
+  font-weight: 600;
+}
+
+.acesso-bloqueado-card p {
+  color: #6c757d;
+  margin-bottom: 0.8rem;
+  line-height: 1.5;
+}
+
+.loading {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  font-size: 1.2rem;
+}
