@@ -1,4 +1,4 @@
-import { Outlet, useNavigate } from 'react-router-dom';
+import { Outlet, useNavigate, useLocation } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import Header from '../Header/Header';
 import Navbar from '../Navbar/Navbar';
@@ -10,11 +10,17 @@ function MainLayout() {
   const [user, setUser] = useState(null);
   const navigate = useNavigate();
   const { getUser, isAuthenticated } = useAuth();
+  const location = useLocation();
 
   useEffect(() => {
-    const authCheck = isAuthenticated(); // ← Chamar ANTES das condições
+    const authCheck = isAuthenticated();
     if (!authCheck) {
-      navigate('/login');
+      navigate('/', {
+        state: {
+          showLoginModal: true,
+          redirectTo: location.pathname
+        }
+      });
       return;
     }
 
@@ -25,9 +31,8 @@ function MainLayout() {
       navigate('/acesso-bloqueado');
       return;
     }
-  }, [navigate, isAuthenticated, getUser]);
+  }, [navigate, isAuthenticated, getUser, location.pathname]);
 
-  // loading se ainda não carregou o usuario
   if (!user) {
     return (
       <div className="loading">
