@@ -1,8 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const eventoController = require("../controllers/eventoController");
-const { authMiddleware } = require("../middleware/auth");
-const dentistaAuth = require("../middleware/dentistaAuth");
+const { authMiddleware, dentistaAuth } = require("../middleware/auth");
 
 router.get("/", authMiddleware, dentistaAuth, eventoController.get);
 router.get("/paciente/:pacienteId", authMiddleware, dentistaAuth, eventoController.getByPacienteId);

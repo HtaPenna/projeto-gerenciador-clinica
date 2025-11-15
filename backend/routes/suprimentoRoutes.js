@@ -1,8 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const suprimentoController = require("../controllers/suprimentoController");
-const { authMiddleware } = require("../middleware/auth");
-const dentistaAuth = require("../middleware/dentistaAuth");
+const { authMiddleware, dentistaAuth } = require("../middleware/auth");
 
 router.get("/", authMiddleware, dentistaAuth, suprimentoController.getTodos);
 router.post("/", authMiddleware, dentistaAuth, suprimentoController.criar);

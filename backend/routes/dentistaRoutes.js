@@ -1,8 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const dentistaController = require("../controllers/dentistaController");
-const { authMiddleware } = require("../middleware/auth");
-const dentistaAuth = require("../middleware/dentistaAuth");
+const { authMiddleware, dentistaAuth } = require("../middleware/auth");
 
 router.get("/", authMiddleware, dentistaAuth, dentistaController.getTodos);
 router.post("/", authMiddleware, dentistaAuth, dentistaController.criar);

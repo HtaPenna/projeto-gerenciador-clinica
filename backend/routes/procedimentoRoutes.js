@@ -1,8 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const procedimentoController = require("../controllers/procedimentoController");
-const { authMiddleware } = require("../middleware/auth");
-const dentistaAuth = require("../middleware/dentistaAuth");
+const { authMiddleware, dentistaAuth } = require("../middleware/auth");
 
 router.get('/tratamento/:tratamentoId', authMiddleware, dentistaAuth, procedimentoController.getPorTratamento);
 router.post('/', authMiddleware, dentistaAuth, procedimentoController.criar);
