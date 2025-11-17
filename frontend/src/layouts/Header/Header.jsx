@@ -3,11 +3,13 @@ import { User, LogOut, Bolt } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { usePageTitle } from '../../hooks/usePageTitle';
 import { useAuth } from '../../hooks/useAuth';
+import GerenciamentoContaModal from '../../components/modals/GerenciamentoContaModal/GerenciamentoContaModal.jsx';
 import './Header.css';
 
 
 const Header = () => {
   const [open, setOpen] = useState(false);
+  const [showGerenciamentoModal, setShowGerenciamentoModal] = useState(false);
   const [userName, setUserName] = useState('UserName');
   const menuRef = useRef(null);
   const navigate = useNavigate();
@@ -61,10 +63,16 @@ const Header = () => {
             <p className="dropdownUsername">{userName}</p>
 
             <div className='dropdownOptions'>
-              <a href="#" className="dropdownLink">
+              <button
+                className="dropdownLink"
+                onClick={() => {
+                  setShowGerenciamentoModal(true);
+                  setOpen(false);
+                }}
+              >
                 <Bolt size={16} />
-                <span>Dados pessoais</span>
-              </a>
+                <span>Gerenciar Conta</span>
+              </button>
 
               <button className="dropdownLogout" onClick={handleLogout}>
                 <LogOut size={16} />
@@ -74,6 +82,12 @@ const Header = () => {
           </div>
         )}
       </div>
+      {showGerenciamentoModal && (
+        <GerenciamentoContaModal
+          isOpen={showGerenciamentoModal}
+          onClose={() => setShowGerenciamentoModal(false)}
+        />
+      )}
     </div>
   );
 };
