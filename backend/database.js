@@ -1,18 +1,3 @@
-<<<<<<< HEAD
-require("dotenv").config();
-const { Sequelize } = require("sequelize");
-
-const sequelize = new Sequelize(process.env.MYSQL_PUBLIC_URL, {
-  dialect: "mysql",
-  dialectOptions: {
-    ssl: {
-      require: true,
-      rejectUnauthorized: false,
-    },
-  },
-  logging: false,
-});
-=======
 const { Sequelize } = require('sequelize');
 require('dotenv').config();
 
@@ -23,10 +8,9 @@ const sequelize = new Sequelize(
   {
     host: process.env.DB_HOST,
     dialect: 'mysql',
-    port: 3307,
+    port: 3306,
     logging: false,
   }
 );
->>>>>>> d0ab843d9e5c88cb01883d70f9ef0e9fc45ebc43
 
 module.exports = sequelize;
