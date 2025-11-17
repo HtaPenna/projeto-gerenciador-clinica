@@ -3,8 +3,15 @@ const bcrypt = require('bcryptjs');
 
 exports.getTodos = async (req, res) => {
   try {
-    const dentistas = await Dentista.findAll();
-    res.json(dentistas);
+    const dentista = await Dentista.findOne({ 
+      where: { userId: req.user.id } 
+    });
+    
+    if (!dentista) {
+      return res.status(404).json({ erro: "Dentista não encontrado" });
+    }
+
+    res.json([dentista]);
   } catch (err) {
     res.status(500).json({ erro: err.message });
   }
@@ -37,10 +44,18 @@ exports.criar = async (req, res) => {
 exports.atualizar = async (req, res) => {
   try {
     const [updated] = await Dentista.update(req.body, {
-      where: { id: req.params.id }
+      where: { 
+        id: req.params.id,
+        userId: req.user.id
+      }
     });
     if (updated) {
-      const dentistaAtualizado = await Dentista.findByPk(req.params.id);
+      const dentistaAtualizado = await Dentista.findOne({
+        where: { 
+          id: req.params.id,
+          userId: req.user.id
+        }
+      });
       res.json(dentistaAtualizado);
     } else {
       res.status(404).json({ erro: 'Dentista não encontrado' });
@@ -52,7 +67,12 @@ exports.atualizar = async (req, res) => {
 
 exports.deletar = async (req, res) => {
   try {
-    const deleted = await Dentista.destroy({ where: { id: req.params.id } });
+    const deleted = await Dentista.destroy({ 
+      where: { 
+        id: req.params.id,
+        userId: req.user.id
+      } 
+    });
     if (deleted) {
       res.status(204).end();
     } else {

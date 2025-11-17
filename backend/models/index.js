@@ -11,41 +11,52 @@ const Procedimento = require('./procedimento')(sequelize, DataTypes);
 const Tratamento = require('./tratamento')(sequelize, DataTypes);
 const Suprimento = require('./suprimento')(sequelize, DataTypes);
 
-// Associações Usuário ↔ Dentista/Paciente (1:1)
 Dentista.belongsTo(Usuario, { foreignKey: 'userId', as: 'usuario' });
 Paciente.belongsTo(Usuario, { foreignKey: 'userId', as: 'usuario' });
 
-// Associações Paciente ↔ Anamnese (1:1)
 Anamnese.belongsTo(Paciente, { foreignKey: 'pacienteId', as: 'paciente' });
 
-// Associações Dentista ↔ Evento (1:N)
 Dentista.hasMany(Evento, { foreignKey: 'dentistaId', onDelete: 'CASCADE', onUpdate: 'CASCADE' });
 Evento.belongsTo(Dentista, { foreignKey: 'dentistaId', onDelete: 'CASCADE', onUpdate: 'CASCADE' });
 
-// Associações Paciente ↔ Evento (1:N)
 Paciente.hasMany(Evento, { foreignKey: 'pacienteId', as: 'consulta' });
 Evento.belongsTo(Paciente, { foreignKey: 'pacienteId', as: 'paciente' });
 
 Evento.belongsTo(Tratamento, { foreignKey: 'tratamentoId', as: 'tratamento' });
 Evento.belongsTo(Procedimento, { foreignKey: 'procedimentoId', as: 'procedimento' });
 
-
 Tratamento.hasMany(Evento, { foreignKey: 'tratamentoId', as: 'eventos' });
 Procedimento.hasMany(Evento, { foreignKey: 'procedimentoId', as: 'eventos' });
 
-// Associações Tratamento ↔ Procedimentos (1:N)
 Tratamento.hasMany(Procedimento, { foreignKey: 'tratamentoId', as: 'procedimento' });
 Procedimento.belongsTo(Tratamento, { foreignKey: 'tratamentoId', as: 'tratamento' });
 
-// Associações Paciente ↔ Tratamento (1:N)
 Paciente.hasMany(Tratamento, { foreignKey: 'pacienteId', as: 'tratamento' });
 Tratamento.belongsTo(Paciente, { foreignKey: 'pacienteId', as: 'paciente' });
 
-// Associações Dentista ↔ Especialidade (N:N)
 Dentista.belongsToMany(Especialidade, { through: 'dentista_especialidade' });
 Especialidade.belongsToMany(Dentista, { through: 'dentista_especialidade' });
 
-sequelize.sync();
+Dentista.hasMany(Suprimento, { foreignKey: 'dentistaId', onDelete: 'CASCADE', onUpdate: 'CASCADE' });
+Suprimento.belongsTo(Dentista, { foreignKey: 'dentistaId', onDelete: 'CASCADE', onUpdate: 'CASCADE' });
+
+const initDatabase = async (options = {}) => {
+  try {
+    const syncOptions = {
+      force: false,
+      alter: true,
+      logging: console.log,
+      ...options
+    };
+    
+    await sequelize.sync(syncOptions);
+    console.log('Banco sincronizado com sucesso!');
+    return true;
+  } catch (error) {
+    console.error('Erro ao sincronizar banco:', error);
+    return false;
+  }
+};
 
 module.exports = {
   sequelize,
@@ -57,5 +68,6 @@ module.exports = {
   Evento,
   Procedimento,
   Tratamento,
-  Suprimento
+  Suprimento,
+  initDatabase
 };

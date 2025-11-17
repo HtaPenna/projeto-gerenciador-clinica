@@ -1,6 +1,20 @@
-const { Usuario, Dentista } = require('../models');
+const loginAttempts = {};
+const MAX_ATTEMPTS = 5;
+const BLOCK_TIME = 15 * 60 * 1000;
+const { Usuario, Dentista, Paciente } = require('../models');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
+
+function isBlocked(email) {
+  const attempt = loginAttempts[email];
+  if (!attempt) return false;
+
+  if (attempt.blockUntil && attempt.blockUntil > Date.now()) {
+    return true;
+  }
+
+  return false;
+}
 
 exports.get = async (req, res) => {
   try {
@@ -14,6 +28,13 @@ exports.get = async (req, res) => {
 exports.post = async (req, res) => {
   try {
     const { email, senha, tipo } = req.body;
+    //validação de senha
+    const senhaForteRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).{8,}$/;
+    if (!senhaForteRegex.test(senha)) {
+      return res.status(400).json({
+        error: "Senha fraca. Use no mínimo 8 caracteres, com letra MAIÚSCULA, minúscula, número e símbolo."
+      });
+    }
     const senhaHash = await bcrypt.hash(senha, 10);
     const novoUsuario = await Usuario.create({
       email,
@@ -56,11 +77,41 @@ exports.login = async (req, res) => {
   try {
     const { email, senha } = req.body;
 
+    // barra se estiver bloqueado
+    if (isBlocked(email)) {
+      return res.status(403).json({
+        message: "Muitas tentativas. Tente novamente mais tarde."
+      });
+    }
+
     const user = await Usuario.findOne({ where: { email } });
-    if (!user) return res.status(401).json({ message: 'Credenciais inválidas 1' });
+    if (!user) {
+      // soma tentativa
+      loginAttempts[email] = loginAttempts[email] || { count: 0 };
+      loginAttempts[email].count++;
+
+      // bloqueia se passar a quant de tent
+      if (loginAttempts[email].count >= MAX_ATTEMPTS) {
+        loginAttempts[email].blockUntil = Date.now() + BLOCK_TIME;
+      }
+
+      return res.status(401).json({ message: 'Credenciais inválidas' });
+    }
 
     const match = await bcrypt.compare(senha, user.senha);
-    if (!match) return res.status(401).json({ message: 'Credenciais inválidas 2' });
+    if (!match) {
+      loginAttempts[email] = loginAttempts[email] || { count: 0 };
+      loginAttempts[email].count++;
+
+      if (loginAttempts[email].count >= MAX_ATTEMPTS) {
+        loginAttempts[email].blockUntil = Date.now() + BLOCK_TIME;
+      }
+
+      return res.status(401).json({ message: 'Credenciais inválidas' });
+    }
+
+    // login ok - zera tentativas
+    delete loginAttempts[email];
 
     if (!process.env.JWT_SECRET) {
       throw new Error("JWT_SECRET não configurada!");
@@ -83,6 +134,7 @@ exports.login = async (req, res) => {
     }
 
     res.json({ token, user: { id: user.id, email: user.email, tipo: user.tipo, name: userName } });
+
   } catch (err) {
     res.status(500).json({ message: 'Erro no servidor', erro: err.message });
   }

@@ -1,0 +1,178 @@
+/* Overlay do modal */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+}
+
+/* Container do modal */
+.login-modal-container {
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+  width: 90%;
+  max-width: 400px;
+  position: relative;
+  animation: modalAppear 0.3s ease-out;
+}
+
+@keyframes modalAppear {
+  from {
+    opacity: 0;
+    transform: scale(0.9) translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+/* Header do modal */
+.login-modal-header {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  z-index: 1;
+}
+
+.btn-close-modal {
+  border: none;
+  background: none;
+  color: #023c66;
+  cursor: pointer;
+  padding: 5px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.btn-close-modal:hover {
+  background: #f0f0f0;
+  color: #00A39C;
+}
+
+/* Conteúdo do modal */
+.login-modal-content {
+  padding: 40px 30px 30px;
+}
+
+.login-modal-content h2 {
+  color: #023c66;
+  text-align: center;
+  margin-bottom: 25px;
+  font-size: 1.8rem;
+}
+
+.login-modal-content form {
+  display: flex;
+  flex-direction: column;
+  background: #fff;
+  margin: 0 0 15px 0;
+}
+
+.login-modal-content input {
+  background: #fff;
+  border: none;
+  margin-bottom: 20px;
+  padding: 12px;
+  border-radius: 8px;
+  box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);
+  font-size: 1rem;
+  transition: all 0.3s ease;
+  outline: none;
+}
+
+.login-modal-content input:focus {
+  outline: solid 2px #023c66;
+  box-shadow: 0px 4px 8px rgba(2, 60, 102, 0.2);
+}
+
+.login-modal-content input:disabled {
+  background: #f5f5f5;
+  opacity: 0.7;
+}
+
+.login-modal-content button {
+  border-radius: 8px;
+  background: #023c66;
+  padding: 12px;
+  border: solid 2px #023c66;
+  color: #fff;
+  font-weight: bold;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: all 0.1s ease;
+}
+
+.login-modal-content button:hover:not(:disabled) {
+  background: #fff;
+  color: #023c66;
+}
+
+.login-modal-content button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* Mensagem */
+.login-message {
+  text-align: center;
+  margin: 10px 0;
+  padding: 10px;
+  border-radius: 6px;
+  background: #f8f9fa;
+  color: #023c66;
+  font-size: 0.9rem;
+}
+
+/* Footer do modal */
+.login-modal-footer {
+  margin-top: 20px;
+  text-align: center;
+}
+
+.login-modal-footer p {
+  margin: 0 0 10px 0;
+  color: #666;
+  font-size: 0.9rem;
+}
+
+.links-cadastro {
+  display: flex;
+  justify-content: center;
+}
+
+.links-cadastro a {
+  color: #023c66;
+  font-weight: bold;
+  text-decoration: none;
+  padding: 5px 10px;
+  border-radius: 6px;
+  transition: all 0.3s ease;
+}
+
+.links-cadastro a:hover {
+  color: #00A39C;
+  background: #f0f8f8;
+  text-decoration: underline;
+}
+
+/* Responsivo */
+@media (max-width: 480px) {
+  .login-modal-container {
+    width: 95%;
+    margin: 20px;
+  }
+  
+  .login-modal-content {
+    padding: 30px 20px 20px;
+  }
+}

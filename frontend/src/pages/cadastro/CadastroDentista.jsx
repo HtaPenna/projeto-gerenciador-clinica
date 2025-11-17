@@ -1,8 +1,7 @@
 import { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import {CircleArrowLeft} from "lucide-react";
-import './cadastroDentista.css'
-import API_BASE_URL from "../../apiConfig";
+import './CadastroDentista.css'
 
 export default function CadastroDentista() {
   const navigate = useNavigate(); 
@@ -20,12 +19,13 @@ export default function CadastroDentista() {
     e.preventDefault();
 
     try {
-      const res = await fetch(`${API_BASE}/dentistas`, {
+      const res = await fetch("http://localhost:3001/auth/register", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           email,
           senha,
+          tipo: "dentista",
           nome,
           cro,
           enderecoConsultorio,
@@ -37,9 +37,10 @@ export default function CadastroDentista() {
 
       if (res.ok) {
         setMensagem("Cadastro realizado com sucesso!");
-        navigate("/login"); // redireciona para login após cadastro
+        navigate("/", { state: { showLoginModal: true } });
       } else {
-        setMensagem(data.erro || "Erro no cadastro");
+        console.log("Erro completo:", data);
+        setMensagem(data.erro || data.message || `Erro ${res.status}: ${res.statusText}`);
       }
     } catch (err) {
       setMensagem("Erro no servidor");
@@ -49,7 +50,7 @@ export default function CadastroDentista() {
   return (
     <div className="cadastroPage">
       <div className="btnVoltar">
-        <button onClick={() => navigate('/login')}><CircleArrowLeft size={26}/></button>
+        <button onClick={() => navigate('/')}><CircleArrowLeft size={26}/></button>
       </div>
 
       <div className="cadastroContainer">
@@ -118,7 +119,7 @@ export default function CadastroDentista() {
           </div>
           <div className="col-12">
             <button type="submit" className="btn btn-primary">Cadastrar</button>
-            <label className="labelLogin">Já tem conta? <Link to="/login">Login</Link></label>
+            <label className="labelLogin">Já tem conta? <span onClick={() => navigate("/", { state: { showLoginModal: true } })}>Fazer Login</span></label>
           </div>  
         </form>
         {mensagem && <p>{mensagem}</p>}

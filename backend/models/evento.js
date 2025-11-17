@@ -1,4 +1,3 @@
-// models/evento.js
 module.exports = (sequelize, DataTypes) => {
   return sequelize.define('Evento', {
     id: {
@@ -64,8 +63,7 @@ module.exports = (sequelize, DataTypes) => {
       allowNull: true,
       defaultValue: 0.00,
     },
-  },
-  {
+  }, {
     tableName: 'evento',
   });
 };

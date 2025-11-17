@@ -49,12 +49,13 @@ module.exports = (sequelize, DataTypes) => {
 
   const atualizarValorTratamento = async (procedimento) => {
     const Tratamento = sequelize.models.Tratamento;
-
     const procedimentos = await Procedimento.findAll({
       where: { tratamentoId: procedimento.tratamentoId }
     });
 
-    const valorTotal = procedimentos.reduce((total, p) => parseFloat(total) + parseFloat(p.valor), 0);
+    const valorTotal = procedimentos.reduce((total, p) => 
+      parseFloat(total) + parseFloat(p.valor), 0
+    );
 
     await Tratamento.update(
       { valorTotal: valorTotal },

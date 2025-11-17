@@ -1,4 +1,3 @@
-// models/anamnese.js
 module.exports = (sequelize, DataTypes) => {
   return sequelize.define('Anamnese', {
     id: {
@@ -7,24 +6,24 @@ module.exports = (sequelize, DataTypes) => {
       autoIncrement: true,
     },
     pacienteId: { 
-        type: DataTypes.INTEGER, 
-        allowNull: false, 
-        unique: true 
+      type: DataTypes.INTEGER, 
+      allowNull: false, 
+      unique: true 
     },
     queixaPrincipal: {
       type: DataTypes.TEXT,
       allowNull: false,
     },
     condicoesSaude: {
-        type: DataTypes.TEXT,
-        allowNull: false,
-        get() {
-            const rawValue = this.getDataValue('condicoesSaude');
-            return rawValue ? JSON.parse(rawValue) : [];
-        },
-        set(value) {
-            this.setDataValue('condicoesSaude', JSON.stringify(value));
-        }
+      type: DataTypes.TEXT,
+      allowNull: false,
+      get() {
+        const rawValue = this.getDataValue('condicoesSaude');
+        return rawValue ? JSON.parse(rawValue) : [];
+      },
+      set(value) {
+        this.setDataValue('condicoesSaude', JSON.stringify(value));
+      }
     },
     antecedentesMedicos: {
       type: DataTypes.TEXT,
@@ -100,8 +99,7 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.TEXT,
       allowNull: false,
     },
-  },
-    {
-        tableName: 'anamnese',
-    });
+  }, {
+    tableName: 'anamnese',
+  });
 };

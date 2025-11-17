@@ -1,4 +1,3 @@
-// models/dentista.js
 module.exports = (sequelize, DataTypes) => {
   return sequelize.define('Dentista', {
     id: {
@@ -6,7 +5,11 @@ module.exports = (sequelize, DataTypes) => {
       primaryKey: true,
       autoIncrement: true,
     },
-    userId: { type: DataTypes.INTEGER, allowNull: false, unique: true },
+    userId: { 
+      type: DataTypes.INTEGER, 
+      allowNull: false, 
+      unique: true 
+    },
     nome: {
       type: DataTypes.STRING(50),
       allowNull: false,

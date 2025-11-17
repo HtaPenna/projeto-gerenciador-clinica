@@ -1,10 +1,11 @@
 const express = require("express");
 const router = express.Router();
 const dentistaController = require("../controllers/dentistaController");
+const { authMiddleware, dentistaAuth } = require("../middleware/auth");
 
-router.get("/", dentistaController.getTodos);         // GET /dentistas
-router.post("/", dentistaController.criar);           // POST /dentistas
-router.patch("/:id", dentistaController.atualizar);   // PATCH /dentistas/:id
-router.delete("/:id", dentistaController.deletar);    // DELETE /dentistas/:id
+router.get("/", authMiddleware, dentistaAuth, dentistaController.getTodos);
+router.post("/", authMiddleware, dentistaAuth, dentistaController.criar);
+router.patch("/:id", authMiddleware, dentistaAuth, dentistaController.atualizar);
+router.delete("/:id", authMiddleware, dentistaAuth, dentistaController.deletar);
 
 module.exports = router;
