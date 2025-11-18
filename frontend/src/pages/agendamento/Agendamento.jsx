@@ -143,7 +143,6 @@ export default function AgendaVisual() {
 
   return (
     <div className="p-6 z-0" style={{ marginLeft: "100px" }}>
-      <h1 className="text-2xl font-bold mb-4">Agenda</h1>
 
       <div className="flex gap-2 mb-4">
         <button

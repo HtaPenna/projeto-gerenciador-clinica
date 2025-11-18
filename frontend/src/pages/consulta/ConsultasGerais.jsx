@@ -120,7 +120,6 @@ export default function HistoricoConsultas() {
 
   return (
     <div className="p-6" style={{ marginLeft: "100px" }}>
-      <h1 className="text-2xl font-bold mb-6">Histórico de Consultas</h1>
 
       {/* Filtros */}
       <div className="flex gap-4 mb-6">
