@@ -71,7 +71,7 @@
 }
 
 .estoqueTableContainer tbody tr:hover {
-    background: #f8f9fa;
+    background: #ececec;
 }
 
 .estoqueTableContainer tbody tr.lowStock {
