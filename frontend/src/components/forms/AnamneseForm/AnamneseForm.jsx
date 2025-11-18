@@ -114,8 +114,8 @@ export default function AnamneseForm({ anamnese, onSalvar, onCancelar, hideTitle
   };
 
   return (
-    <div className="container mt-4">
-      <div className="">
+    <div className="container">
+      <div className="card">
         <div className="card-body">
           {!hideTitle && (
             <h5 className="border-bottom pb-2 mb-4">Formulário de Anamnese</h5>
