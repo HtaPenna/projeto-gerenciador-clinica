@@ -18,7 +18,6 @@ function Home() {
     }
   }, [location, navigate]);
 
-  // Função para rolagem suave
   const scrollToSection = (sectionId) => {
     const element = document.getElementById(sectionId);
     if (element) {
