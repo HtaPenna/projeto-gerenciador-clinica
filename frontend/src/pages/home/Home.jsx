@@ -42,7 +42,6 @@ function Home() {
       </div>
 
       <div className="homeContent">
-        {/* Seção Banner (já existente) */}
         <div id='banner'>
           <div id='textoBanner'>
             <h1>O sistema web que gerencia sua clínica e simplifica sua rotina.</h1>
@@ -54,7 +53,6 @@ function Home() {
           </div>
         </div>
 
-        {/* Nova Seção Sobre */}
         <div id='sobre'>
           <div className='sobre-content'>
             <div className='sobre-texto'>
