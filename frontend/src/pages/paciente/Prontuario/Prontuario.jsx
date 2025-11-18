@@ -16,6 +16,8 @@ export default function Prontuario() {
   const [paciente, setPaciente] = useState(null);
   const [secaoAtiva, setSecaoAtiva] = useState("visaoGeral");
   const [loading, setLoading] = useState(true);
+  const [temAnamnese, setTemAnamnese] = useState(null);
+  const [showModalEducativo, setShowModalEducativo] = useState(false);
   const { getAuthHeaders } = useAuth();
 
   const carregarPaciente = async () => {
@@ -47,6 +49,36 @@ export default function Prontuario() {
     carregarPaciente();
   }, [pacienteId]);
 
+  useEffect(() => {
+    const verificarAnamnese = async () => {
+      try {
+        const res = await fetch(`http://localhost:3001/anamneses/paciente/${pacienteId}`, {
+          headers: getAuthHeaders()
+        });
+
+        if (res.status === 404) {
+          setTemAnamnese(false);
+          setShowModalEducativo(true);
+          return;
+        } else if (res.ok) {
+          const anamneseData = await res.json();
+          const preenchida = anamneseData.queixaPrincipal?.trim() !== "" ||
+            anamneseData.condicoesSaude?.length > 0;
+          setTemAnamnese(preenchida);
+        }
+      } catch (error) {
+        if(!error.message.includes('404')) {
+          console.error('Erro ao verificar anamnese:', error);
+        }
+        setTemAnamnese(false);
+      }
+    };
+
+    if (pacienteId) {
+      verificarAnamnese();
+    }
+  }, [pacienteId]);
+
   const excluirPaciente = async () => {
     if (!window.confirm("Tem certeza que deseja excluir este paciente?")) return;
 
@@ -70,47 +102,59 @@ export default function Prontuario() {
   if (!paciente) return <p>Paciente não encontrado.</p>;
 
   return (
-    <div className="prontuario-container">
+    <div>
       <button
         onClick={() => navigate("/main/pacientes")}
-        className="mt-4 px-4 py-2 bg-gray-600 text-white rounded"
+        className="btn btn-secondary mt-4"
       >
         Voltar
       </button>
 
-      <h3>Prontuário</h3>
+      <h3 className="my-4">Prontuário</h3>
 
-      {/* Card superior com dados pessoais */}
-      <div className="card-paciente p-4 bg-white shadow rounded mb-4">
-        <h1>{paciente.nome}</h1>
-        <p><strong>Telefone:</strong> {paciente.telefoneCelular}</p>
-        {paciente.email && <p><strong>Email:</strong> {paciente.email}</p>}
-        {paciente.dataNascimento && <p><strong>Data de Nascimento:</strong> {paciente.dataNascimento}</p>}
-        {paciente.cpf && <p><strong>CPF:</strong> {paciente.cpf}</p>}
+      <div className="card mb-4">
+        <div className="card-body">
+          <div className="d-flex justify-content-between align-items-start">
+            <div>
+              <h1 className="d-flex align-items-center gap-2">
+                {paciente.nome}
+                {temAnamnese === false && (
+                  <span className="badge bg-warning text-dark">
+                    Anamnese Pendente
+                  </span>
+                )}
+              </h1>
+              <p><strong>Telefone:</strong> {paciente.telefoneCelular}</p>
+              {paciente.email && <p><strong>Email:</strong> {paciente.email}</p>}
+              {paciente.dataNascimento && <p><strong>Data de Nascimento:</strong> {paciente.dataNascimento}</p>}
+              {paciente.cpf && <p><strong>CPF:</strong> {paciente.cpf}</p>}
+            </div>
+          </div>
+        </div>
       </div>
 
       {/* Menu interno de seções */}
-      <div className="menu-secoes mb-4">
+      <div className="mb-4">
         <button
-          className={`px-4 py-2 rounded ${secaoAtiva === "visaoGeral" ? "bg-blue-600 text-white" : "bg-gray-200"}`}
+          className={`btn ${secaoAtiva === "visaoGeral" ? "btn-primary" : "btn-outline-primary"} me-2`}
           onClick={() => setSecaoAtiva("visaoGeral")}
         >
           Visão Geral
         </button>
         <button
-          className={`px-4 py-2 rounded ${secaoAtiva === "tratamentos" ? "bg-blue-600 text-white" : "bg-gray-200"}`}
+          className={`btn ${secaoAtiva === "tratamentos" ? "btn-primary" : "btn-outline-primary"} me-2`}
           onClick={() => setSecaoAtiva("tratamentos")}
         >
           Tratamentos
         </button>
         <button
-          className={`px-4 py-2 rounded ${secaoAtiva === "anamnese" ? "bg-blue-600 text-white" : "bg-gray-200"}`}
+          className={`btn ${secaoAtiva === "anamnese" ? "btn-primary" : "btn-outline-primary"} me-2`}
           onClick={() => setSecaoAtiva("anamnese")}
         >
           Anamnese
         </button>
         <button
-          className={`px-4 py-2 rounded ${secaoAtiva === "consultas" ? "bg-blue-600 text-white" : "bg-gray-200"}`}
+          className={`btn ${secaoAtiva === "consultas" ? "btn-primary" : "btn-outline-primary"} me-2`}
           onClick={() => setSecaoAtiva("consultas")}
         >
           Consultas
@@ -118,17 +162,59 @@ export default function Prontuario() {
       </div>
 
       {/* Card da seção ativa */}
-      <div className="card-secao p-4 bg-white shadow rounded">
-        {secaoAtiva === "visaoGeral" && <VisaoGeral pacienteId={pacienteId} />}
-        {secaoAtiva === "anamnese" && <Anamnese pacienteId={pacienteId} />}
-        {secaoAtiva === "tratamentos" && <Tratamentos pacienteId={pacienteId} />}
-        {secaoAtiva === "consultas" && <Consultas pacienteId={pacienteId} />}
+      <div className="card">
+        <div className="card-body">
+          {secaoAtiva === "visaoGeral" && <VisaoGeral pacienteId={pacienteId} />}
+          {secaoAtiva === "anamnese" && <Anamnese pacienteId={pacienteId} />}
+          {secaoAtiva === "tratamentos" && <Tratamentos pacienteId={pacienteId} />}
+          {secaoAtiva === "consultas" && <Consultas pacienteId={pacienteId} />}
+        </div>
       </div>
+
+      {/* Modal Bootstrap */}
+      {showModalEducativo && (
+        <div className="modal show d-block" style={{ backgroundColor: 'rgba(0,0,0,0.5)' }}>
+          <div className="modal-dialog">
+            <div className="modal-content">
+              <div className="modal-header">
+                <h5 className="modal-title">
+                  <span className="me-2">📝</span>
+                  Anamnese Pendente
+                </h5>
+              </div>
+              <div className="modal-body">
+                <p>
+                  <strong>Recomendamos preencher a anamnese</strong> para ter um histórico completo do paciente
+                  e liberar a criação de tratamentos e procedimentos.
+                </p>
+              </div>
+              <div className="modal-footer">
+                <button
+                  onClick={() => {
+                    setSecaoAtiva("anamnese");
+                    setShowModalEducativo(false);
+                  }}
+                  className="btn btn-primary"
+                >
+                  Preencher Agora
+                </button>
+                <button
+                  onClick={() => setShowModalEducativo(false)}
+                  className="btn btn-secondary"
+                >
+                  Mais Tarde
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Botão fixo de excluir paciente */}
       <button
         onClick={excluirPaciente}
-        className="fixed bottom-4 left-4 px-4 py-2 bg-red-600 text-white rounded shadow-lg"
+        className="btn btn-danger"
+        style={{ bottom: '1rem', left: '1rem' }}
       >
         Excluir Paciente
       </button>

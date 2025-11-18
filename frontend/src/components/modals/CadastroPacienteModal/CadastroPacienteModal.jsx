@@ -80,6 +80,13 @@ export default function CadastroPacienteModal({
   };
 
   const handleFechar = () => {
+    if (etapa === 'anamnese' && pacienteEditando) {
+      const confirmarSaida = window.confirm(
+        'Sair agora? O paciente foi criado, mas a anamnese ficará pendente. Deseja continuar?'
+      );
+      if (!confirmarSaida) return;
+    }
+
     setEtapa('paciente');
     setPacienteEditando(null);
     setAnamneseEditando(null);

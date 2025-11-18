@@ -21,6 +21,7 @@ export default function Anamnese({ pacienteId }) {
       if (res.status === 404) {
         setAnamnese(null);
         setFormData({});
+        return;
       } else if (!res.ok) {
         throw new Error("Erro ao carregar anamnese");
       } else {
@@ -29,7 +30,9 @@ export default function Anamnese({ pacienteId }) {
         setFormData(data);
       }
     } catch (err) {
-      console.error(err);
+      if (!error.message.includes('404')) {
+        console.error('Erro ao verificar anamnese:', error);
+      }
     } finally {
       setLoading(false);
     }
@@ -43,25 +46,68 @@ export default function Anamnese({ pacienteId }) {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
+  const handleCriarAnamnese = async () => {
+    try {
+      const res = await fetch(API_ANAMNESES, {
+        method: "POST",
+        headers: getAuthHeaders(),
+        body: JSON.stringify({
+          pacienteId,
+          queixaPrincipal: "",
+          condicoesSaude: [],
+          antecedentesMedicos: "",
+          usoMedicamentos: "",
+          alergias: "",
+          sobreCicatrizacao: "",
+          fumante: false,
+          consumoBebidasAlcoolicas: false,
+          dificuldadeRespiratoria: false,
+          problemaDigestivo: "",
+          ultimoTratamento: "",
+          satisfacaoSorriso: false,
+          dentesBrancos: false,
+          sensibilidadeDentes: "",
+          usoFioDental: "",
+          orientacaoBucal: "",
+          desconfortoBucal: "",
+          sobreMaxilar: "",
+          placaMordida: "",
+          grauTensao: ""
+        }),
+      });
+
+      if (!res.ok) throw new Error("Erro ao criar anamnese");
+
+      const data = await res.json();
+      setAnamnese(data);
+      setFormData(data);
+      setEditando(true);
+    } catch (err) {
+      console.error(err);
+      alert("Erro ao criar anamnese");
+    }
+  };
+
   const handleSalvar = async () => {
     try {
-      const url = formData.id
-        ? `${API_ANAMNESES}/${formData.id}`
-        : API_ANAMNESES;
-      const method = formData.id ? "PATCH" : "POST";
+      const url = `${API_ANAMNESES}/${formData.id}`;
+      const method = "PATCH";
+
       const res = await fetch(url, {
         method,
         headers: getAuthHeaders(),
-        body: JSON.stringify({ ...formData, pacienteId }),
+        body: JSON.stringify(formData),
       });
+
       if (!res.ok) throw new Error("Erro ao salvar anamnese");
+
       const data = await res.json();
       setAnamnese(data);
       setEditando(false);
-      alert("Anamnese atualizada!");
+      alert("Anamnese atualizada com sucesso!");
     } catch (err) {
       console.error(err);
-      alert("Erro ao salvar");
+      alert("Erro ao salvar anamnese");
     }
   };
 
@@ -91,7 +137,21 @@ export default function Anamnese({ pacienteId }) {
   ];
 
   if (loading) return <p>Carregando anamnese...</p>;
-  if (!anamnese) return <p>Anamnese não encontrada.</p>;
+
+  if (!anamnese) {
+    return (
+      <div className="anamnese-container text-center py-8">
+        <h2 className="text-xl font-semibold mb-4">Anamnese</h2>
+        <p className="text-gray-600 mb-4">Nenhuma anamnese encontrada para este paciente.</p>
+        <button
+          onClick={handleCriarAnamnese}
+          className="px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700"
+        >
+          Criar Anamnese
+        </button>
+      </div>
+    );
+  }
 
   return (
     <div className="anamnese-container space-y-4">

@@ -2,7 +2,6 @@ const { Anamnese, Paciente, Dentista } = require('../models');
 
 exports.get = async (req, res) => {
   try {
-    // Só anamneses dos pacientes do dentista logado
     const anamneses = await Anamnese.findAll({
       include: [{
         model: Paciente,
@@ -17,28 +16,20 @@ exports.get = async (req, res) => {
 };
 
 exports.getById = async (req, res) => {
-  const { pacienteId } = req.params;
   try {
-    // Verifica se paciente pertence ao dentista
-    const paciente = await Paciente.findOne({
-      where: { 
-        id: pacienteId,
-        dentistaId: req.dentista.id 
-      }
+    const anamnese = await Anamnese.findOne({
+      where: { pacienteId: req.params.pacienteId },
+      include: [{
+        model: Paciente,
+        as: 'paciente',
+        where: { dentistaId: req.dentista.id }
+      }]
     });
 
-    if (!paciente) {
-      return res.status(404).json({ error: "Paciente não encontrado" });
-    }
-
-    const anamnese = await Anamnese.findOne({ 
-      where: { pacienteId } 
-    });
-    
     if (!anamnese) {
       return res.status(404).json({ error: "Anamnese não encontrada" });
     }
-    
+
     res.json(anamnese);
   } catch (err) {
     res.status(500).json({ error: err.message });
@@ -47,11 +38,10 @@ exports.getById = async (req, res) => {
 
 exports.post = async (req, res) => {
   try {
-    // Verifica se paciente pertence ao dentista
     const paciente = await Paciente.findOne({
-      where: { 
+      where: {
         id: req.body.pacienteId,
-        dentistaId: req.dentista.id 
+        dentistaId: req.dentista.id
       }
     });
 
@@ -68,7 +58,6 @@ exports.post = async (req, res) => {
 
 exports.patch = async (req, res) => {
   try {
-    // Verifica se anamnese pertence ao dentista
     const anamnese = await Anamnese.findOne({
       where: { id: req.params.id },
       include: [{
@@ -91,21 +80,21 @@ exports.patch = async (req, res) => {
 
 exports.delete = async (req, res) => {
   try {
-    // Verifica se anamnese pertence ao dentista
-    const deleted = await Anamnese.destroy({
+    const anamnese = await Anamnese.findOne({
       where: { id: req.params.id },
       include: [{
         model: Paciente,
-        as: 'paciente', 
+        as: 'paciente',
         where: { dentistaId: req.dentista.id }
       }]
     });
-    
-    if (deleted) {
-      res.json({ message: "Anamnese removida com sucesso" });
-    } else {
-      res.status(404).json({ error: "Anamnese não encontrada" });
+
+    if (!anamnese) {
+      return res.status(404).json({ error: "Anamnese não encontrada" });
     }
+
+    await anamnese.destroy();
+    res.json({ message: "Anamnese removida com sucesso" });
   } catch (err) {
     res.status(500).json({ error: err.message });
   }

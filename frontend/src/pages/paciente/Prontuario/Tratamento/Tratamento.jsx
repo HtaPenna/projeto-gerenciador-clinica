@@ -4,32 +4,54 @@ import { useAuth } from '../../../../hooks/useAuth';
 
 const API_TRATAMENTOS = "http://localhost:3001/tratamentos";
 const API_PROCEDIMENTOS = "http://localhost:3001/procedimentos";
+const API_ANAMNESES = "http://localhost:3001/anamneses";
 
 export default function Tratamentos({ pacienteId }) {
   const { addToast } = useToast();
+  const { getAuthHeaders } = useAuth();
 
   const [tratamentos, setTratamentos] = useState([]);
   const [loading, setLoading] = useState(true);
-
+  const [anamnesePreenchida, setAnamnesePreenchida] = useState(false);
   const [novoTratamento, setNovoTratamento] = useState("");
   const [tratamentoEditando, setTratamentoEditando] = useState(null);
   const [novoProcedimento, setNovoProcedimento] = useState({});
   const [procedimentoEditando, setProcedimentoEditando] = useState({});
 
-  const { getAuthHeaders } = useAuth();
+  const verificarAnamnese = async () => {
+    try {
+      const res = await fetch(`${API_ANAMNESES}/paciente/${pacienteId}`, {
+        headers: getAuthHeaders()
+      });
+
+      if (res.status === 404) {
+        setAnamnesePreenchida(false);
+        return;
+      }
+
+      if (res.ok) {
+        const anamnese = await res.json();
+        const preenchida = anamnese.queixaPrincipal?.trim() !== "" ||
+          anamnese.condicoesSaude?.length > 0;
+        setAnamnesePreenchida(preenchida);
+      }
+    } catch (error) {
+      console.error('Erro ao verificar anamnese:', error);
+      setAnamnesePreenchida(false);
+    }
+  };
 
   const carregarTratamentos = async () => {
     try {
       setLoading(true);
+      await verificarAnamnese();
 
-      // CORREÇÃO: Usar a rota correta - /tratamentos/:pacienteId
       const resTrat = await fetch(`${API_TRATAMENTOS}/${pacienteId}`, {
         headers: getAuthHeaders()
       });
 
       if (!resTrat.ok) {
         if (resTrat.status === 404) {
-          // Nenhum tratamento encontrado para este paciente
           setTratamentos([]);
           return;
         }
@@ -38,11 +60,10 @@ export default function Tratamentos({ pacienteId }) {
 
       const tratamentosData = await resTrat.json();
 
-      // CORREÇÃO: Usar a rota correta para procedimentos - /tratamentos/:id/procedimentos
       const tratamentosComProcedimentos = await Promise.all(
         tratamentosData.map(async (trat) => {
           try {
-            const resProc = await fetch(`${API_TRATAMENTOS}/${trat.id}/procedimentos`, {
+            const resProc = await fetch(`${API_PROCEDIMENTOS}/tratamento/${trat.id}`, {
               headers: getAuthHeaders()
             });
 
@@ -70,13 +91,17 @@ export default function Tratamentos({ pacienteId }) {
   };
 
   useEffect(() => {
-    console.log("Carregando tratamentos para paciente:", pacienteId);
     carregarTratamentos();
   }, [pacienteId]);
 
-  // === Tratamento ===
   const handleAdicionarTratamento = async (e) => {
     e.preventDefault();
+
+    if (!anamnesePreenchida) {
+      addToast("Complete a anamnese do paciente antes de criar tratamentos", "warning");
+      return;
+    }
+
     if (!novoTratamento.trim()) {
       addToast("Digite um nome para o tratamento", "warning");
       return;
@@ -146,8 +171,12 @@ export default function Tratamentos({ pacienteId }) {
     }
   };
 
-  // === Procedimento ===
   const handleAdicionarProcedimento = async (tratamentoId) => {
+    if (!anamnesePreenchida) {
+      addToast("Complete a anamnese do paciente antes de adicionar procedimentos", "warning");
+      return;
+    }
+
     const dados = novoProcedimento[tratamentoId];
     if (!dados?.nome?.trim()) {
       addToast("Preencha o nome do procedimento!", "warning");
@@ -219,20 +248,34 @@ export default function Tratamentos({ pacienteId }) {
     }
   };
 
-  if (loading) return (
-    <div className="text-center py-4">
-      <div className="spinner-border spinner-border-sm" role="status">
-        <span className="visually-hidden">Carregando...</span>
+  if (loading) {
+    return (
+      <div className="text-center py-4">
+        <div className="spinner-border spinner-border-sm" role="status">
+          <span className="visually-hidden">Carregando...</span>
+        </div>
+        <p className="mt-2 text-muted">Carregando tratamentos...</p>
       </div>
-      <p className="mt-2 text-muted">Carregando tratamentos...</p>
-    </div>
-  );
+    );
+  }
 
   return (
     <div>
       <h2 className="text-xl font-semibold mb-4">Histórico de Tratamentos</h2>
 
-      {!tratamentoEditando && (
+      {!anamnesePreenchida && (
+        <div className="bg-yellow-100 border border-yellow-400 text-yellow-700 px-4 py-3 rounded mb-4">
+          <div className="flex items-center">
+            <span className="text-yellow-500 mr-2">⚠️</span>
+            <div>
+              <p className="font-semibold">Anamnese Pendente</p>
+              <p className="text-sm">Complete a anamnese do paciente na seção "Anamnese" antes de criar tratamentos ou procedimentos.</p>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {anamnesePreenchida && !tratamentoEditando && (
         <form onSubmit={handleAdicionarTratamento} className="mb-4 flex gap-2">
           <input
             type="text"
@@ -255,7 +298,6 @@ export default function Tratamentos({ pacienteId }) {
 
           return (
             <div key={trat.id} className="p-4 bg-white shadow rounded">
-              {/* Nome do tratamento */}
               <div className="flex justify-between items-center mb-2">
                 {tratamentoEditando?.id === trat.id ? (
                   <>
@@ -282,6 +324,7 @@ export default function Tratamentos({ pacienteId }) {
                       <button
                         onClick={() => setTratamentoEditando(trat)}
                         className="mr-2 px-2 py-1 bg-yellow-500 text-white rounded"
+                        disabled={!anamnesePreenchida}
                       >
                         Editar
                       </button>
@@ -296,7 +339,6 @@ export default function Tratamentos({ pacienteId }) {
                 )}
               </div>
 
-              {/* Procedimentos */}
               <div className="ml-4 space-y-2">
                 {trat.procedimentos?.map((proc) => (
                   <div key={proc.id} className="p-2 bg-gray-50 rounded space-y-1">
@@ -372,6 +414,7 @@ export default function Tratamentos({ pacienteId }) {
                               ...prev, [proc.id]: proc
                             }))}
                             className="px-2 py-1 bg-yellow-400 text-white rounded text-sm"
+                            disabled={!anamnesePreenchida}
                           >
                             Editar
                           </button>
@@ -387,7 +430,6 @@ export default function Tratamentos({ pacienteId }) {
                   </div>
                 ))}
 
-                {/* Formulário de novo procedimento */}
                 {novoProcedimento[trat.id] ? (
                   <div className="mt-2 bg-gray-100 p-2 rounded space-y-2">
                     <input
@@ -447,21 +489,23 @@ export default function Tratamentos({ pacienteId }) {
                     </div>
                   </div>
                 ) : (
-                  <button
-                    onClick={() => setNovoProcedimento((prev) => ({
-                      ...prev,
-                      [trat.id]: {
-                        nome: "",
-                        descricao: "",
-                        observacoes: "",
-                        valor: 0,
-                        status: "pendente",
-                      },
-                    }))}
-                    className="px-2 py-1 bg-blue-500 text-white rounded text-sm mt-2"
-                  >
-                    Adicionar Procedimento
-                  </button>
+                  anamnesePreenchida && (
+                    <button
+                      onClick={() => setNovoProcedimento((prev) => ({
+                        ...prev,
+                        [trat.id]: {
+                          nome: "",
+                          descricao: "",
+                          observacoes: "",
+                          valor: 0,
+                          status: "pendente",
+                        },
+                      }))}
+                      className="px-2 py-1 bg-blue-500 text-white rounded text-sm mt-2"
+                    >
+                      Adicionar Procedimento
+                    </button>
+                  )
                 )}
               </div>
 
