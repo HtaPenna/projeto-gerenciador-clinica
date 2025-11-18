@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useAuth } from '../../../../hooks/useAuth';
+import "./VisaoGeral.css";
 
 const API_PACIENTES = "http://localhost:3001/pacientes";
 
@@ -67,20 +68,19 @@ export default function VisaoGeral({ pacienteId }) {
   if (!paciente) return <p>Paciente não encontrado.</p>;
 
   return (
-    <div className="card-visao-geral p-4 bg-white shadow rounded mb-4">
-      <div className="flex justify-between items-center mb-4">
-        <h2 className="mb-0">Informações</h2>
+    <div className="infoContainer">
+      <div className="tituloContainer">
+        <h2>Informações</h2>
         <button
           onClick={() => setEditando(!editando)}
-          className="px-2 py-1 bg-blue-600 text-white rounded text-sm"
+          className={editando ? "cancelar" : "editar"}
         >
           {editando ? "Cancelar" : "Editar"}
         </button>
       </div>
 
-      {/* Identificação */}
-      <div className="mb-2">
-        <h3 className="font-semibold text-sm">Identificação</h3>
+      <div className="info">
+        <h3 className="tituloInfo">Identificação</h3>
         {["cpf", "dataNascimento"].map((field) => (
           <p key={field}>
             <strong>{field === "cpf" ? "CPF" : "Data de Nascimento"}:</strong>{" "}
@@ -89,7 +89,7 @@ export default function VisaoGeral({ pacienteId }) {
                 name={field}
                 value={formData[field] || ""}
                 onChange={handleChange}
-                className="border p-1 rounded w-full"
+                className="inputEditando"
               />
             ) : (
               paciente[field]
@@ -98,9 +98,8 @@ export default function VisaoGeral({ pacienteId }) {
         ))}
       </div>
 
-      {/* Contatos e Comunicação */}
-      <div className="mb-2">
-        <h3 className="font-semibold text-sm">Contatos e Comunicação</h3>
+      <div className="info">
+        <h3 className="tituloInfo">Contatos e Comunicação</h3>
         {["telefoneCelular", "telefoneResidencial", "telefoneEmergencia", "redesSociais"].map((field) => (
           <p key={field}>
             <strong>{field === "telefoneCelular" ? "Telefone Celular" :
@@ -111,7 +110,7 @@ export default function VisaoGeral({ pacienteId }) {
                 name={field}
                 value={formData[field] || ""}
                 onChange={handleChange}
-                className="border p-1 rounded w-full"
+                className="inputEditando"
               />
             ) : (
               paciente[field]
@@ -120,9 +119,8 @@ export default function VisaoGeral({ pacienteId }) {
         ))}
       </div>
 
-      {/* Endereço Residencial */}
-      <div className="mb-2">
-        <h3 className="font-semibold text-sm">Endereço Residencial</h3>
+      <div className="info">
+        <h3 className="tituloInfo">Endereço Residencial</h3>
         {["cep", "logradouro", "bairro", "cidade", "estado"].map((field) => (
           <p key={field}>
             <strong>{field === "cep" ? "CEP" :
@@ -134,7 +132,7 @@ export default function VisaoGeral({ pacienteId }) {
                 name={field}
                 value={formData[field] || ""}
                 onChange={handleChange}
-                className="border p-1 rounded w-full"
+                className="inputEditando"
               />
             ) : (
               paciente[field]
@@ -143,9 +141,8 @@ export default function VisaoGeral({ pacienteId }) {
         ))}
       </div>
 
-      {/* Parâmetros Biomédicos */}
-      <div className="mb-2">
-        <h3 className="font-semibold text-sm">Parâmetros Biomédicos</h3>
+      <div className="info">
+        <h3 className="tituloInfo">Parâmetros Biomédicos</h3>
         {["genero", "peso", "altura", "tipoSanguineo"].map((field) => (
           <p key={field}>
             <strong>{field === "genero" ? "Gênero" :
@@ -156,7 +153,7 @@ export default function VisaoGeral({ pacienteId }) {
                 name={field}
                 value={formData[field] || ""}
                 onChange={handleChange}
-                className="border p-1 rounded w-full"
+                className="inputEditando"
               />
             ) : (
               paciente[field]
@@ -165,9 +162,8 @@ export default function VisaoGeral({ pacienteId }) {
         ))}
       </div>
 
-      {/* Dados Pessoais */}
-      <div className="mb-2">
-        <h3 className="font-semibold text-sm">Dados Pessoais</h3>
+      <div className="info">
+        <h3 className="tituloInfo">Dados Pessoais</h3>
         {["estadoCivil", "profissao"].map((field) => (
           <p key={field}>
             <strong>{field === "estadoCivil" ? "Estado Civil" : "Profissão"}:</strong>{" "}
@@ -176,7 +172,7 @@ export default function VisaoGeral({ pacienteId }) {
                 name={field}
                 value={formData[field] || ""}
                 onChange={handleChange}
-                className="border p-1 rounded w-full"
+                className="inputEditando"
               />
             ) : (
               paciente[field]
@@ -188,7 +184,7 @@ export default function VisaoGeral({ pacienteId }) {
       {editando && (
         <button
           onClick={handleSalvar}
-          className="mt-2 px-4 py-2 bg-green-600 text-white rounded"
+          className="btnSalvarInfo"
         >
           Salvar
         </button>
