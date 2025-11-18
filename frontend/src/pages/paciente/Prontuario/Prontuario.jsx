@@ -6,6 +6,8 @@ import Anamnese from "./Anamnese/Anamnese.jsx";
 import Consultas from "./Consulta/Consulta.jsx";
 import Tratamentos from "./Tratamento/Tratamento.jsx";
 import { useAuth } from '../../../hooks/useAuth';
+import { ChevronLeft } from "lucide-react";
+import "./Prontuario.css";
 
 const API_PACIENTES = "http://localhost:3001/pacientes";
 
@@ -102,76 +104,63 @@ export default function Prontuario() {
   if (!paciente) return <p>Paciente não encontrado.</p>;
 
   return (
-    <div>
-      <button
-        onClick={() => navigate("/main/pacientes")}
-        className="btn btn-secondary mt-4"
-      >
-        Voltar
-      </button>
+    <div className="prontuarioContent">
+      <div className="divVoltar">
+        <button onClick={() => navigate("/main/pacientes")}>< ChevronLeft  size={18}/>Voltar</button>
+        <h3>Prontuário</h3>
+      </div>
 
-      <h3 className="my-4">Prontuário</h3>
+      <div className="divCabecalho">
+        <h1 className="nomePaciente">
+          {paciente.nome}
+          {temAnamnese === false && (
+            <span className="warningPendente">
+              Anamnese Pendente
+            </span>
+          )}
+        </h1>
+        <div className="divInfo">
+          <p>Telefone: {paciente.telefoneCelular}</p>
+          {paciente.email && <p>Email: {paciente.email}</p>}
+          {paciente.dataNascimento && <p>Data de Nascimento: {paciente.dataNascimento}</p>}
+          {paciente.cpf && <p>CPF: {paciente.cpf}</p>}
+        </div>
 
-      <div className="card mb-4">
-        <div className="card-body">
-          <div className="d-flex justify-content-between align-items-start">
-            <div>
-              <h1 className="d-flex align-items-center gap-2">
-                {paciente.nome}
-                {temAnamnese === false && (
-                  <span className="badge bg-warning text-dark">
-                    Anamnese Pendente
-                  </span>
-                )}
-              </h1>
-              <p><strong>Telefone:</strong> {paciente.telefoneCelular}</p>
-              {paciente.email && <p><strong>Email:</strong> {paciente.email}</p>}
-              {paciente.dataNascimento && <p><strong>Data de Nascimento:</strong> {paciente.dataNascimento}</p>}
-              {paciente.cpf && <p><strong>CPF:</strong> {paciente.cpf}</p>}
-            </div>
-          </div>
+        <div className="divNavInterno">
+          <button
+            className={`${secaoAtiva === "visaoGeral" ? "btnAtivo" : "btnInativo"}`}
+            onClick={() => setSecaoAtiva("visaoGeral")}
+          >
+            Visão Geral
+          </button>
+          <button
+            className={`${secaoAtiva === "tratamentos" ? "btnAtivo" : "btnInativo"}`}
+            onClick={() => setSecaoAtiva("tratamentos")}
+          >
+            Tratamentos
+          </button>
+          <button
+            className={`${secaoAtiva === "anamnese" ? "btnAtivo" : "btnInativo"}`}
+            onClick={() => setSecaoAtiva("anamnese")}
+          >
+            Anamnese
+          </button>
+          <button
+            className={`${secaoAtiva === "consultas" ? "btnAtivo" : "btnInativo"}`}
+            onClick={() => setSecaoAtiva("consultas")}
+          >
+            Consultas
+          </button>
         </div>
       </div>
 
-      {/* Menu interno de seções */}
-      <div className="mb-4">
-        <button
-          className={`btn ${secaoAtiva === "visaoGeral" ? "btn-primary" : "btn-outline-primary"} me-2`}
-          onClick={() => setSecaoAtiva("visaoGeral")}
-        >
-          Visão Geral
-        </button>
-        <button
-          className={`btn ${secaoAtiva === "tratamentos" ? "btn-primary" : "btn-outline-primary"} me-2`}
-          onClick={() => setSecaoAtiva("tratamentos")}
-        >
-          Tratamentos
-        </button>
-        <button
-          className={`btn ${secaoAtiva === "anamnese" ? "btn-primary" : "btn-outline-primary"} me-2`}
-          onClick={() => setSecaoAtiva("anamnese")}
-        >
-          Anamnese
-        </button>
-        <button
-          className={`btn ${secaoAtiva === "consultas" ? "btn-primary" : "btn-outline-primary"} me-2`}
-          onClick={() => setSecaoAtiva("consultas")}
-        >
-          Consultas
-        </button>
+      <div className="containerSecoes">
+        {secaoAtiva === "visaoGeral" && <VisaoGeral pacienteId={pacienteId} />}
+        {secaoAtiva === "anamnese" && <Anamnese pacienteId={pacienteId} />}
+        {secaoAtiva === "tratamentos" && <Tratamentos pacienteId={pacienteId} />}
+        {secaoAtiva === "consultas" && <Consultas pacienteId={pacienteId} />}
       </div>
 
-      {/* Card da seção ativa */}
-      <div className="card">
-        <div className="card-body">
-          {secaoAtiva === "visaoGeral" && <VisaoGeral pacienteId={pacienteId} />}
-          {secaoAtiva === "anamnese" && <Anamnese pacienteId={pacienteId} />}
-          {secaoAtiva === "tratamentos" && <Tratamentos pacienteId={pacienteId} />}
-          {secaoAtiva === "consultas" && <Consultas pacienteId={pacienteId} />}
-        </div>
-      </div>
-
-      {/* Modal Bootstrap */}
       {showModalEducativo && (
         <div className="modal show d-block" style={{ backgroundColor: 'rgba(0,0,0,0.5)' }}>
           <div className="modal-dialog">
@@ -210,14 +199,9 @@ export default function Prontuario() {
         </div>
       )}
 
-      {/* Botão fixo de excluir paciente */}
-      <button
-        onClick={excluirPaciente}
-        className="btn btn-danger"
-        style={{ bottom: '1rem', left: '1rem' }}
-      >
-        Excluir Paciente
-      </button>
+      <div className="divExcluirPaciente">
+        <button onClick={excluirPaciente} >Excluir Paciente</button>
+      </div>
     </div>
   );
 }
