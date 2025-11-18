@@ -3,13 +3,10 @@ import { User, LogOut, Bolt } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { usePageTitle } from '../../hooks/usePageTitle';
 import { useAuth } from '../../hooks/useAuth';
-import GerenciamentoContaModal from '../../components/modals/GerenciamentoContaModal/GerenciamentoContaModal.jsx';
 import './Header.css';
 
-
-const Header = () => {
+const Header = ({ onOpenGerenciamento }) => {
   const [open, setOpen] = useState(false);
-  const [showGerenciamentoModal, setShowGerenciamentoModal] = useState(false);
   const [userName, setUserName] = useState('UserName');
   const menuRef = useRef(null);
   const navigate = useNavigate();
@@ -66,7 +63,7 @@ const Header = () => {
               <button
                 className="dropdownLink"
                 onClick={() => {
-                  setShowGerenciamentoModal(true);
+                  onOpenGerenciamento(); // Chama a função passada por prop
                   setOpen(false);
                 }}
               >
@@ -82,12 +79,6 @@ const Header = () => {
           </div>
         )}
       </div>
-      {showGerenciamentoModal && (
-        <GerenciamentoContaModal
-          isOpen={showGerenciamentoModal}
-          onClose={() => setShowGerenciamentoModal(false)}
-        />
-      )}
     </div>
   );
 };
