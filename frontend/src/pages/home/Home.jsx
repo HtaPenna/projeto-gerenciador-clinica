@@ -31,7 +31,7 @@ function Home() {
         <div id='logoNav'>
           <div id="logo"><img src={logo} alt="Dent.fy Logo" /></div>
           <div id='nav'>
-            <button onClick={() => scrollToSection('banner')}>Inicio</button>
+            <button onClick={() => scrollToSection('banner')}>Início</button>
             <button onClick={() => scrollToSection('sobre')}>Sobre</button>
           </div>
         </div>

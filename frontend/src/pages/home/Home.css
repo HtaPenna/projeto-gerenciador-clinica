@@ -38,15 +38,16 @@
             #nav{
                 margin-left: 6vw;
 
-                a{
+                button{
                     text-decoration: none;
                     color: #fff;
                     font-weight: bolder;
                     padding-inline: 15px;
                 }
 
-                a:hover{
+                button:hover{
                     text-decoration: underline;
+                    text-underline-offset: 2px;
                 }
             }
         }
