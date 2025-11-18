@@ -219,9 +219,9 @@ export default function GerenciamentoContaModal({ isOpen, onClose }) {
                                                 placeholder="(11) 99999-9999"
                                             />
                                         </div>
-                                        <div className="col-12">
+                                        <div className="col-12 d-flex justify-content-end">
                                             <button
-                                                className="btn btn-primary"
+                                                className="btn btn-success"
                                                 onClick={salvarDadosPessoais}
                                                 disabled={loading}
                                             >
@@ -266,9 +266,9 @@ export default function GerenciamentoContaModal({ isOpen, onClose }) {
                                                 placeholder="Confirme a nova senha"
                                             />
                                         </div>
-                                        <div className="col-12">
+                                        <div className="col-12 d-flex justify-content-end">
                                             <button
-                                                className="btn btn-primary"
+                                                className="btn btn-success"
                                                 onClick={alterarSenha}
                                                 disabled={loading}
                                             >
@@ -313,9 +313,9 @@ export default function GerenciamentoContaModal({ isOpen, onClose }) {
                                                 placeholder="(11) 3333-3333"
                                             />
                                         </div>
-                                        <div className="col-12">
+                                        <div className="col-12 d-flex justify-content-end">
                                             <button
-                                                className="btn btn-primary"
+                                                className="btn btn-success"
                                                 onClick={salvarDadosClinica}
                                                 disabled={loading}
                                             >
