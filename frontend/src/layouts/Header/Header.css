@@ -1,5 +1,5 @@
 #headerContainer{
-    position: sticky;
+    position: fixed;
     height: 50px;
     width: 100%;
     box-sizing: border-box;
