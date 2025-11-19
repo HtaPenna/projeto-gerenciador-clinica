@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useAuth } from '../../../../hooks/useAuth';
+import "./Anamnese.css";
 
 const API_ANAMNESES = "http://localhost:3001/anamneses";
 
@@ -30,8 +31,8 @@ export default function Anamnese({ pacienteId }) {
         setFormData(data);
       }
     } catch (err) {
-      if (!error.message.includes('404')) {
-        console.error('Erro ao verificar anamnese:', error);
+      if (!err.message.includes('404')) {
+        console.error('Erro ao verificar anamnese:', err);
       }
     } finally {
       setLoading(false);
@@ -140,13 +141,10 @@ export default function Anamnese({ pacienteId }) {
 
   if (!anamnese) {
     return (
-      <div className="anamnese-container text-center py-8">
-        <h2 className="text-xl font-semibold mb-4">Anamnese</h2>
-        <p className="text-gray-600 mb-4">Nenhuma anamnese encontrada para este paciente.</p>
-        <button
-          onClick={handleCriarAnamnese}
-          className="px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700"
-        >
+      <div className="criarAnamneseContainer">
+        <h2>Anamnese</h2>
+        <p>Nenhuma anamnese encontrada para este paciente.</p>
+        <button onClick={handleCriarAnamnese} className="btnCriarAnamnese">
           Criar Anamnese
         </button>
       </div>
@@ -154,23 +152,25 @@ export default function Anamnese({ pacienteId }) {
   }
 
   return (
-    <div className="anamnese-container space-y-4">
-      <div className="flex justify-between items-center mb-2">
-        <h2 className="text-xl font-semibold mb-2">Histórico Médico e Odontológico</h2>
-        <button
-          onClick={() => setEditando(!editando)}
-          className="px-2 py-1 bg-blue-600 text-white rounded text-sm"
-        >
+    <div className="anamneseContainer">
+      <div className="anamneseHeader">
+        <h2>Histórico Médico e Odontológico</h2>
+        <button onClick={() => setEditando(!editando)} className="btnEditarAnamnese">
           {editando ? "Cancelar" : "Editar"}
         </button>
       </div>
 
       {campos.map(({ label, name, isBool, isArray }) => (
-        <div key={name} className="section p-2 bg-white shadow rounded mb-2">
-          <p><strong>{label}</strong></p>
+        <div key={name} className="sectionAnamnese">
+          <strong>{label}</strong>
           {editando ? (
             isBool ? (
-              <select name={name} value={formData[name] ? "true" : "false"} onChange={e => setFormData({ ...formData, [name]: e.target.value === "true" })} className="border p-1 rounded w-full">
+              <select
+                name={name}
+                value={formData[name] ? "true" : "false"}
+                onChange={e => setFormData({ ...formData, [name]: e.target.value === "true" })}
+                className="selectAnamnese"
+              >
                 <option value="true">Sim</option>
                 <option value="false">Não</option>
               </select>
@@ -179,20 +179,20 @@ export default function Anamnese({ pacienteId }) {
                 name={name}
                 value={Array.isArray(formData[name]) ? formData[name].join("\n") : ""}
                 onChange={e => setFormData({ ...formData, [name]: e.target.value.split("\n") })}
-                className="border p-1 rounded w-full"
+                className="textareaAnamnese"
               />
             ) : (
               <input
                 name={name}
                 value={formData[name] || ""}
                 onChange={handleChange}
-                className="border p-1 rounded w-full"
+                className="inputAnamnese"
               />
             )
           ) : (
             isBool ? formatBool(anamnese[name]) :
               isArray ? (anamnese[name] ? (
-                <ul className="list-disc list-inside">
+                <ul className="listaCondicoes">
                   {(Array.isArray(anamnese[name])
                     ? anamnese[name]
                     : [anamnese[name]]
@@ -205,10 +205,7 @@ export default function Anamnese({ pacienteId }) {
       ))}
 
       {editando && (
-        <button
-          onClick={handleSalvar}
-          className="mt-2 px-4 py-2 bg-green-600 text-white rounded"
-        >
+        <button onClick={handleSalvar} className="btnSalvarAnamnese">
           Salvar
         </button>
       )}

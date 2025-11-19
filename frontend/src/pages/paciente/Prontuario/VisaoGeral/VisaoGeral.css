@@ -11,24 +11,37 @@
 
         h2{
             color: #808080;
+            font-size: 26px;
         }
 
         button.editar {
-            background: #00a39d;
-            border-radius: 8px;
-            border: none;
+            background-color: #00a39d;
             color: white;
-            padding: 5px 15px;
+            border: none;
+            padding: 6px 12px;
+            font-size: 14px;
+            border-radius: 8px;
             font-weight: 600;
+            cursor: pointer;
+        }
+
+        button.editar:hover {
+            background-color: #008f8a;
         }
 
         button.cancelar {
             background: #808080;
-            border-radius: 8px;
-            border: none;
             color: white;
-            padding: 5px 15px;
+            border: none;
+            padding: 6px 12px;
+            font-size: 14px;
+            border-radius: 8px;
             font-weight: 600;
+            cursor: pointer;
+        }
+
+        button.cancelar:hover {
+            background: #666666;
         }
     }
 
@@ -78,7 +91,8 @@
         border-radius: 8px;
         border: none;
         color: white;
-        padding: 5px 20px;
+        padding: 5px 10px;
+        font-size: 14px;
         font-weight: 600;
     }
 }

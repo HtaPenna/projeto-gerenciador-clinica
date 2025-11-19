@@ -1,9 +1,8 @@
 import React, { useState, useEffect } from "react";
-import Modal from "react-modal";
 import { useAuth } from '../../../../hooks/useAuth';
+import "./Consulta.css";
 
 const API_EVENTOS = "http://localhost:3001/eventos";
-Modal.setAppElement("#root");
 
 export default function Consultas({ pacienteId }) {
   const [consultas, setConsultas] = useState([]);
@@ -122,14 +121,24 @@ ${recomendacoes.trim()}
     setAnexos(files);
   };
 
-  if (loading) return <p>Carregando consultas...</p>;
-  if (consultas.length === 0)
-    return <p>Não há consultas concluídas para este paciente.</p>;
+  if (loading) return <div className="carregandoConsultas">Carregando consultas...</div>;
+
+  if (consultas.length === 0) {
+    return (
+      <div className="consultasContainer">
+        <h2>Histórico de Consultas Concluídas</h2>
+        <div className="semConsultas">
+          Não há consultas concluídas para este paciente.
+        </div>
+      </div>
+    );
+  }
 
   return (
-    <div>
+    <div className="consultasContainer">
       <h2>Histórico de Consultas Concluídas</h2>
-      <table className="tabela-consultas">
+
+      <table className="tabelaConsultas">
         <thead>
           <tr>
             <th>Horário</th>
@@ -151,7 +160,7 @@ ${recomendacoes.trim()}
                 <td>
                   <button
                     onClick={() => abrirModal(c)}
-                    className="px-3 py-1 bg-blue-600 text-white rounded hover:bg-blue-700"
+                    className="btnAbrirDescricao"
                   >
                     Abrir descrição
                   </button>
@@ -162,110 +171,93 @@ ${recomendacoes.trim()}
         </tbody>
       </table>
 
-      <Modal
-        isOpen={modalOpen}
-        onRequestClose={() => setModalOpen(false)}
-        contentLabel="Descrição da Consulta"
-        style={{
-          content: {
-            top: "50%",
-            left: "50%",
-            right: "auto",
-            bottom: "auto",
-            transform: "translate(-50%, -50%)",
-            padding: "1.5rem",
-            borderRadius: "0.5rem",
-            width: "100%",
-            maxWidth: "35rem",
-            maxHeight: "90vh",
-            overflowY: "auto",
-          },
-          overlay: { backgroundColor: "rgba(0,0,0,0.5)" },
-        }}
-      >
-        <h2 className="text-lg font-bold mb-3">Descrição da Consulta</h2>
+      {modalOpen && (
+        <div className="modal fade show d-block" tabIndex="-1" style={{ backgroundColor: 'rgba(0,0,0,0.5)' }} onClick={() => setModalOpen(false)}>
+          <div className="modal-dialog modal-lg modal-dialog-centered" onClick={(e) => e.stopPropagation()}>
+            <div className="modal-content">
+              <div className="modal-header">
+                <h5 className="modal-title">Descrição da Consulta</h5>
+                <button type="button" className="btn-close" onClick={() => setModalOpen(false)}></button>
+              </div>
 
-        <div className="space-y-3">
-          <div>
-            <label className="block font-semibold mb-1">Diagnóstico:</label>
-            <textarea
-              value={diagnostico}
-              onChange={(e) => setDiagnostico(e.target.value)}
-              className="w-full border p-2 rounded min-h-[80px]"
-            />
-          </div>
+              <div className="modal-body">
+                <div className="campoDescricao">
+                  <label>Diagnóstico:</label>
+                  <textarea
+                    value={diagnostico}
+                    onChange={(e) => setDiagnostico(e.target.value)}
+                    className="textareaDescricao"
+                  />
+                </div>
 
-          <div>
-            <label className="block font-semibold mb-1">Tratamento Realizado:</label>
-            <textarea
-              value={tratamentoRealizado}
-              onChange={(e) => setTratamentoRealizado(e.target.value)}
-              className="w-full border p-2 rounded min-h-[80px]"
-            />
-          </div>
+                <div className="campoDescricao">
+                  <label>Tratamento Realizado:</label>
+                  <textarea
+                    value={tratamentoRealizado}
+                    onChange={(e) => setTratamentoRealizado(e.target.value)}
+                    className="textareaDescricao"
+                  />
+                </div>
 
-          <div>
-            <label className="block font-semibold mb-1">Procedimento Realizado:</label>
-            <textarea
-              value={procedimentoRealizado}
-              onChange={(e) => setProcedimentoRealizado(e.target.value)}
-              className="w-full border p-2 rounded min-h-[80px]"
-            />
-          </div>
+                <div className="campoDescricao">
+                  <label>Procedimento Realizado:</label>
+                  <textarea
+                    value={procedimentoRealizado}
+                    onChange={(e) => setProcedimentoRealizado(e.target.value)}
+                    className="textareaDescricao"
+                  />
+                </div>
 
-          <div>
-            <label className="block font-semibold mb-1">Observações Clínicas:</label>
-            <textarea
-              value={observacoesClinicas}
-              onChange={(e) => setObservacoesClinicas(e.target.value)}
-              className="w-full border p-2 rounded min-h-[80px]"
-            />
-          </div>
+                <div className="campoDescricao">
+                  <label>Observações Clínicas:</label>
+                  <textarea
+                    value={observacoesClinicas}
+                    onChange={(e) => setObservacoesClinicas(e.target.value)}
+                    className="textareaDescricao"
+                  />
+                </div>
 
-          <div>
-            <label className="block font-semibold mb-1">
-              Recomendações Pós-Atendimento:
-            </label>
-            <textarea
-              value={recomendacoes}
-              onChange={(e) => setRecomendacoes(e.target.value)}
-              className="w-full border p-2 rounded min-h-[80px]"
-            />
-          </div>
+                <div className="campoDescricao">
+                  <label>Recomendações Pós-Atendimento:</label>
+                  <textarea
+                    value={recomendacoes}
+                    onChange={(e) => setRecomendacoes(e.target.value)}
+                    className="textareaDescricao"
+                  />
+                </div>
 
-          <div>
-            <label className="block font-semibold mb-1">Anexos (opcional):</label>
-            <input
-              type="file"
-              multiple
-              onChange={handleAnexosChange}
-              className="block w-full border p-2 rounded"
-            />
-            {anexos.length > 0 && (
-              <ul className="text-sm text-gray-600 mt-2 list-disc pl-5">
-                {anexos.map((file, idx) => (
-                  <li key={idx}>{file.name}</li>
-                ))}
-              </ul>
-            )}
+                <div className="campoDescricao">
+                  <label>Anexos (opcional):</label>
+                  <input
+                    type="file"
+                    multiple
+                    onChange={handleAnexosChange}
+                    className="inputAnexos"
+                  />
+                  {anexos.length > 0 && (
+                    <ul className="listaAnexos">
+                      {anexos.map((file, idx) => (
+                        <li key={idx}>{file.name}</li>
+                      ))}
+                    </ul>
+                  )}
+                </div>
+              </div>
+
+              <div className="modal-footer">
+                <div className="botoesModal">
+                  <button onClick={() => setModalOpen(false)} className="btnCancelar">
+                    Cancelar
+                  </button>
+                  <button onClick={salvarDescricao} className="btnSalvar">
+                    Salvar
+                  </button>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
-
-        <div className="flex justify-end gap-2 mt-4">
-          <button
-            onClick={() => setModalOpen(false)}
-            className="px-4 py-2 bg-gray-300 rounded"
-          >
-            Cancelar
-          </button>
-          <button
-            onClick={salvarDescricao}
-            className="px-4 py-2 bg-blue-600 text-white rounded"
-          >
-            Salvar
-          </button>
-        </div>
-      </Modal>
+      )}
     </div>
   );
 }

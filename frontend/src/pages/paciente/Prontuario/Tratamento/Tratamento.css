@@ -1,0 +1,315 @@
+.tratamentoContainer {
+    padding: 30px;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    background: #fff;
+
+    .tituloTratamentos {
+        font-size: 24px;
+        font-weight: 600;
+        margin-bottom: 20px;
+        color: #808080;
+    }
+
+    .warningAnamnese {
+        background-color: #fff3cd;
+        border: 1px solid #ffeeba;
+        color: #856404;
+        padding: 15px;
+        border-radius: 8px;
+        margin-bottom: 20px;
+
+        .titleWarning {
+            font-weight: bold;
+            margin-bottom: 5px;
+            font-size: 20px;
+        }
+
+        p {
+            margin: 0;
+        }
+    }
+
+    .formNovoTratamento {
+        display: flex;
+        gap: 5px;
+        margin-bottom: 20px;
+        width: 100%;
+
+        .inputNovoTratamento {
+            display: flex;
+            flex: 1;
+            padding: 5px 10px;
+            border: solid 2px #ccc;
+            outline: none;
+            border-radius: 8px;
+        }
+
+        .inputNovoTratamento:focus {
+            border-color: #00a39d;
+        }
+
+        .btnAdicionarTratamento {
+            background-color: #00a39d;
+            color: white;
+            border: none;
+            padding: 6px 12px;
+            font-size: 14px;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        .btnAdicionarTratamento:hover {
+            background-color: #008f8a;
+        }
+    }
+
+    .listaTratamentos {
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+
+        .tratamentoCard {
+            padding: 15px;
+            display: flex;
+            flex-direction: column;
+            background: #fff;
+            border-radius: 8px;
+            box-shadow: 0 1px 6px rgba(0, 0, 0, 0.2);
+            gap: 15px;
+
+            .tratamentoHeader {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+
+                .tratamentoTitle{
+                    color: #808080;
+                    margin: 0;
+                    flex: 1;
+                    font-size: 20px;
+                    font-weight: 600;
+                    text-transform: capitalize;
+                }
+
+                .btnContainer{
+                    display: flex;
+                    gap: 4px;
+
+                    .tratamentoBtnEditar {
+                        background: #fff;
+                        padding: 5px;
+                        border: 2px solid #00a39d;
+                        color: #00a39d;
+                        border-radius: 50%;
+                        font-weight: 600;
+                        cursor: pointer;
+                        width: 32px;
+                        height: 32px;
+                        display: flex;
+                        align-items: center;
+                        justify-content: center;
+                    }
+                
+                    .tratamentoBtnEditar:hover {
+                        background: #00a39d;
+                        color: #fff;
+                    }
+                
+                    .tratamentoBtnExcluir {
+                        background: #fff;
+                        border: 2px solid #dc3545;
+                        color: #dc3545;
+                        padding: 5px;
+                        border-radius: 50%;
+                        font-weight: 600;
+                        cursor: pointer;
+                        width: 32px;
+                        height: 32px;
+                        display: flex;
+                        align-items: center;
+                        justify-content: center;
+                    }
+                
+                    .tratamentoBtnExcluir:hover {
+                        background: #dc3545;
+                        color: #fff;
+                    }
+                }
+
+                .editTratamentoContainer {
+                    display: flex;
+                    align-items: center;
+                    gap: 5px;
+                    width: 100%;
+
+                    .inputEditandoTratamento {
+                        border: 2px solid #cacaca;
+                        background: transparent;
+                        padding: 4px 8px;
+                        border-radius: 8px;
+                        flex: 1;
+                        font-size: 20px;
+                        font-weight: 600;
+                        outline: 0;
+                        color: #808080;
+                    }
+
+                    .inputEditandoTratamento:focus {
+                        border: solid 2px #00a39d;
+                    }
+
+                    .btnContainerEditando {
+                        display: flex;
+                        gap: 5px;
+
+                        .btnSalvarTratamento {
+                            background: #fff;
+                            padding: 5px;
+                            border: 2px solid #00a39d;
+                            color: #00a39d;
+                            border-radius: 50%;
+                            font-weight: 600;
+                            cursor: pointer;
+                            width: 32px;
+                            height: 32px;
+                            display: flex;
+                            align-items: center;
+                            justify-content: center;
+                        }
+                    
+                        .btnSalvarTratamento:hover {
+                            background: #00a39d;
+                            color: #fff;
+                        }
+                    
+                        .btnCancelarTratamento {
+                            background: #fff;
+                            padding: 5px;
+                            border: 2px solid #dc3545;
+                            color: #dc3545;
+                            border-radius: 50%;
+                            font-weight: 600;
+                            cursor: pointer;
+                            width: 32px;
+                            height: 32px;
+                            display: flex;
+                            align-items: center;
+                            justify-content: center;
+                        }
+                    
+                        .btnCancelarTratamento:hover {
+                            background: #dc3545;
+                            color: #fff;
+                        }
+                    }
+                }
+            }
+
+            .procedimentosLista{
+                display: flex;
+                flex-direction: column;
+                gap: 8px;
+                
+                .procedimentoItem{
+                    padding: 15px;
+                    border-radius: 8px;
+                    background: #E6F5F4;
+                    display: flex;
+                    align-items: center;
+                    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+
+                    .procedimentoInfo{
+                        display: flex;
+                        flex-grow: 1;
+
+                        .procedimentoNome{
+                            display: flex;
+                            flex-grow: 4;
+                            text-transform: capitalize;
+                            font-size: 14px;
+                            font-weight: 600;
+                            color: #808080;
+                        }
+
+                        .procedimentoValor{
+                            font-size: 14px;
+                            flex-grow: 1;
+                            color: #808080;
+                        }
+
+                        .statusContainer{
+                            flex-grow: 1;
+                            display: flex;
+
+                            .procedimentoStatus {
+                                font-size: 12px;
+                                padding: 2px 8px;
+                                border-radius: 8px;
+                                font-weight: 500;
+                                color: #393939;
+                                background: #808080;
+                        
+                                &.concluido {
+                                    background-color: #28a745;
+                                    color: #0c3e18;
+                                }
+                            }
+                        }
+                    }
+
+                    .procedimentoAcoes{
+                        margin-left: 20px;
+                        
+                        .btnVerMais{
+                            background: none;
+                            border: none;
+                            text-decoration: underline;
+                            text-underline-offset: 2px;
+                            cursor: pointer;
+                            font-weight: 600;
+                            color: #616161;
+                            font-size: 14px;
+                        }
+
+                        .btnVerMais:hover{
+                            color: #00a39d;
+                        }
+                    }
+                }
+            }
+
+
+        }
+    }
+
+    .tratamentoFooter{
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-top: 10px;
+
+        .btnAdicionarProcedimento{
+            background-color: #00a39d;
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            font-size: 14px;
+        }
+
+        .btnAdicionarProcedimento:hover {
+            background-color: #008f8a;
+        }
+
+        p{
+            margin: 0;
+            font-weight: 600;
+            font-size: 16px;
+            color: #808080;
+        }
+    }
+}

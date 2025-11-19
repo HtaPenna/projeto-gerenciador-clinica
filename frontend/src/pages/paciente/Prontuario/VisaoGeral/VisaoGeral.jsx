@@ -70,7 +70,7 @@ export default function VisaoGeral({ pacienteId }) {
   return (
     <div className="infoContainer">
       <div className="tituloContainer">
-        <h2>Informações</h2>
+        <h2>Dados do paciente</h2>
         <button
           onClick={() => setEditando(!editando)}
           className={editando ? "cancelar" : "editar"}

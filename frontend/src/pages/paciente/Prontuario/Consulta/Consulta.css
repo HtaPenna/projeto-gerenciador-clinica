@@ -1,0 +1,158 @@
+.consultasContainer {
+    padding: 30px;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    background: #fff;
+}
+
+.consultasContainer h2 {
+    font-size: 24px;
+    font-weight: 600;
+    margin-bottom: 20px;
+    color: #808080;
+}
+
+.tabelaConsultas {
+    width: 100%;
+    border-collapse: collapse;
+    background: #fff;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 1px 6px rgba(0, 0, 0, 0.2);
+}
+
+.tabelaConsultas thead {
+    background-color: #f8f9fa;
+}
+
+.tabelaConsultas th {
+    padding: 12px 15px;
+    text-align: left;
+    font-weight: 600;
+    color: #333;
+    border-bottom: 2px solid #e2e8f0;
+    font-size: 14px;
+}
+
+.tabelaConsultas td {
+    padding: 12px 15px;
+    border-bottom: 1px solid #e2e8f0;
+    color: #333;
+    font-size: 14px;
+}
+
+.tabelaConsultas tbody tr:hover {
+    background-color: #f8f9fa;
+}
+
+.btnAbrirDescricao {
+    background: #00a39d;
+    color: white;
+    border: none;
+    padding: 6px 12px;
+    border-radius: 6px;
+    font-weight: 500;
+    cursor: pointer;
+    font-size: 13px;
+}
+
+.btnAbrirDescricao:hover {
+    background: #008f8a;
+}
+
+.semConsultas {
+    text-align: center;
+    padding: 40px 20px;
+    color: #666;
+}
+
+.carregandoConsultas {
+    text-align: center;
+    padding: 20px;
+    color: #666;
+}
+
+.campoDescricao {
+    margin-bottom: 20px;
+}
+
+.campoDescricao label {
+    display: block;
+    font-weight: 600;
+    margin-bottom: 8px;
+    color: #333;
+    font-size: 14px;
+}
+
+.textareaDescricao {
+    width: 100%;
+    border: 2px solid #cacaca;
+    padding: 10px 12px;
+    border-radius: 8px;
+    font-size: 14px;
+    outline: none;
+    resize: vertical;
+    min-height: 100px;
+    font-family: inherit;
+}
+
+.textareaDescricao:focus {
+    border-color: #00a39d;
+}
+
+.inputAnexos {
+    width: 100%;
+    border: 2px solid #cacaca;
+    padding: 8px 12px;
+    border-radius: 8px;
+    font-size: 14px;
+    outline: none;
+}
+
+.inputAnexos:focus {
+    border-color: #00a39d;
+}
+
+.listaAnexos {
+    list-style-type: disc;
+    list-style-position: inside;
+    margin: 10px 0 0 0;
+    padding: 0;
+    color: #666;
+    font-size: 13px;
+}
+
+.botoesModal {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    margin-top: 20px;
+}
+
+.btnCancelar {
+    background: #6c757d;
+    color: white;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 6px;
+    font-weight: 500;
+    cursor: pointer;
+}
+
+.btnCancelar:hover {
+    background: #5a6268;
+}
+
+.btnSalvar {
+    background: #00a39d;
+    color: white;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 6px;
+    font-weight: 500;
+    cursor: pointer;
+}
+
+.btnSalvar:hover {
+    background: #008f8a;
+}
