@@ -2,50 +2,52 @@ import { useEffect, useState } from 'react';
 import { usePageTitle } from '../../hooks/usePageTitle';
 import { useNavigate } from 'react-router-dom';
 import { User } from 'lucide-react';
-import AgendamentoRapidoModal from '../../components/modals/AgendamentoModal/AgendamentoModal.jsx';
+import { Home, Users, Calendar, ClipboardCheck, Package } from 'lucide-react';
+import { useAuth } from '../../hooks/useAuth';
 import './Main.css';
 
 function Main() {
   const { updateTitle } = usePageTitle();
   const [modalRapidoOpen, setModalRapidoOpen] = useState(false);
-  const navigate = useNavigate(); // ✅ adiciona o hook
+  const navigate = useNavigate();
 
   useEffect(() => {
     updateTitle('Início');
   }, [updateTitle]);
 
+  const atalhos = [
+    { key: 'pacientes', title: 'Pacientes', desc: 'Área do paciente, dados cadastrais e clínicos', route: '/main/pacientes', Icon: Users },
+    { key: 'agenda', title: 'Agenda', desc: 'Procedimentos agendados e horários disponíveis', route: '/main/agenda', Icon: Calendar },
+    { key: 'consultas', title: 'Consultas', desc: 'Dados das consultas realizadas', route: '/main/consultas', Icon: ClipboardCheck },
+    { key: 'estoque', title: 'Estoque', desc: 'Suprimentos utilizados, e níveis do estoque', route: '/main/estoque', Icon: Package },
+  ];
+
+  const { isAuthenticated } = useAuth();
+
+  const handleGo = (route) => {
+    if (!isAuthenticated()) {
+      navigate('/acesso-bloqueado');
+      return;
+    }
+    navigate(route);
+  };
+
   return (
-    <div id="mainContent" className="text-center mt-8">
-      <p className="mb-6 text-gray-700">
-        Bem-vindo ao sistema de gerenciamento odontológico.
-      </p>
-
-      <div className="flex justify-center gap-4">
-        <button
-          className="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded flex items-center gap-2"
-          onClick={() => navigate('/main/pacientes/novo')}
-        >
-          <span>Novo Paciente</span>
-        </button>
-
-        <button
-          onClick={() => setModalRapidoOpen(true)}
-          className="bg-green-600 hover:bg-green-700 text-white font-semibold py-2 px-4 rounded"
-        >
-          Agendar Consulta
-        </button>
+    <div className="mainContent">
+      <div className='atalhos'>
+        {atalhos.map(({ key, title, desc, route, Icon }) => (
+          <div key={key} role="article" className='atalho'>
+            <div className='atalhoTitle'>
+              <Icon size={30} color='#fff'/>
+              <h3>{title}</h3>
+            </div>
+            <p>{desc}</p>
+            <button onClick={() => handleGo(route)}>
+              Ir para {title}
+            </button>
+          </div>
+        ))}
       </div>
-
-      {/* Modal de agendamento rápido */}
-      <AgendamentoRapidoModal
-        isOpen={modalRapidoOpen}
-        onRequestClose={() => setModalRapidoOpen(false)}
-        onSuccess={() => {
-          alert('Agendamento criado com sucesso!');
-          setModalRapidoOpen(false);
-        }}
-        dentistaId={1}
-      />
     </div>
   );
 }
