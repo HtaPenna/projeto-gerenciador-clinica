@@ -1,27 +1,78 @@
-/* Estilos mínimos locais para a página de Consultas — usa Bootstrap para a maior parte
-   Adicione ajustes específicos aqui sem Tailwind. */
-
-/* Ajuste leve para separar as seções */
-.container .mb-4 {
-    margin-bottom: 1.25rem;
+/* ConsultasGerais.css - Ajustado para o padrão estoque */
+/* Filtros - Ajustados para o padrão */
+.row.g-3.mb-4.align-items-end {
+    margin-bottom: 30px !important;
+    width: 90%;
+    margin: 0 auto 30px !important;
 }
 
-/* Força o backdrop do react-modal a usar o comportamento de modal do Bootstrap */
-.ReactModal__Overlay.modal-backdrop {
-    position: fixed;
-    inset: 0;
-    background-color: rgba(0, 0, 0, 0.5);
-    z-index: 1040;
+.form-label {
+    display: block;
+    font-weight: 600;
+    margin-bottom: 8px;
+    color: #2d3748;
+    font-size: 14px;
 }
 
-/* Ajuste para dialogo modal renderizado pelo react-modal */
-.ReactModal__Content.modal-dialog {
-    position: absolute;
-    left: 50%;
-    top: 50%;
-    transform: translate(-50%, -50%);
-    max-width: 720px;
+.form-select {
     width: 100%;
-    z-index: 1050;
+    border: 1px solid #cacaca;
+    padding: 8px 12px;
+    border-radius: 4px;
+    font-size: 13px;
     outline: none;
+    background: #fff;
+    cursor: pointer;
+    color: #4a5568;
+    transition: all 0.2s ease;
+}
+
+.form-select:focus {
+    border-color: #00a39d;
+    box-shadow: 0 0 0 2px rgba(0, 163, 157, 0.1);
+}
+
+/* Estados de carregamento e vazio */
+.carregandoConsultas {
+    text-align: center;
+    padding: 40px 20px;
+    color: #718096;
+}
+
+.carregandoConsultas .spinner {
+    width: 40px;
+    height: 40px;
+    border: 4px solid #e2e8f0;
+    border-left: 4px solid #00a39d;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    margin: 0 auto 15px;
+}
+
+@keyframes spin {
+    0% {
+        transform: rotate(0deg);
+    }
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
+@media (max-width: 768px) {
+    .container {
+        padding: 15px;
+    }
+    
+    .row.g-3.mb-4.align-items-end {
+        width: 95%;
+    }
+    
+    .form-label {
+        font-size: 12px;
+    }
+    
+    .form-select {
+        font-size: 12px;
+        padding: 6px 10px;
+    }
 }

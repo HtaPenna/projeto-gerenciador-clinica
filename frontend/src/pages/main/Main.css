@@ -9,8 +9,8 @@
 
     .atalhos{
         display: flex;
-        align-items: center;
-        justify-content: center;
+        align-items: left;
+        justify-content: left;
         flex-direction: row;
         gap: 20px;
         flex-wrap: wrap;
@@ -20,19 +20,19 @@
         box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
 
         .atalho{
-            background: #ccebe9;
+            background: #bde0de;
             padding: 20px;
             border-radius: 8px;
             box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
             width: 230px;
             display: flex;
             flex-direction: column;
-            align-items: center;
+            align-items: left;
 
             .atalhoTitle{
                 display: flex;
                 align-items: center;
-                justify-content: center;
+                justify-content: left;
                 gap: 10px;
                 margin-bottom: 10px;
 
@@ -46,7 +46,7 @@
             p{
                 font-size: 14px;
                 color: #555;
-                text-align: center;
+                text-align: left;
                 margin-bottom: 15px;
             }
 
@@ -66,4 +66,97 @@
             }
         }
     }
+}
+
+/* Consultas de Hoje na Home */
+.consultas-hoje-home {
+    background: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+    margin-top: 20px;
+    width: 100%;
+}
+
+.consultas-hoje-home h3 {
+    color: #808080;
+    margin-bottom: 15px;
+    font-size: 18px;
+    border-bottom: 2px solid #bde0de;
+    padding-bottom: 8px;
+}
+
+.lista-consultas-hoje {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.consulta-item-hoje {
+    background: #f8f9fa;
+    padding: 15px;
+    border-radius: 6px;
+    border-left: 4px solid #bde0de;
+}
+
+.consulta-info-principal {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 8px;
+}
+
+.consulta-info-principal strong {
+    color: #2d3748;
+    font-size: 14px;
+}
+
+.consulta-hora {
+    color: #718096;
+    font-size: 13px;
+    font-weight: 500;
+}
+
+.consulta-detalhes {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    font-size: 13px;
+    color: #718096;
+}
+
+.status-badge {
+    padding: 2px 8px;
+    border-radius: 12px;
+    font-size: 11px;
+    font-weight: 500;
+    text-transform: capitalize;
+}
+
+.status-agendada {
+    background: #fff3cd;
+    color: #856404;
+}
+
+.status-concluída {
+    background: #d4edda;
+    color: #155724;
+}
+
+.status-cancelada {
+    background: #f8d7da;
+    color: #721c24;
+}
+
+.sem-consultas-hoje {
+    text-align: center;
+    color: #718096;
+    font-style: italic;
+    padding: 20px;
+}
+
+.carregando-consultas {
+    text-align: center;
+    color: #718096;
+    padding: 20px;
 }

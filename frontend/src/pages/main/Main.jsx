@@ -5,6 +5,7 @@ import { User } from 'lucide-react';
 import { Home, Users, Calendar, ClipboardCheck, Package } from 'lucide-react';
 import { useAuth } from '../../hooks/useAuth';
 import './Main.css';
+import ConsultasHoje from './consultasHoje/consultasHoje.jsx';
 
 function Main() {
   const { updateTitle } = usePageTitle();
@@ -48,6 +49,8 @@ function Main() {
           </div>
         ))}
       </div>
+
+      <ConsultasHoje />
     </div>
   );
 }

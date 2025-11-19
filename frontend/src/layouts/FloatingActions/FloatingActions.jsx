@@ -42,7 +42,7 @@ export default function FloatingActions() {
               }}
             >
               <User size={16} />
-              <span>Novo paciente</span>
+              <span>Novo Paciente</span>
             </button>
 
             <button
@@ -53,7 +53,7 @@ export default function FloatingActions() {
               }}
             >
               <Calendar size={16} />
-              <span>Nova consulta</span>
+              <span>Nova Consulta</span>
             </button>
 
             <button
@@ -64,7 +64,7 @@ export default function FloatingActions() {
               }}
             >
               <Package size={16} />
-              <span>Novo suprimento</span>
+              <span>Novo Suprimento</span>
             </button>
           </div>
         )}

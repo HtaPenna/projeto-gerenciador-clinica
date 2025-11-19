@@ -126,7 +126,7 @@ ${recomendacoes.trim()}
   if (consultas.length === 0) {
     return (
       <div className="consultasContainer">
-        <h2>Histórico de Consultas Concluídas</h2>
+        <h2>Histórico de Consultas</h2>
         <div className="semConsultas">
           Não há consultas concluídas para este paciente.
         </div>
@@ -136,7 +136,7 @@ ${recomendacoes.trim()}
 
   return (
     <div className="consultasContainer">
-      <h2>Histórico de Consultas Concluídas</h2>
+      <h2>Histórico de Consultas</h2>
 
       <table className="tabelaConsultas">
         <thead>
