@@ -119,7 +119,7 @@ export default function AgendamentoModal({
         const evt = await res.json();
 
         // Preencher campos básicos — prefira o nome do paciente quando disponível
-        setPacienteInput((evt.paciente && evt.paciente.nome) || evt.title || "");
+        setPacienteInput((evt.paciente && evt.paciente.nome) || evt.descricao || "");
         setInicio(formatDateTimeLocal(evt.inicio));
         setFim(formatDateTimeLocal(evt.fim));
         setStatus(evt.status || "agendada");
@@ -131,7 +131,7 @@ export default function AgendamentoModal({
         if (evt.paciente) {
           setPacienteSelecionado(evt.paciente);
         } else if (evt.pacienteId) {
-          setPacienteSelecionado({ id: evt.pacienteId, nome: evt.title });
+          setPacienteSelecionado({ id: evt.pacienteId, nome: evt.descricao });
         }
 
         // Carregar lista de tratamentos do paciente (para popular select)
@@ -183,7 +183,7 @@ export default function AgendamentoModal({
       try {
         const valor = procedimentoSelecionado.valor ?? procedimentoSelecionado.valorPrevisto ?? null;
         if (valor !== null && valor !== undefined) {
-          setValorPrevisto(String(valor));
+          setValorPrevisto(String(parseFloat(valor)));
         }
       } catch (e) {
         // ignore
@@ -296,12 +296,13 @@ export default function AgendamentoModal({
       return;
     }
 
+    const statusCorrigido = status === "realizada" ? "concluída" : status;
+
     const eventoData = {
-      title: pacienteInput,
+      descricao: pacienteInput,
       inicio: new Date(inicio).toISOString(),
       fim: new Date(fim).toISOString(),
-      dentistaId,
-      status,
+      status: statusCorrigido,
       valorPrevisto: parseFloat(valorPrevisto) || 0,
       observacoes,
       pacienteId: pacienteSelecionado?.id || null,

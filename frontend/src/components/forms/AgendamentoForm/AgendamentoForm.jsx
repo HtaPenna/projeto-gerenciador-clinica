@@ -161,8 +161,7 @@ export default function AgendamentoForm({
                             >
                                 <option value="agendada">Agendada</option>
                                 <option value="confirmada">Confirmada</option>
-                                <option value="realizada">Realizada</option>
-                                <option value="cancelada">Cancelada</option>
+                                <option value="concluída">Concluída</option>
                             </select>
                         </div>
                         <div className="col-md-6">
