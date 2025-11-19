@@ -11,6 +11,7 @@ export default function AgendamentoForm({
     tratamentos,
     tratamentoSelecionado,
     onTratamentoChange,
+    procedimentos,
     procedimentoSelecionado,
     onProcedimentoChange,
     inicio,
@@ -27,13 +28,19 @@ export default function AgendamentoForm({
     onClose,
     onEdit,
     onDelete,
-    dataSelecionada
+    dataSelecionada,
+    config
 }) {
     return (
         <div className="card">
             <div className="card-body">
+                {config && (
+                    <div className="alert alert-info small mb-3">
+                        Expediente: {config.slotMinTime.slice(0, 5)} às {config.slotMaxTime.slice(0, 5)}
+                    </div>
+                )}
+
                 <form onSubmit={onSubmit}>
-                    {/* Paciente */}
                     <div className="mb-3 position-relative">
                         <label className="form-label fw-semibold">Paciente</label>
                         <input
@@ -41,23 +48,17 @@ export default function AgendamentoForm({
                             className={`form-control ${modoVisualizacao ? 'bg-light' : ''}`}
                             placeholder="Digite o nome do paciente"
                             value={pacienteInput}
-                            onChange={(e) => {
-                                onPacienteInputChange(e.target.value);
-                                if (!modoVisualizacao) onSelectPaciente(null); // Reset para mostrar dropdown
-                            }}
-                            onFocus={() => pacienteInput && onSelectPaciente(null)} // Mostrar dropdown
+                            onChange={(e) => onPacienteInputChange(e.target.value)}
                             disabled={modoVisualizacao}
                         />
                         {showDropdown && pacientes.length > 0 && !modoVisualizacao && (
-                            <div className="position-absolute w-100 bg-white border mt-1 max-h-40 overflow-auto rounded shadow z-3">
+                            <div className="position-absolute w-100 bg-white border mt-1" style={{ maxHeight: '200px', overflow: 'auto', zIndex: 1050 }}>
                                 {pacientes.map((p) => (
                                     <div
                                         key={p.id}
-                                        className="p-2 hover-bg-light cursor-pointer"
-                                        onMouseDown={(e) => {
-                                            e.preventDefault();
-                                            onSelectPaciente(p);
-                                        }}
+                                        className="p-2 border-bottom cursor-pointer"
+                                        style={{ cursor: 'pointer' }}
+                                        onClick={() => onSelectPaciente(p)}
                                     >
                                         {p.nome}
                                     </div>
@@ -66,55 +67,66 @@ export default function AgendamentoForm({
                         )}
                     </div>
 
-                    {/* Tratamento */}
-                    {pacienteSelecionado && tratamentos.length > 0 && (
+                    {pacienteSelecionado && (
                         <div className="mb-3">
                             <label className="form-label fw-semibold">Tratamento</label>
-                            <select
-                                className={`form-select ${modoVisualizacao ? 'bg-light' : ''}`}
-                                value={tratamentoSelecionado?.id || ""}
-                                onChange={(e) => {
-                                    const sel = tratamentos.find((t) => t.id === parseInt(e.target.value));
-                                    onTratamentoChange(sel || null);
-                                }}
-                                disabled={modoVisualizacao}
-                            >
-                                <option value="">Selecione um tratamento</option>
-                                {tratamentos.map((t) => (
-                                    <option key={t.id} value={t.id}>
-                                        {t.nome}
-                                    </option>
-                                ))}
-                            </select>
+                            {modoVisualizacao ? (
+                                <input
+                                    type="text"
+                                    className="form-control bg-light"
+                                    value={tratamentoSelecionado?.nome || tratamentoSelecionado?.descricao || "Nenhum tratamento selecionado"}
+                                    disabled
+                                />
+                            ) : (
+                                <select
+                                    className="form-select"
+                                    value={tratamentoSelecionado?.id || ""}
+                                    onChange={(e) => {
+                                        const sel = tratamentos.find((t) => t.id === parseInt(e.target.value));
+                                        onTratamentoChange(sel || null);
+                                    }}
+                                >
+                                    <option value="">Selecione um tratamento</option>
+                                    {tratamentos.map((t) => (
+                                        <option key={t.id} value={t.id}>
+                                            {t.descricao || t.nome}
+                                        </option>
+                                    ))}
+                                </select>
+                            )}
                         </div>
                     )}
 
-                    {/* Procedimento */}
-                    {tratamentoSelecionado && tratamentoSelecionado.procedimentos?.length > 0 && (
+                    {tratamentoSelecionado && (
                         <div className="mb-3">
                             <label className="form-label fw-semibold">Procedimento</label>
-                            <select
-                                className={`form-select ${modoVisualizacao ? 'bg-light' : ''}`}
-                                value={procedimentoSelecionado?.id || ""}
-                                onChange={(e) => {
-                                    const sel = tratamentoSelecionado.procedimentos.find(
-                                        (p) => p.id === parseInt(e.target.value)
-                                    );
-                                    onProcedimentoChange(sel || null);
-                                }}
-                                disabled={modoVisualizacao}
-                            >
-                                <option value="">Selecione um procedimento</option>
-                                {tratamentoSelecionado.procedimentos.map((p) => (
-                                    <option key={p.id} value={p.id}>
-                                        {p.nome}
-                                    </option>
-                                ))}
-                            </select>
+                            {modoVisualizacao ? (
+                                <input
+                                    type="text"
+                                    className="form-control bg-light"
+                                    value={procedimentoSelecionado?.nome || procedimentoSelecionado?.descricao || "Nenhum procedimento selecionado"}
+                                    disabled
+                                />
+                            ) : (
+                                <select
+                                    className="form-select"
+                                    value={procedimentoSelecionado?.id || ""}
+                                    onChange={(e) => {
+                                        const sel = procedimentos.find((p) => p.id === parseInt(e.target.value));
+                                        onProcedimentoChange(sel || null);
+                                    }}
+                                >
+                                    <option value="">Selecione um procedimento</option>
+                                    {procedimentos.map((p) => (
+                                        <option key={p.id} value={p.id}>
+                                            {p.descricao || p.nome}
+                                        </option>
+                                    ))}
+                                </select>
+                            )}
                         </div>
                     )}
 
-                    {/* Início e Fim */}
                     <div className="row mb-3">
                         <div className="col-md-6">
                             <label className="form-label fw-semibold">Início</label>
@@ -138,7 +150,6 @@ export default function AgendamentoForm({
                         </div>
                     </div>
 
-                    {/* Status e Valor */}
                     <div className="row mb-3">
                         <div className="col-md-6">
                             <label className="form-label fw-semibold">Status</label>
@@ -150,8 +161,8 @@ export default function AgendamentoForm({
                             >
                                 <option value="agendada">Agendada</option>
                                 <option value="confirmada">Confirmada</option>
-                                <option value="concluída">Concluída</option>
-                                <option value="indisponível">Indisponível</option>
+                                <option value="realizada">Realizada</option>
+                                <option value="cancelada">Cancelada</option>
                             </select>
                         </div>
                         <div className="col-md-6">
@@ -167,7 +178,6 @@ export default function AgendamentoForm({
                         </div>
                     </div>
 
-                    {/* Observações */}
                     <div className="mb-3">
                         <label className="form-label fw-semibold">Observações</label>
                         <textarea
@@ -179,22 +189,24 @@ export default function AgendamentoForm({
                         />
                     </div>
 
-                    {/* Botões */}
                     <div className="d-flex gap-2 justify-content-end mt-4">
-                        <button
-                            type="button"
-                            className="btn btn-secondary"
-                            onClick={onClose}
-                        >
-                            Cancelar
-                        </button>
-
                         {modoVisualizacao ? (
                             <>
                                 <button
                                     type="button"
+                                    className="btn btn-secondary"
+                                    onClick={onClose}
+                                >
+                                    Fechar
+                                </button>
+                                <button
+                                    type="button"
                                     className="btn btn-warning"
-                                    onClick={onEdit}
+                                    onClick={(e) => {
+                                        e.stopPropagation();
+                                        e.preventDefault();
+                                        onEdit(e);
+                                    }}
                                 >
                                     Editar
                                 </button>
@@ -207,12 +219,21 @@ export default function AgendamentoForm({
                                 </button>
                             </>
                         ) : (
-                            <button
-                                type="submit"
-                                className="btn btn-success"
-                            >
-                                {dataSelecionada?.id ? "Atualizar" : "Salvar"}
-                            </button>
+                            <>
+                                <button
+                                    type="button"
+                                    className="btn btn-secondary"
+                                    onClick={onClose}
+                                >
+                                    Cancelar
+                                </button>
+                                <button
+                                    type="submit"
+                                    className="btn btn-success"
+                                >
+                                    {dataSelecionada?.id ? "Atualizar" : "Salvar"}
+                                </button>
+                            </>
                         )}
                     </div>
                 </form>

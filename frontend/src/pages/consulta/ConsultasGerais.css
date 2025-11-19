@@ -1,0 +1,27 @@
+/* Estilos mínimos locais para a página de Consultas — usa Bootstrap para a maior parte
+   Adicione ajustes específicos aqui sem Tailwind. */
+
+/* Ajuste leve para separar as seções */
+.container .mb-4 {
+    margin-bottom: 1.25rem;
+}
+
+/* Força o backdrop do react-modal a usar o comportamento de modal do Bootstrap */
+.ReactModal__Overlay.modal-backdrop {
+    position: fixed;
+    inset: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 1040;
+}
+
+/* Ajuste para dialogo modal renderizado pelo react-modal */
+.ReactModal__Content.modal-dialog {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    max-width: 720px;
+    width: 100%;
+    z-index: 1050;
+    outline: none;
+}
