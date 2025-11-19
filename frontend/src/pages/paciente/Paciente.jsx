@@ -5,6 +5,7 @@ import CadastroPacienteModal from '../../components/modals/CadastroPacienteModal
 import { useToast } from '../../hooks/useToast';
 import { useAuth } from '../../hooks/useAuth';
 import { usePageTitle } from '../../hooks/usePageTitle';
+import { Search } from "lucide-react";
 import "./Paciente.css";
 
 const API_URL = "http://localhost:3001/pacientes";
@@ -97,16 +98,25 @@ export default function Paciente() {
     setPacientesFiltrados(filtrados);
   }, [busca, pacientes]);
 
+  // Verifica se há pacientes cadastrados
+  const temPacientesCadastrados = pacientes.length > 0;
+
+  // Verifica se a busca não encontrou resultados
+  const buscaSemResultados = busca.trim() !== '' && pacientesFiltrados.length === 0;
+
   return (
     <div className="pacienteContainer">
       <div className="searchBar mb-4">
-        <input
-          type="text"
-          placeholder="Procurar paciente por nome ou telefone..."
-          value={busca}
-          onChange={(e) => setBusca(e.target.value)}
-          className="form-control"
-        />
+        <div className="search-container">
+          <input
+            type="text"
+            placeholder="Procurar paciente por nome ou telefone..."
+            value={busca}
+            onChange={(e) => setBusca(e.target.value)}
+            className="search-input"
+          />
+          <Search size={18} className="search-icon" />
+        </div>
       </div>
 
       {loading ? (
@@ -118,17 +128,34 @@ export default function Paciente() {
         </div>
       ) : (
         <>
-          {pacientesFiltrados.length === 0 ? (
+          {/* Mensagem quando busca não encontra resultados */}
+          {buscaSemResultados && (
             <div className="text-center py-5">
-              <p className="text-muted">Nenhum paciente cadastrado ainda.</p>
+              <p className="text-muted mb-3">Nenhum paciente encontrado para "{busca}"</p>
               <button
                 onClick={abrirModalNovoPaciente}
-                className="btn btn-primary mt-2"
+                className="btn btn-outline-primary"
+              >
+                Cadastrar Novo Paciente
+              </button>
+            </div>
+          )}
+
+          {/* Mensagem quando não há pacientes cadastrados */}
+          {!temPacientesCadastrados && !buscaSemResultados && (
+            <div className="text-center py-5">
+              <p className="text-muted mb-3">Nenhum paciente cadastrado ainda.</p>
+              <button
+                onClick={abrirModalNovoPaciente}
+                className="btn btn-primary"
               >
                 Cadastrar Primeiro Paciente
               </button>
             </div>
-          ) : (
+          )}
+
+          {/* Lista de pacientes quando há resultados */}
+          {temPacientesCadastrados && !buscaSemResultados && pacientesFiltrados.length > 0 && (
             <PacientesList
               pacientes={pacientesFiltrados}
               onVerProntuario={(id) => navigate(`/main/pacientes/${id}/prontuario`)}

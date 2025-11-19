@@ -3,7 +3,7 @@ import React from 'react';
 export default function ConsultaForm({
   diagnostico,
   onDiagnosticoChange,
-  tratamentoRealizado, 
+  tratamentoRealizado,
   onTratamentoChange,
   procedimentoRealizado,
   onProcedimentoChange,
@@ -15,69 +15,78 @@ export default function ConsultaForm({
   onAnexosChange
 }) {
   return (
-    <div className="space-y-3">
-      <div>
-        <label className="block font-semibold mb-1">Diagnóstico:</label>
-        <textarea
-          value={diagnostico}
-          onChange={(e) => onDiagnosticoChange(e.target.value)}
-          className="w-full border p-2 rounded min-h-[80px]"
-        />
-      </div>
+    <div className="card">
+      <div className="card-body">
+        <div className="row">
+          <div className="col-12 mb-3">
+            <label className="form-label fw-semibold">Diagnóstico:</label>
+            <textarea
+              value={diagnostico}
+              onChange={(e) => onDiagnosticoChange(e.target.value)}
+              className="form-control"
+              rows="3"
+            />
+          </div>
 
-      <div>
-        <label className="block font-semibold mb-1">Tratamento Realizado:</label>
-        <textarea
-          value={tratamentoRealizado}
-          onChange={(e) => onTratamentoChange(e.target.value)}
-          className="w-full border p-2 rounded min-h-[80px]"
-        />
-      </div>
+          <div className="col-12 mb-3">
+            <label className="form-label fw-semibold">Tratamento Realizado:</label>
+            <textarea
+              value={tratamentoRealizado}
+              onChange={(e) => onTratamentoChange(e.target.value)}
+              className="form-control"
+              rows="3"
+            />
+          </div>
 
-      <div>
-        <label className="block font-semibold mb-1">Procedimento Realizado:</label>
-        <textarea
-          value={procedimentoRealizado}
-          onChange={(e) => onProcedimentoChange(e.target.value)}
-          className="w-full border p-2 rounded min-h-[80px]"
-        />
-      </div>
+          <div className="col-12 mb-3">
+            <label className="form-label fw-semibold">Procedimento Realizado:</label>
+            <textarea
+              value={procedimentoRealizado}
+              onChange={(e) => onProcedimentoChange(e.target.value)}
+              className="form-control"
+              rows="3"
+            />
+          </div>
 
-      <div>
-        <label className="block font-semibold mb-1">Observações Clínicas:</label>
-        <textarea
-          value={observacoesClinicas}
-          onChange={(e) => onObservacoesChange(e.target.value)}
-          className="w-full border p-2 rounded min-h-[80px]"
-        />
-      </div>
+          <div className="col-12 mb-3">
+            <label className="form-label fw-semibold">Observações Clínicas:</label>
+            <textarea
+              value={observacoesClinicas}
+              onChange={(e) => onObservacoesChange(e.target.value)}
+              className="form-control"
+              rows="3"
+            />
+          </div>
 
-      <div>
-        <label className="block font-semibold mb-1">
-          Recomendações Pós-Atendimento:
-        </label>
-        <textarea
-          value={recomendacoes}
-          onChange={(e) => onRecomendacoesChange(e.target.value)}
-          className="w-full border p-2 rounded min-h-[80px]"
-        />
-      </div>
+          <div className="col-12 mb-3">
+            <label className="form-label fw-semibold">Recomendações Pós-Atendimento:</label>
+            <textarea
+              value={recomendacoes}
+              onChange={(e) => onRecomendacoesChange(e.target.value)}
+              className="form-control"
+              rows="3"
+            />
+          </div>
 
-      <div>
-        <label className="block font-semibold mb-1">Anexos (opcional):</label>
-        <input
-          type="file"
-          multiple
-          onChange={onAnexosChange}
-          className="block w-full border p-2 rounded"
-        />
-        {anexos.length > 0 && (
-          <ul className="text-sm text-gray-600 mt-2 list-disc pl-5">
-            {anexos.map((file, idx) => (
-              <li key={idx}>{file.name}</li>
-            ))}
-          </ul>
-        )}
+          <div className="col-12 mb-3">
+            <label className="form-label fw-semibold">Anexos (opcional):</label>
+            <input
+              type="file"
+              multiple
+              onChange={onAnexosChange}
+              className="form-control"
+            />
+            {anexos.length > 0 && (
+              <ul className="text-muted mt-2 list-unstyled">
+                {anexos.map((file, idx) => (
+                  <li key={idx} className="small">
+                    📎 {file.name}
+                  </li>
+                ))}
+              </ul>
+            )}
+          </div>
+        </div>
       </div>
     </div>
   );

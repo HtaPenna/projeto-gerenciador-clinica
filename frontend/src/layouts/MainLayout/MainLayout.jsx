@@ -5,9 +5,11 @@ import Navbar from '../Navbar/Navbar';
 import './MainLayout.css';
 import FloatingActions from "../FloatingActions/FloatingActions.jsx";
 import { useAuth } from '../../hooks/useAuth';
+import GerenciamentoContaModal from '../../components/modals/GerenciamentoContaModal/GerenciamentoContaModal.jsx';
 
 function MainLayout() {
   const [user, setUser] = useState(null);
+  const [showGerenciamentoModal, setShowGerenciamentoModal] = useState(false);
   const navigate = useNavigate();
   const { getUser, isAuthenticated } = useAuth();
   const location = useLocation();
@@ -41,15 +43,18 @@ function MainLayout() {
     );
   }
 
-  // dentista- layout normal
   return (
     <div className="appLayout">
       <FloatingActions />
       <Navbar />
-      <Header />
+      <Header onOpenGerenciamento={() => setShowGerenciamentoModal(true)} />
       <div className="content">
         <Outlet />
       </div>
+      <GerenciamentoContaModal
+        isOpen={showGerenciamentoModal}
+        onClose={() => setShowGerenciamentoModal(false)}
+      />
     </div>
   );
 }

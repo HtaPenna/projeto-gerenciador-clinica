@@ -6,6 +6,8 @@ import ConsultaTable from "../../components/data-display/ConsultaTable/ConsultaT
 
 const API_URL = "http://localhost:3001/eventos";
 
+import './ConsultasGerais.css';
+
 export default function HistoricoConsultas() {
   const { updateTitle } = usePageTitle();
   const [eventos, setEventos] = useState([]);
@@ -119,17 +121,16 @@ export default function HistoricoConsultas() {
   };
 
   return (
-    <div className="p-6" style={{ marginLeft: "100px" }}>
-      <h1 className="text-2xl font-bold mb-6">Histórico de Consultas</h1>
+    <div className="container mt-4">
 
       {/* Filtros */}
-      <div className="flex gap-4 mb-6">
-        <label className="flex flex-col">
-          <span className="text-sm text-gray-600">Paciente</span>
+      <div className="row g-3 mb-4 align-items-end">
+        <div className="col-sm-6 col-md-4">
+          <label className="form-label">Paciente</label>
           <select
             value={filtroPaciente}
             onChange={(e) => setFiltroPaciente(e.target.value)}
-            className="p-2 border rounded"
+            className="form-select"
           >
             <option value="">Todos</option>
             {pacientes.map((p) => (
@@ -138,39 +139,43 @@ export default function HistoricoConsultas() {
               </option>
             ))}
           </select>
-        </label>
+        </div>
 
-        <label className="flex flex-col">
-          <span className="text-sm text-gray-600">Status</span>
+        <div className="col-sm-6 col-md-3">
+          <label className="form-label">Status</label>
           <select
             value={filtroStatus}
             onChange={(e) => setFiltroStatus(e.target.value)}
-            className="p-2 border rounded"
+            className="form-select"
           >
             <option value="">Todos</option>
             <option value="agendada">Agendada</option>
             <option value="concluída">Concluída</option>
             <option value="cancelada">Cancelada</option>
           </select>
-        </label>
+        </div>
       </div>
 
       {/* Tabelas Componentizadas */}
-      <ConsultaTable
-        consultas={concluidas}
-        tipo="concluída"
-        onAbrirDescricao={abrirModal}
-        onVerProntuario={verProntuario}
-        onAtualizarStatus={atualizarStatus}
-      />
+      <div className="mb-4">
+        <ConsultaTable
+          consultas={concluidas}
+          tipo="concluída"
+          onAbrirDescricao={abrirModal}
+          onVerProntuario={verProntuario}
+          onAtualizarStatus={atualizarStatus}
+        />
+      </div>
 
-      <ConsultaTable
-        consultas={outras}
-        tipo="outras"
-        onAbrirDescricao={abrirModal}
-        onVerProntuario={verProntuario}
-        onAtualizarStatus={atualizarStatus}
-      />
+      <div>
+        <ConsultaTable
+          consultas={outras}
+          tipo="outras"
+          onAbrirDescricao={abrirModal}
+          onVerProntuario={verProntuario}
+          onAtualizarStatus={atualizarStatus}
+        />
+      </div>
 
       {/* Modal Componentizado */}
       <ConsultaModal

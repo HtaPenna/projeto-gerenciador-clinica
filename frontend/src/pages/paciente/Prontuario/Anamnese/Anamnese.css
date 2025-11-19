@@ -1,0 +1,160 @@
+.anamneseContainer {
+    padding: 30px;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    background: #fff;
+}
+
+.anamneseContainer h2 {
+    font-size: 24px;
+    font-weight: 600;
+    margin-bottom: 20px;
+    color: #808080;
+}
+
+.anamneseHeader {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.btnEditarAnamnese {
+    background-color: #00a39d;
+    color: white;
+    border: none;
+    padding: 6px 12px;
+    font-size: 14px;
+    border-radius: 8px;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.btnEditarAnamnese:hover {
+    background: #008f8a;
+}
+
+.sectionAnamnese {
+    padding: 15px;
+    background: #fff;
+    border-radius: 8px;
+    box-shadow: 0 1px 6px rgba(0, 0, 0, 0.2);
+    margin-bottom: 10px;
+}
+
+.sectionAnamnese strong {
+    display: block;
+    margin-bottom: 8px;
+    color: #808080;
+    font-size: 14px;
+}
+
+.inputAnamnese {
+    border: 2px solid #cacaca;
+    padding: 8px 12px;
+    border-radius: 8px;
+    width: 100%;
+    font-size: 14px;
+    outline: none;
+    color: #808080;
+}
+
+.inputAnamnese:focus {
+    border-color: #00a39d;
+}
+
+.textareaAnamnese {
+    border: 2px solid #cacaca;
+    padding: 8px 12px;
+    border-radius: 8px;
+    width: 100%;
+    font-size: 14px;
+    outline: none;
+    resize: vertical;
+    min-height: 80px;
+    color: #808080;
+}
+
+.textareaAnamnese:focus {
+    border-color: #00a39d;
+}
+
+.selectAnamnese {
+    border: 2px solid #cacaca;
+    padding: 8px 12px;
+    border-radius: 8px;
+    width: 100%;
+    font-size: 14px;
+    outline: none;
+    background: white;
+    color: #808080;
+}
+
+.selectAnamnese:focus {
+    border-color: #00a39d;
+}
+
+.listaCondicoes {
+    list-style-type: disc;
+    list-style-position: inside;
+    margin: 0;
+    padding: 0;
+    color: #808080;
+}
+
+.listaCondicoes li {
+    margin-bottom: 4px;
+    color: #333;
+}
+
+.btnSalvarAnamnese {
+    background-color: #00a39d;
+    color: white;
+    border: none;
+    padding: 6px 12px;
+    font-size: 14px;
+    border-radius: 8px;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.btnSalvarAnamnese:hover {
+    background: #008f8a;
+}
+
+.criarAnamneseContainer {
+    background: #fff;
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    padding: 30px;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.criarAnamneseContainer h2 {
+    font-size: 24px;
+    font-weight: 600;
+    margin-bottom: 15px;
+    color: #808080;
+}
+
+.criarAnamneseContainer p {
+    color: #666;
+    margin-bottom: 20px;
+}
+
+.btnCriarAnamnese {
+    background-color: #00a39d;
+    color: white;
+    border: none;
+    padding: 6px 12px;
+    font-size: 14px;
+    border-radius: 8px;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.btnCriarAnamnese:hover {
+    background: #008f8a;
+}

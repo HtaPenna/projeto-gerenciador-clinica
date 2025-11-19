@@ -1,37 +1,34 @@
 import { useState, useEffect } from "react";
-import Modal from "react-modal";
 import { useToast } from '../../../hooks/useToast';
 import { useAuth } from '../../../hooks/useAuth';
-
-Modal.setAppElement("#root");
+import AgendamentoForm from '../../forms/AgendamentoForm/AgendamentoForm.jsx';
 
 export default function AgendamentoModal({
   isOpen,
-  onRequestClose,
+  onClose,
   dataSelecionada,
   onSuccess,
   dentistaId,
+  config
 }) {
   const { addToast } = useToast();
   const { getAuthHeaders } = useAuth();
-  const [modoVisualizacao, setModoVisualizacao] = useState(true);
 
+  const [modoVisualizacao, setModoVisualizacao] = useState(true);
   const [pacienteInput, setPacienteInput] = useState("");
   const [pacienteSelecionado, setPacienteSelecionado] = useState(null);
   const [pacientes, setPacientes] = useState([]);
   const [showDropdown, setShowDropdown] = useState(false);
-
   const [tratamentos, setTratamentos] = useState([]);
   const [tratamentoSelecionado, setTratamentoSelecionado] = useState(null);
+  const [procedimentos, setProcedimentos] = useState([]);
   const [procedimentoSelecionado, setProcedimentoSelecionado] = useState(null);
-
   const [inicio, setInicio] = useState("");
   const [fim, setFim] = useState("");
   const [status, setStatus] = useState("agendada");
   const [valorPrevisto, setValorPrevisto] = useState("");
   const [observacoes, setObservacoes] = useState("");
 
-  // Formata data para o input datetime-local
   function formatDateTimeLocal(date) {
     if (!date) return "";
     const d = new Date(date);
@@ -44,93 +41,260 @@ export default function AgendamentoModal({
     return `${y}-${m}-${da}T${h}:${mi}`;
   }
 
-  // Preenche os campos ao abrir modal
+  const validarHorarioExpediente = (inicio, fim) => {
+    if (!config?.slotMinTime || !config?.slotMaxTime) return true;
+
+    const inicioDate = new Date(inicio);
+    const fimDate = new Date(fim);
+
+    const horaInicio = inicioDate.getHours() + inicioDate.getMinutes() / 60;
+    const horaFim = fimDate.getHours() + fimDate.getMinutes() / 60;
+
+    const [minHours, minMinutes] = config.slotMinTime.split(':');
+    const [maxHours, maxMinutes] = config.slotMaxTime.split(':');
+
+    const minExpediente = parseInt(minHours) + parseInt(minMinutes) / 60;
+    const maxExpediente = parseInt(maxHours) + parseInt(maxMinutes) / 60;
+
+    if (horaInicio < minExpediente || horaFim > maxExpediente) {
+      return false;
+    }
+
+    return true;
+  };
+
   useEffect(() => {
-    if (dataSelecionada && dataSelecionada.id) {
-      // Modo visualização — evento existente
-      setPacienteInput(dataSelecionada.pacienteNome || dataSelecionada.title || "");
-      setInicio(formatDateTimeLocal(dataSelecionada.start));
-      setFim(formatDateTimeLocal(dataSelecionada.end));
-      setStatus(dataSelecionada.status || "agendada");
-      setValorPrevisto(dataSelecionada.valorPrevisto || "");
-      setObservacoes(dataSelecionada.observacoes || "");
+    // Reset quando modal fecha
+    if (!isOpen) {
+      setPacienteInput("");
+      setPacienteSelecionado(null);
+      setPacientes([]);
+      setShowDropdown(false);
+      setTratamentos([]);
+      setTratamentoSelecionado(null);
+      setProcedimentos([]);
+      setProcedimentoSelecionado(null);
+      setInicio("");
+      setFim("");
+      setStatus("agendada");
+      setValorPrevisto("");
+      setObservacoes("");
       setModoVisualizacao(true);
-    } else {
-      // Modo criação — novo evento
+      return;
+    }
+
+    const isNovoAgendamento = !dataSelecionada?.id;
+
+    if (isNovoAgendamento) {
       setPacienteInput("");
       setPacienteSelecionado(null);
       setTratamentoSelecionado(null);
       setProcedimentoSelecionado(null);
-      setInicio(formatDateTimeLocal(dataSelecionada?.start || new Date()));
-      setFim(formatDateTimeLocal(dataSelecionada?.end || new Date()));
+      setTratamentos([]);
+      setProcedimentos([]);
+
+      const dataBase = dataSelecionada?.start || new Date();
+      setInicio(formatDateTimeLocal(dataBase));
+
+      const fimDate = new Date(dataBase);
+      fimDate.setHours(fimDate.getHours() + 1);
+      setFim(formatDateTimeLocal(fimDate));
+
       setStatus("agendada");
       setValorPrevisto("");
       setObservacoes("");
       setModoVisualizacao(false);
+      return;
     }
-  }, [dataSelecionada]);
 
+    // Evento existente: buscar os dados completos do evento no backend
+    (async () => {
+      try {
+        const res = await fetch(`http://localhost:3001/eventos/${dataSelecionada.id}`, { headers: getAuthHeaders() });
+        if (!res.ok) {
+          console.error('Erro ao buscar evento:', res.status);
+          return;
+        }
 
-  // Buscar pacientes conforme digitação
+        const evt = await res.json();
+
+        // Preencher campos básicos — prefira o nome do paciente quando disponível
+        setPacienteInput((evt.paciente && evt.paciente.nome) || evt.title || "");
+        setInicio(formatDateTimeLocal(evt.inicio));
+        setFim(formatDateTimeLocal(evt.fim));
+        setStatus(evt.status || "agendada");
+        setValorPrevisto(evt.valorPrevisto || "");
+        setObservacoes(evt.observacoes || "");
+        setModoVisualizacao(true);
+
+        // Paciente
+        if (evt.paciente) {
+          setPacienteSelecionado(evt.paciente);
+        } else if (evt.pacienteId) {
+          setPacienteSelecionado({ id: evt.pacienteId, nome: evt.title });
+        }
+
+        // Carregar lista de tratamentos do paciente (para popular select)
+        if (evt.pacienteId) {
+          try {
+            const trRes = await fetch(`http://localhost:3001/tratamentos/${evt.pacienteId}`, { headers: getAuthHeaders() });
+            if (trRes.ok) {
+              const listaTrat = await trRes.json();
+              setTratamentos(Array.isArray(listaTrat) ? listaTrat : []);
+              // Se o evento já tem tratamentoId, selecionar
+              if (evt.tratamentoId) {
+                const foundTrat = listaTrat.find(t => t.id === parseInt(evt.tratamentoId));
+                if (foundTrat) setTratamentoSelecionado(foundTrat);
+              }
+            }
+          } catch (err) {
+            setTratamentos([]);
+          }
+        }
+
+        // Carregar procedimentos para o tratamento do evento
+        if (evt.tratamentoId) {
+          try {
+            let procRes = await fetch(`http://localhost:3001/procedimentos/tratamento/${evt.tratamentoId}`, { headers: getAuthHeaders() });
+            if (!procRes.ok) {
+              procRes = await fetch(`http://localhost:3001/tratamentos/${evt.tratamentoId}/procedimentos`, { headers: getAuthHeaders() });
+            }
+            if (procRes.ok) {
+              const listaProc = await procRes.json();
+              setProcedimentos(Array.isArray(listaProc) ? listaProc : []);
+              if (evt.procedimentoId) {
+                const found = listaProc.find(p => p.id === parseInt(evt.procedimentoId));
+                if (found) setProcedimentoSelecionado(found);
+              }
+            }
+          } catch (err) {
+            setProcedimentos([]);
+          }
+        }
+      } catch (err) {
+        console.error('Erro ao carregar evento:', err);
+      }
+    })();
+  }, [isOpen, dataSelecionada]);
+
+  // Quando o procedimento selecionado mudar, autocompletar o valor previsto
+  useEffect(() => {
+    if (procedimentoSelecionado) {
+      try {
+        const valor = procedimentoSelecionado.valor ?? procedimentoSelecionado.valorPrevisto ?? null;
+        if (valor !== null && valor !== undefined) {
+          setValorPrevisto(String(valor));
+        }
+      } catch (e) {
+        // ignore
+      }
+    }
+  }, [procedimentoSelecionado]);
+
+  // Buscar pacientes enquanto digita (autocompletar)
   useEffect(() => {
     if (pacienteInput.length > 0 && !modoVisualizacao) {
-      fetch(`http://localhost:3001/pacientes?search=${pacienteInput}`, { headers: getAuthHeaders() })
-        .then((res) => res.json())
+      const controller = new AbortController();
+      fetch(`http://localhost:3001/pacientes?search=${encodeURIComponent(pacienteInput)}`, { headers: getAuthHeaders(), signal: controller.signal })
+        .then((res) => (res.ok ? res.json() : []))
         .then((data) => {
-          const filtrados = data
-            .filter((p) => p.nome.toLowerCase().includes(pacienteInput.toLowerCase()))
+          const filtrados = (data || [])
+            .filter((p) => p.nome && p.nome.toLowerCase().includes(pacienteInput.toLowerCase()))
             .sort((a, b) => a.nome.localeCompare(b.nome));
           setPacientes(filtrados);
-          setShowDropdown(true);
+          setShowDropdown(filtrados.length > 0);
         })
-        .catch((err) => console.error(err));
+        .catch((err) => {
+          if (err.name !== 'AbortError') console.error('Erro ao buscar pacientes:', err);
+        });
+
+      return () => controller.abort();
     } else {
       setShowDropdown(false);
+      setPacientes([]);
     }
   }, [pacienteInput, modoVisualizacao]);
 
-  // Buscar tratamentos do paciente selecionado
+  // Quando selecionam um paciente (ou mudam para modo edição), carregar tratamentos desse paciente
   useEffect(() => {
-    if (pacienteSelecionado) {
+    if (pacienteSelecionado && !modoVisualizacao) {
       fetch(`http://localhost:3001/tratamentos/${pacienteSelecionado.id}`, { headers: getAuthHeaders() })
-        .then((res) => res.json())
-        .then(async (dataTrat) => {
-          const tratamentosComProcedimentos = await Promise.all(
-            dataTrat.map(async (trat) => {
-              const resProc = await fetch(`http://localhost:3001/tratamentos/${trat.id}/procedimentos`, { headers: getAuthHeaders() });
-              const procedimentos = resProc.ok ? await resProc.json() : [];
-              return { ...trat, procedimentos };
-            })
-          );
-          setTratamentos(tratamentosComProcedimentos);
+        .then((res) => (res.ok ? res.json() : []))
+        .then((data) => {
+          const lista = Array.isArray(data) ? data : [];
+          setTratamentos(lista);
         })
-        .catch((err) => console.error(err));
+        .catch((err) => {
+          console.error('Erro ao buscar tratamentos:', err);
+          setTratamentos([]);
+        });
     } else {
+      // limpa tratamentos e procedimentos ao não haver paciente selecionado ou em modo visualização
       setTratamentos([]);
       setTratamentoSelecionado(null);
+      setProcedimentos([]);
       setProcedimentoSelecionado(null);
     }
-  }, [pacienteSelecionado]);
+  }, [pacienteSelecionado, modoVisualizacao]);
+
+  useEffect(() => {
+    if (tratamentoSelecionado && !modoVisualizacao) {
+      const buscarProcedimentos = async () => {
+        try {
+          const res = await fetch(`http://localhost:3001/procedimentos/tratamento/${tratamentoSelecionado.id}`, {
+            headers: getAuthHeaders()
+          });
+
+          if (res.ok) {
+            const dataProc = await res.json();
+            setProcedimentos(Array.isArray(dataProc) ? dataProc : []);
+            return;
+          }
+        } catch (err) { }
+
+        try {
+          const res = await fetch(`http://localhost:3001/tratamentos/${tratamentoSelecionado.id}/procedimentos`, {
+            headers: getAuthHeaders()
+          });
+
+          if (res.ok) {
+            const dataProc = await res.json();
+            setProcedimentos(Array.isArray(dataProc) ? dataProc : []);
+            return;
+          }
+        } catch (err) { }
+
+        setProcedimentos([]);
+      };
+
+      buscarProcedimentos();
+    }
+  }, [tratamentoSelecionado, modoVisualizacao]);
+
+  const handleEdit = (e) => {
+    if (e) {
+      e.stopPropagation();
+      e.preventDefault();
+    }
+    setModoVisualizacao(false);
+    setShowDropdown(false);
+  };
 
   const handleSelectPaciente = (p) => {
     setPacienteSelecionado(p);
     setPacienteInput(p.nome);
-    setShowDropdown(false);
+    setTimeout(() => {
+      setShowDropdown(false);
+    }, 100);
   };
 
-  // Salvar ou atualizar evento
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    console.log("🔍 DADOS DO EVENTO:", {
-      pacienteInput,
-      inicio,
-      fim,
-      dentistaId,
-      pacienteSelecionado,
-      tratamentoSelecionado,
-      procedimentoSelecionado
-    });
+    if (!validarHorarioExpediente(inicio, fim)) {
+      addToast(`❌ Horário fora do expediente! Expediente: ${config.slotMinTime.slice(0, 5)} às ${config.slotMaxTime.slice(0, 5)}`, "error");
+      return;
+    }
 
     const eventoData = {
       title: pacienteInput,
@@ -145,42 +309,37 @@ export default function AgendamentoModal({
       procedimentoId: procedimentoSelecionado?.id || null,
     };
 
+    console.log('Enviar evento - payload montado:', eventoData);
+
     try {
       const url = dataSelecionada?.id
         ? `http://localhost:3001/eventos/${dataSelecionada.id}`
         : "http://localhost:3001/eventos";
       const method = dataSelecionada?.id ? "PATCH" : "POST";
 
-      console.log("📤 Enviando para:", url, method);
-
       const res = await fetch(url, { method, headers: getAuthHeaders(), body: JSON.stringify(eventoData) });
+
+      console.log(`Resposta HTTP ${method} ${url} status:`, res.status);
 
       if (res.status === 409) {
         addToast("❌ Horário indisponível! Escolha outro horário.", "error");
-        return; // 👈 PARA AQUI - não dá throw
+        return;
       }
 
-      if (!res.ok) {
-        throw new Error('Erro ao salvar evento');
-      }
+      if (!res.ok) throw new Error('Erro ao salvar evento');
 
-      console.log("📥 Resposta status:", res.status);
+      const saved = await res.json();
+      console.log('Resposta do servidor após salvar evento:', saved);
 
-      const responseData = await res.json();
-      console.log("📥 Resposta data:", responseData);
-
-      if (!res.ok) throw new Error("Erro ao salvar evento");
-      console.log("✅ Evento salvo com sucesso!");
+      addToast("Agendamento salvo com sucesso!", "success");
       onSuccess();
       setModoVisualizacao(true);
-      onRequestClose();
+      onClose();
     } catch (error) {
-      console.error("Erro ao salvar:", error);
-      alert("Não foi possível salvar o evento.");
+      addToast("Não foi possível salvar o agendamento.", "error");
     }
   };
 
-  // Excluir evento
   const handleDelete = async () => {
     if (!dataSelecionada?.id) return;
     const confirmar = window.confirm("Deseja realmente excluir este agendamento?");
@@ -189,233 +348,60 @@ export default function AgendamentoModal({
     try {
       const res = await fetch(`http://localhost:3001/eventos/${dataSelecionada.id}`, { method: "DELETE", headers: getAuthHeaders() });
       if (!res.ok) throw new Error("Erro ao excluir evento");
+      addToast("Agendamento excluído com sucesso!", "success");
       onSuccess();
-      onRequestClose();
+      onClose();
     } catch (error) {
-      console.error("Erro ao excluir:", error);
-      alert("Não foi possível excluir o evento.");
+      addToast("Não foi possível excluir o agendamento.", "error");
     }
   };
 
+  if (!isOpen) return null;
+
   return (
-    <Modal
-      isOpen={isOpen}
-      onRequestClose={onRequestClose}
-      contentLabel="Agendamento"
-      style={{
-        content: {
-          top: "50%",
-          left: "50%",
-          right: "auto",
-          bottom: "auto",
-          transform: "translate(-50%, -50%)",
-          padding: "1.5rem",
-          borderRadius: "0.75rem",
-          width: "100%",
-          maxWidth: "28rem",
-          boxShadow: "0 10px 15px rgba(0,0,0,0.1)",
-        },
-        overlay: { backgroundColor: "rgba(0,0,0,0.5)", zIndex: 50 },
-      }}
-    >
-      <h2 className="text-xl font-bold mb-4 text-gray-800 text-center">
-        {modoVisualizacao
-          ? "Detalhes do Agendamento"
-          : dataSelecionada?.id
-            ? "Editar Agendamento"
-            : "Novo Agendamento"}
-      </h2>
-
-      <form onSubmit={handleSubmit} className="space-y-3">
-        {/* Paciente */}
-        <div className="relative">
-          <label className="block mb-1 font-medium">Paciente</label>
-          <input
-            type="text"
-            placeholder="Digite o nome do paciente"
-            value={pacienteInput}
-            onChange={(e) => {
-              setPacienteInput(e.target.value);
-              if (!modoVisualizacao) setShowDropdown(true);
-            }}
-            onFocus={() => pacienteInput && setShowDropdown(true)}
-            disabled={modoVisualizacao}
-            className={`w-full p-2 border rounded ${modoVisualizacao ? "bg-gray-100 cursor-not-allowed" : ""
-              }`}
-          />
-          {showDropdown && pacientes.length > 0 && !modoVisualizacao && (
-            <ul className="absolute z-50 w-full bg-white border mt-1 max-h-40 overflow-auto rounded shadow">
-              {pacientes.map((p) => (
-                <li
-                  key={p.id}
-                  className="p-2 hover:bg-gray-100 cursor-pointer"
-                  onMouseDown={(e) => {
-                    e.preventDefault();
-                    handleSelectPaciente(p);
-                  }}
-                >
-                  {p.nome}
-                </li>
-              ))}
-            </ul>
-          )}
-        </div>
-
-        {/* Tratamento */}
-        {pacienteSelecionado && tratamentos.length > 0 && (
-          <div>
-            <label className="block mb-1 font-medium">Tratamento</label>
-            <select
-              value={tratamentoSelecionado?.id || ""}
-              onChange={(e) => {
-                const sel = tratamentos.find((t) => t.id === parseInt(e.target.value));
-                setTratamentoSelecionado(sel || null);
-              }}
-              disabled={modoVisualizacao}
-              className={`w-full p-2 border rounded ${modoVisualizacao ? "bg-gray-100 cursor-not-allowed" : ""
-                }`}
-            >
-              <option value="">Selecione um tratamento</option>
-              {tratamentos.map((t) => (
-                <option key={t.id} value={t.id}>
-                  {t.nome}
-                </option>
-              ))}
-            </select>
+    <div className="modal fade show d-block" tabIndex="-1" style={{ backgroundColor: 'rgba(0,0,0,0.5)', overflow: 'hidden' }} onClick={onClose}>
+      <div className="modal-dialog modal-lg modal-dialog-centered" style={{ maxHeight: '90vh', overflow: 'hidden' }} onClick={(e) => e.stopPropagation()}>
+        <div className="modal-content" style={{ maxHeight: '90vh', overflow: 'hidden' }}>
+          <div className="modal-header">
+            <h5 className="modal-title">Agendamento</h5>
+            <button type="button" className="btn-close" onClick={onClose}></button>
           </div>
-        )}
 
-        {/* Procedimento */}
-        {tratamentoSelecionado && tratamentoSelecionado.procedimentos?.length > 0 && (
-          <div>
-            <label className="block mb-1 font-medium">Procedimento</label>
-            <select
-              value={procedimentoSelecionado?.id || ""}
-              onChange={(e) => {
-                const sel = tratamentoSelecionado.procedimentos.find(
-                  (p) => p.id === parseInt(e.target.value)
-                );
-                setProcedimentoSelecionado(sel || null);
-              }}
-              disabled={modoVisualizacao}
-              className={`w-full p-2 border rounded ${modoVisualizacao ? "bg-gray-100 cursor-not-allowed" : ""
-                }`}
-            >
-              <option value="">Selecione um procedimento</option>
-              {tratamentoSelecionado.procedimentos.map((p) => (
-                <option key={p.id} value={p.id}>
-                  {p.nome}
-                </option>
-              ))}
-            </select>
+          <div className="modal-body" style={{ overflowY: 'auto', maxHeight: 'calc(90vh - 120px)' }}>
+            <AgendamentoForm
+              modoVisualizacao={modoVisualizacao}
+              pacienteInput={pacienteInput}
+              onPacienteInputChange={setPacienteInput}
+              pacientes={pacientes}
+              showDropdown={showDropdown}
+              onSelectPaciente={handleSelectPaciente}
+              pacienteSelecionado={pacienteSelecionado}
+              tratamentos={tratamentos}
+              tratamentoSelecionado={tratamentoSelecionado}
+              onTratamentoChange={setTratamentoSelecionado}
+              procedimentos={procedimentos}
+              procedimentoSelecionado={procedimentoSelecionado}
+              onProcedimentoChange={setProcedimentoSelecionado}
+              inicio={inicio}
+              onInicioChange={setInicio}
+              fim={fim}
+              onFimChange={setFim}
+              status={status}
+              onStatusChange={setStatus}
+              valorPrevisto={valorPrevisto}
+              onValorPrevistoChange={setValorPrevisto}
+              observacoes={observacoes}
+              onObservacoesChange={setObservacoes}
+              onSubmit={handleSubmit}
+              onClose={onClose}
+              onEdit={handleEdit}
+              onDelete={handleDelete}
+              dataSelecionada={dataSelecionada}
+              config={config}
+            />
           </div>
-        )}
-
-        {/* Início e Fim */}
-        <div>
-          <label className="block mb-1 font-medium">Início</label>
-          <input
-            type="datetime-local"
-            value={inicio}
-            onChange={(e) => setInicio(e.target.value)}
-            disabled={modoVisualizacao}
-            className={`w-full p-2 border rounded ${modoVisualizacao ? "bg-gray-100 cursor-not-allowed" : ""
-              }`}
-          />
         </div>
-
-        <div>
-          <label className="block mb-1 font-medium">Fim</label>
-          <input
-            type="datetime-local"
-            value={fim}
-            onChange={(e) => setFim(e.target.value)}
-            disabled={modoVisualizacao}
-            className={`w-full p-2 border rounded ${modoVisualizacao ? "bg-gray-100 cursor-not-allowed" : ""
-              }`}
-          />
-        </div>
-
-        {/* Status */}
-        <div>
-          <label className="block mb-1 font-medium">Status</label>
-          <select
-            value={status}
-            onChange={(e) => setStatus(e.target.value)}
-            disabled={modoVisualizacao}
-            className={`w-full p-2 border rounded ${modoVisualizacao ? "bg-gray-100 cursor-not-allowed" : ""
-              }`}
-          >
-            <option value="agendada">Agendada</option>
-            <option value="confirmada">Confirmada</option>
-            <option value="concluída">Concluída</option>
-            <option value="indisponível">Indisponível</option>
-          </select>
-        </div>
-
-        {/* Valor Previsto */}
-        <div>
-          <label className="block mb-1 font-medium">Valor Previsto</label>
-          <input
-            type="number"
-            step="0.01"
-            value={valorPrevisto}
-            onChange={(e) => setValorPrevisto(e.target.value)}
-            disabled={modoVisualizacao}
-            className={`w-full p-2 border rounded ${modoVisualizacao ? "bg-gray-100 cursor-not-allowed" : ""
-              }`}
-          />
-        </div>
-
-        {/* Observações */}
-        <div>
-          <label className="block mb-1 font-medium">Observações</label>
-          <textarea
-            value={observacoes}
-            onChange={(e) => setObservacoes(e.target.value)}
-            disabled={modoVisualizacao}
-            className={`w-full p-2 border rounded ${modoVisualizacao ? "bg-gray-100 cursor-not-allowed" : ""
-              }`}
-          />
-        </div>
-
-        {/* Botões */}
-        <div className="flex justify-between mt-6">
-          <button
-            type="button"
-            onClick={onRequestClose}
-            className="px-4 py-2 bg-gray-400 text-white rounded hover:bg-gray-500 transition"
-          >
-            Fechar
-          </button>
-
-          {modoVisualizacao ? (
-            <div className="flex gap-2">
-              <button
-                type="button"
-                onClick={() => setModoVisualizacao(false)}
-                className="px-4 py-2 bg-yellow-500 text-white rounded hover:bg-yellow-600 transition"
-              >
-                Editar
-              </button>
-              <button
-                type="button"
-                onClick={handleDelete}
-                className="px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700 transition"
-              >
-                Excluir
-              </button>
-            </div>
-          ) : (
-            <button
-              type="submit"
-              className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition"
-            >
-              Salvar
-            </button>
-          )}
-        </div>
-      </form>
-    </Modal>
+      </div>
+    </div>
   );
 }

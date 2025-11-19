@@ -144,7 +144,7 @@ export default function PacienteForm({ paciente, onSalvar, onCancelar, hideTitle
   };
 
   return (
-    <div className="container mt-4">
+    <div className="container">
       <div className="card">
         <div className="card-body">
           {!hideTitle && <h5 className="card-title border-bottom pb-2 mb-4">Dados do Paciente</h5>}

@@ -2,7 +2,7 @@ import React from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import './Navbar.css';
 import logo from "../../assets/images/logo.png";
-import { Home, Users, Calendar, LogOut, HeartPulse, User, ClipboardCheck } from "lucide-react";
+import { Home, Users, Calendar, ClipboardCheck, Package } from "lucide-react";
 
 const Navbar = () => {
   const navigate = useNavigate();
@@ -36,11 +36,11 @@ const Navbar = () => {
             <span>Agenda</span>
           </Link>
           <Link to="/main/consultas" className={isActive('/main/consultas') ? 'nav-link active' : 'nav-link'}>
-            <Calendar size={24} className="iconNav"/>
+            <ClipboardCheck size={24} className="iconNav"/>
             <span>Consultas</span>
           </Link>
           <Link to="/main/estoque" className={isActive('/main/estoque') ? 'nav-link active' : 'nav-link'}>
-            <ClipboardCheck size={24} className="iconNav"/>
+            <Package size={24} className="iconNav"/>
             <span>Estoque</span>
           </Link>
         </div>

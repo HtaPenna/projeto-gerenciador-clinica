@@ -1,16 +1,16 @@
 import { useState, useRef, useEffect } from "react";
 import { Plus, User, Calendar, Package } from "lucide-react";
-import { useNavigate } from "react-router-dom";
 import AgendamentoModal from "../../components/modals/AgendamentoModal/AgendamentoModal.jsx";
-import PacienteForm from "../../components/forms/PacienteForm/PacienteForm.jsx";
+import CadastroPacienteModal from "../../components/modals/CadastroPacienteModal/CadastroPacienteModal.jsx";
+import SuprimentoModal from "../../components/modals/SuprimentoModal/SuprimentoModal.jsx";
 import "./FloatingActions.css";
 
 export default function FloatingActions() {
   const [dropdownOpen, setDropdownOpen] = useState(false);
+  const [modalPacienteOpen, setModalPacienteOpen] = useState(false);
   const [modalAgendamentoOpen, setModalAgendamentoOpen] = useState(false);
-  const [abrirPacienteForm, setAbrirPacienteForm] = useState(false);
+  const [modalSuprimentoOpen, setModalSuprimentoOpen] = useState(false);
   const dropdownRef = useRef(null);
-  const navigate = useNavigate();
 
   useEffect(() => {
     const handleClickOutside = (event) => {
@@ -25,28 +25,27 @@ export default function FloatingActions() {
   return (
     <>
       <div className="fab-container" ref={dropdownRef}>
-        <button 
-          className="btnNew" 
+        <button
+          className="btnNew"
           onClick={() => setDropdownOpen(!dropdownOpen)}
         >
-          <Plus size={30}/>
+          <Plus size={30} />
         </button>
 
         {dropdownOpen && (
           <div className="newDropContainer">
-            <button 
-            className="dropdown-option" 
-            onClick={() => {
-                navigate("/main/pacientes/novo"); // rota de criação do paciente
+            <button
+              className="dropdown-option"
+              onClick={() => {
+                setModalPacienteOpen(true);
                 setDropdownOpen(false);
-            }}
+              }}
             >
-            <User size={16} />
-            <span>Novo paciente</span>
+              <User size={16} />
+              <span>Novo paciente</span>
             </button>
 
-
-            <button 
+            <button
               className="dropdown-option"
               onClick={() => {
                 setModalAgendamentoOpen(true);
@@ -57,41 +56,38 @@ export default function FloatingActions() {
               <span>Nova consulta</span>
             </button>
 
-            <button className="dropdown-option">
+            <button
+              className="dropdown-option"
+              onClick={() => {
+                setModalSuprimentoOpen(true);
+                setDropdownOpen(false);
+              }}
+            >
               <Package size={16} />
-              <span>Novo relatório</span>
+              <span>Novo suprimento</span>
             </button>
           </div>
         )}
       </div>
 
-      {/* Modal de agendamento rápido */}
+      <CadastroPacienteModal
+        isOpen={modalPacienteOpen}
+        onClose={() => setModalPacienteOpen(false)}
+        onSuccess={() => setModalPacienteOpen(false)}
+      />
+
       <AgendamentoModal
         isOpen={modalAgendamentoOpen}
-        onRequestClose={() => setModalAgendamentoOpen(false)}
-        onSuccess={() => {
-          alert("Consulta agendada com sucesso!");
-          setModalAgendamentoOpen(false);
-        }}
+        onClose={() => setModalAgendamentoOpen(false)}
+        onSuccess={() => setModalAgendamentoOpen(false)}
         dentistaId={1}
       />
 
-      {/* Modal do PacienteForm */}
-      {abrirPacienteForm && (
-        <div className="modal-overlay">
-          <div className="modal-content">
-            <h2>Novo Paciente</h2>
-            <PacienteForm
-              paciente={{}}
-              onSalvar={(paciente) => {
-                alert("Paciente criado com sucesso!");
-                setAbrirPacienteForm(false);
-              }}
-              onCancelar={() => setAbrirPacienteForm(false)}
-            />
-          </div>
-        </div>
-      )}
+      <SuprimentoModal
+        isOpen={modalSuprimentoOpen}
+        onClose={() => setModalSuprimentoOpen(false)}
+        onSuccess={() => setModalSuprimentoOpen(false)}
+      />
     </>
   );
 }

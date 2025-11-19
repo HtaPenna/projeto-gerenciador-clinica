@@ -1,0 +1,143 @@
+.agendaContainer {
+    margin-block: 30px;
+    padding: 30px;
+    width: 90%;
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    background: #fff;
+}
+
+.agendaHeader {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.agendaTitle {
+    font-size: 24px;
+    font-weight: 600;
+    color: #808080;
+    margin: 0;
+}
+
+.botoesAgenda {
+    display: flex;
+    gap: 10px;
+}
+
+.btnNovoEvento {
+    background: #00a39d;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 8px;
+    font-weight: 600;
+    cursor: pointer;
+    font-size: 14px;
+}
+
+.btnNovoEvento:hover {
+    background: #008f8a;
+}
+
+.btnConfiguracoes {
+    background: #6c757d;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 8px;
+    font-weight: 600;
+    cursor: pointer;
+    font-size: 14px;
+}
+
+.btnConfiguracoes:hover {
+    background: #5a6268;
+}
+
+.calendarioContainer {
+    width: 100%;
+    background: #fff;
+    border-radius: 8px;
+    padding: 20px;
+    box-shadow: 0 1px 6px rgba(0, 0, 0, 0.2);
+}
+
+.carregandoAgenda {
+    text-align: center;
+    padding: 40px;
+    color: #666;
+    font-size: 16px;
+}
+
+.fc-header-toolbar {
+    margin-bottom: 1.5rem !important;
+}
+
+.fc-toolbar-title {
+    font-size: 1.5rem !important;
+    font-weight: 600 !important;
+    color: #333 !important;
+}
+
+.fc-button {
+    background-color: #00a39d !important;
+    border: none !important;
+    border-radius: 6px !important;
+    padding: 8px 16px !important;
+    font-weight: 500 !important;
+}
+
+.fc-button:hover {
+    background-color: #008f8a !important;
+}
+
+.fc-button-active {
+    background-color: #007bff !important;
+}
+
+.fc-col-header-cell {
+    background-color: #f8f9fa !important;
+    border: none !important;
+    padding: 12px 0 !important;
+}
+
+.fc-col-header-cell-cushion {
+    color: #333 !important;
+    font-weight: 600 !important;
+    font-size: 14px !important;
+    text-decoration: none !important;
+}
+
+.fc-daygrid-day {
+    border: 1px solid #e9ecef !important;
+}
+
+.fc-daygrid-day-number {
+    color: #333 !important;
+    font-weight: 500 !important;
+    padding: 8px !important;
+    text-decoration: none !important;
+}
+
+.fc-day-today {
+    background-color: #e7f7f6 !important;
+}
+
+.fc-day-today .fc-daygrid-day-number {
+    color: #00a39d !important;
+    font-weight: 600 !important;
+}
+
+.fc-event {
+    border: none !important;
+    border-radius: 4px !important;
+    padding: 4px 8px !important;
+    font-size: 12px !important;
+    font-weight: 500 !important;
+    cursor: pointer !important;
+}

@@ -18,7 +18,6 @@ function Home() {
     }
   }, [location, navigate]);
 
-  // Função para rolagem suave
   const scrollToSection = (sectionId) => {
     const element = document.getElementById(sectionId);
     if (element) {
@@ -32,7 +31,7 @@ function Home() {
         <div id='logoNav'>
           <div id="logo"><img src={logo} alt="Dent.fy Logo" /></div>
           <div id='nav'>
-            <button onClick={() => scrollToSection('banner')}>Inicio</button>
+            <button onClick={() => scrollToSection('banner')}>Início</button>
             <button onClick={() => scrollToSection('sobre')}>Sobre</button>
           </div>
         </div>
@@ -42,7 +41,6 @@ function Home() {
       </div>
 
       <div className="homeContent">
-        {/* Seção Banner (já existente) */}
         <div id='banner'>
           <div id='textoBanner'>
             <h1>O sistema web que gerencia sua clínica e simplifica sua rotina.</h1>
@@ -54,7 +52,6 @@ function Home() {
           </div>
         </div>
 
-        {/* Nova Seção Sobre */}
         <div id='sobre'>
           <div className='sobre-content'>
             <div className='sobre-texto'>

@@ -8,6 +8,7 @@ import NovoEventoModal from "../../components/modals/AgendamentoModal/Agendament
 import ConfigCalendarModal from "../../components/modals/ConfigAgendaModal/ConfigAgendaModal.jsx";
 import { usePageTitle } from "../../hooks/usePageTitle";
 import { useAuth } from '../../hooks/useAuth';
+import "./Agendamento.css";
 
 const API_URL = "http://localhost:3001/eventos";
 const plugins = [dayGridPlugin, timeGridPlugin, interactionPlugin];
@@ -22,19 +23,22 @@ export default function AgendaVisual() {
   const { updateTitle } = usePageTitle();
   const { getAuthHeaders } = useAuth();
 
-  const [config, setConfig] = useState({
-    initialView: "dayGridMonth",
-    slotMinTime: "08:00:00",
-    slotMaxTime: "18:00:00",
+  const [config, setConfig] = useState(() => {
+    const savedConfig = localStorage.getItem('calendarConfig');
+    return savedConfig ? JSON.parse(savedConfig) : {
+      initialView: "dayGridMonth",
+      slotMinTime: "08:00:00",
+      slotMaxTime: "18:00:00",
+    };
   });
 
   useEffect(() => {
     const buscarDentistaId = async () => {
       try {
-        const res = await fetch(`http://localhost:3001/dentistas`, { headers: getAuthHeaders() });
-
+        const res = await fetch(`http://localhost:3001/dentistas`, {
+          headers: getAuthHeaders()
+        });
         const dentistas = await res.json();
-
         if (dentistas.length > 0) {
           setDentistaSelecionado(dentistas[0].id);
         }
@@ -42,7 +46,6 @@ export default function AgendaVisual() {
         console.error("Erro ao buscar dentista:", error);
       }
     };
-
     buscarDentistaId();
   }, []);
 
@@ -50,16 +53,21 @@ export default function AgendaVisual() {
     updateTitle("Agenda");
   }, [updateTitle]);
 
+  useEffect(() => {
+    localStorage.setItem('calendarConfig', JSON.stringify(config));
+  }, [config]);
+
   const carregarEventos = async () => {
     try {
-      const res = await fetch(API_URL, { headers: getAuthHeaders() });
+      const res = await fetch(API_URL, {
+        headers: getAuthHeaders()
+      });
 
       if (!res.ok) {
         throw new Error(`Erro ${res.status}: ${res.statusText}`);
       }
 
       const dados = await res.json();
-
       const eventosFormatados = dados.map((ev) => {
         let cor = "#00A39C";
         if (ev.status === "z") cor = "#FACC15";
@@ -113,7 +121,11 @@ export default function AgendaVisual() {
   const handleDateClick = (info) => {
     const agora = new Date();
     const dataClicada = info.date;
-    if (dataClicada < new Date(agora.setHours(0, 0, 0, 0))) return;
+
+    if (dataClicada < new Date(agora.setHours(0, 0, 0, 0))) {
+      alert("Não é possível agendar em datas passadas");
+      return;
+    }
 
     setDataSelecionada({
       id: null,
@@ -133,70 +145,83 @@ export default function AgendaVisual() {
     abrirModal(info.event, true);
   };
 
+  const handleConfigSalvar = (novaConfig) => {
+    setConfig(novaConfig);
+    setMostrarModalConfig(false);
+  };
+
   const eventosFiltrados = eventos.filter(
     (ev) => ev.extendedProps?.dentistaId === dentistaSelecionado
   );
 
   if (!dentistaSelecionado) {
-    return <div>Carregando...</div>;
+    return <div className="carregandoAgenda">Carregando...</div>;
   }
 
   return (
-    <div className="p-6 z-0" style={{ marginLeft: "100px" }}>
-      <h1 className="text-2xl font-bold mb-4">Agenda</h1>
+    <>
+      <div className="agendaContainer">
+        <div className="agendaHeader">
+          <h1 className="agendaTitle">Agenda</h1>
+          <div className="botoesAgenda">
+            <button
+              onClick={() => handleDateClick({ date: new Date() })}
+              className="btnNovoEvento"
+            >
+              Novo Evento
+            </button>
+            <button
+              onClick={() => setMostrarModalConfig(true)}
+              className="btnConfiguracoes"
+            >
+              Configurações
+            </button>
+          </div>
+        </div>
 
-      <div className="flex gap-2 mb-4">
-        <button
-          onClick={() => handleDateClick({ date: new Date() })}
-          className="px-4 py-2 bg-green-600 text-white rounded"
-        >
-          Novo Evento
-        </button>
-
-        <button
-          onClick={() => setMostrarModalConfig(true)}
-          className="px-4 py-2 bg-blue-600 text-white rounded"
-        >
-          Configurações
-        </button>
-      </div>
-
-      <div style={{ width: "calc(100% - 90px)" }}>
-        <FullCalendar
-          plugins={plugins}
-          initialView={config.initialView}
-          slotMinTime={config.slotMinTime}
-          slotMaxTime={config.slotMaxTime}
-          dayHeaderFormat={{ weekday: "short" }}
-          locale={ptBrLocale}
-          headerToolbar={{
-            left: "prev,next today",
-            center: "title",
-            right: "dayGridDay,timeGridWeek,dayGridMonth",
-          }}
-          events={eventosFiltrados}
-          dateClick={handleDateClick}
-          eventClick={handleEventClick}
-          height="auto"
-        />
+        <div className="calendarioContainer">
+          <FullCalendar
+            plugins={plugins}
+            initialView={config.initialView}
+            slotMinTime={config.slotMinTime}
+            slotMaxTime={config.slotMaxTime}
+            dayHeaderFormat={{ weekday: "short" }}
+            locale={ptBrLocale}
+            headerToolbar={{
+              left: "prev,next today",
+              center: "title",
+              right: "dayGridDay,timeGridWeek,dayGridMonth",
+            }}
+            events={eventosFiltrados}
+            dateClick={handleDateClick}
+            eventClick={handleEventClick}
+            height="auto"
+            fixedWeekCount={false}
+            showNonCurrentDates={false}
+            firstDay={0}
+            allDaySlot={false}
+          />
+        </div>
       </div>
 
       <NovoEventoModal
         isOpen={mostrarModal}
-        onRequestClose={() => setMostrarModal(false)}
+        onClose={() => setMostrarModal(false)}
         dataSelecionada={dataSelecionada}
         onSuccess={carregarEventos}
         dentistaId={dentistaSelecionado}
         modoVisualizacao={modoVisualizacao}
         setModoVisualizacao={setModoVisualizacao}
+        config={config}
       />
 
       <ConfigCalendarModal
         isOpen={mostrarModalConfig}
-        onRequestClose={() => setMostrarModalConfig(false)}
+        onClose={() => setMostrarModalConfig(false)}
+        onSave={handleConfigSalvar}
         config={config}
         setConfig={setConfig}
       />
-    </div>
+    </>
   );
 }

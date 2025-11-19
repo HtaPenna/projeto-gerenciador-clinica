@@ -5,8 +5,7 @@ import { usePageTitle } from '../../hooks/usePageTitle';
 import { useAuth } from '../../hooks/useAuth';
 import './Header.css';
 
-
-const Header = () => {
+const Header = ({ onOpenGerenciamento }) => {
   const [open, setOpen] = useState(false);
   const [userName, setUserName] = useState('UserName');
   const menuRef = useRef(null);
@@ -61,10 +60,16 @@ const Header = () => {
             <p className="dropdownUsername">{userName}</p>
 
             <div className='dropdownOptions'>
-              <a href="#" className="dropdownLink">
+              <button
+                className="dropdownLink"
+                onClick={() => {
+                  onOpenGerenciamento(); // Chama a função passada por prop
+                  setOpen(false);
+                }}
+              >
                 <Bolt size={16} />
-                <span>Dados pessoais</span>
-              </a>
+                <span>Gerenciar Conta</span>
+              </button>
 
               <button className="dropdownLogout" onClick={handleLogout}>
                 <LogOut size={16} />
